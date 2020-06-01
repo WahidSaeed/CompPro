@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:57555",
-      "sslPort": 44345
+      "applicationUrl": "http://localhost:52611",
+      "sslPort": 44325
     }
   },
   "profiles": {
@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "CompPro": {
+    "CompWeb": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
