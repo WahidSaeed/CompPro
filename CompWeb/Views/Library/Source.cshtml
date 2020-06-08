@@ -1,0 +1,111 @@
+﻿@using CompData.ViewModels.Procedure.Library
+@model List<RegulationFilteredBySource>
+@{
+    var data = Model.FirstOrDefault();
+    ViewData["Title"] = "Source - " + data.FullName;
+}
+
+<!-- BEGIN PAGE HEAD-->
+<div class="page-head">
+    <div class="container">
+        <!-- BEGIN PAGE TITLE -->
+        <div class="page-title">
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <a href="/">Home</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <span>@data.FullName</span>
+                </li>
+            </ul>
+            <h3>
+                @data.FullName
+            </h3>
+        </div>
+        <!-- END PAGE TITLE -->
+    </div>
+</div>
+<!-- END PAGE HEAD-->
+<!-- BEGIN PAGE CONTENT BODY -->
+<div class="page-content">
+    <div class="container">
+        <!-- BEGIN PAGE CONTENT INNER -->
+        <div class="page-content-inner">
+            <div class="search-page search-content-2">
+                <div class="row">
+                    <div class="col-md-8 portlet light ">
+                        <div class="search-container ">
+                            <ul class="search-container">
+                                @foreach (var item in Model)
+                                {
+                                    <li class="search-item clearfix">
+                                        <div class="search-content text-left">
+                                            <h2 class="search-title">
+                                                <a href="../Regulation/@item.RegId">@item.RegulationTitle</a>
+                                            </h2>
+                                            <p class="search-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec efficitur pellentesque auctor. Morbi lobortis, leo in tristique scelerisque, mauris quam volutpat nunc </p>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Recently Updated</span>
+                                </div>
+                                <div class="actions">
+                                    <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                        <i class="fa fa-rss"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <ul>
+                                    <li>
+                                        Rules on Management of Problem Loans
+                                    </li>
+                                    <li>
+                                        Account Opening Rules, 5th
+                                    </li>
+                                    <li>
+                                        Requirements for Appointments to Senior Positions ...
+                                    </li>
+                                    <li>
+                                        E-Banking Rules
+                                    </li>
+                                    <li>
+                                        Whistle Blowing Policy for Financial Institutions
+                                    </li>
+                                    <li>
+                                        Code of Conduct and Work Ethics in Financial Insti...
+                                    </li>
+                                    <li>
+                                        Financial Entities Ethical Red Teaming Framework
+                                    </li>
+                                    <li>
+                                        Regulation of Agent Banking in the Kingdom of Saud...
+                                    </li>
+                                    <li>
+                                        SAMA Banking Licensing Guidelines and Minimum Crit...
+                                    </li>
+                                    <li>
+                                        Excluding expatriate labor accounts from freezing
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END PAGE CONTENT INNER -->
+    </div>
+</div>
+<!-- END PAGE CONTENT BODY -->

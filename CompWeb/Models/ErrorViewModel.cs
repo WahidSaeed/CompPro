@@ -1,6 +1,4 @@
-using System;
-
-namespace CompWeb.Models
+namespace CRMWeb.Models
 {
     public class ErrorViewModel
     {

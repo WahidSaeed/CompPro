@@ -1,7 +1,132 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200211092844_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200211092844_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200211110006_InitialCreation.cs" />
+    <Compile Remove="Migrations\20200211110006_InitialCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200213085258_ApplicationMenu.cs" />
+    <Compile Remove="Migrations\20200213085258_ApplicationMenu.Designer.cs" />
+    <Compile Remove="Migrations\20200213085848_ApplicationMenu.cs" />
+    <Compile Remove="Migrations\20200213085848_ApplicationMenu.Designer.cs" />
+    <Compile Remove="Migrations\20200213090612_ApplicationMenu.cs" />
+    <Compile Remove="Migrations\20200213090612_ApplicationMenu.Designer.cs" />
+    <Compile Remove="Migrations\20200213090907_ApplicationMenu.cs" />
+    <Compile Remove="Migrations\20200213090907_ApplicationMenu.Designer.cs" />
+    <Compile Remove="Migrations\20200219090735_UpdateSchemaIdentity.cs" />
+    <Compile Remove="Migrations\20200219090735_UpdateSchemaIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20200219091321_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200219091321_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200219095548_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200219095548_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200219095743_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200219095743_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200219100914_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200219100914_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200219101217_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200219101217_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200219152230_Test.cs" />
+    <Compile Remove="Migrations\20200219152230_Test.Designer.cs" />
+    <Compile Remove="Migrations\20200225142045_DynamicForms.cs" />
+    <Compile Remove="Migrations\20200225142045_DynamicForms.Designer.cs" />
+    <Compile Remove="Migrations\20200225142303_DynamicForms.cs" />
+    <Compile Remove="Migrations\20200225142303_DynamicForms.Designer.cs" />
+    <Compile Remove="Migrations\20200226052149_Default-BaseModel-ColumnOrder.cs" />
+    <Compile Remove="Migrations\20200226052149_Default-BaseModel-ColumnOrder.Designer.cs" />
+    <Compile Remove="Migrations\20200226052321_Default-BaseModel-ColumnOrder.cs" />
+    <Compile Remove="Migrations\20200226052321_Default-BaseModel-ColumnOrder.Designer.cs" />
+    <Compile Remove="Migrations\20200226083402_Add-New-Models.cs" />
+    <Compile Remove="Migrations\20200226083402_Add-New-Models.Designer.cs" />
+    <Compile Remove="Migrations\20200227062011_Add-New-Models-CollectionCampaignData.cs" />
+    <Compile Remove="Migrations\20200227062011_Add-New-Models-CollectionCampaignData.Designer.cs" />
+    <Compile Remove="Migrations\20200227071622_Add-New-Models-CollectionCampaignData.cs" />
+    <Compile Remove="Migrations\20200227071622_Add-New-Models-CollectionCampaignData.Designer.cs" />
+    <Compile Remove="Migrations\20200228110548_Add-Model-SalesCustodian.cs" />
+    <Compile Remove="Migrations\20200228110548_Add-Model-SalesCustodian.Designer.cs" />
+    <Compile Remove="Migrations\20200228113245_Alter-Model-Classification-Relation-SalesCustodian.cs" />
+    <Compile Remove="Migrations\20200228113245_Alter-Model-Classification-Relation-SalesCustodian.Designer.cs" />
+    <Compile Remove="Migrations\20200228113819_Alter-Model-Classification-Relation-SalesCustodian.cs" />
+    <Compile Remove="Migrations\20200228113819_Alter-Model-Classification-Relation-SalesCustodian.Designer.cs" />
+    <Compile Remove="Migrations\20200228114247_Alter-Model-Classification-Relation-SalesCustodian.cs" />
+    <Compile Remove="Migrations\20200228114247_Alter-Model-Classification-Relation-SalesCustodian.Designer.cs" />
+    <Compile Remove="Migrations\20200228115536_Alter-Model-Classification-Relation-SalesCustodian-Final.cs" />
+    <Compile Remove="Migrations\20200228115536_Alter-Model-Classification-Relation-SalesCustodian-Final.Designer.cs" />
+    <Compile Remove="Migrations\20200228120150_DynamicFormAttribute-Nullable.cs" />
+    <Compile Remove="Migrations\20200228120150_DynamicFormAttribute-Nullable.Designer.cs" />
+    <Compile Remove="Migrations\20200228132717_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200228132717_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200228132916_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200228132916_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200228133454_InitalCreation.cs" />
+    <Compile Remove="Migrations\20200228133454_InitalCreation.Designer.cs" />
+    <Compile Remove="Migrations\20200228134447_InitalCreation-Nullable.cs" />
+    <Compile Remove="Migrations\20200228134447_InitalCreation-Nullable.Designer.cs" />
+    <Compile Remove="Migrations\20200305061737_Added-Column-IsLocal-DynamicFormAttribute.cs" />
+    <Compile Remove="Migrations\20200305061737_Added-Column-IsLocal-DynamicFormAttribute.Designer.cs" />
+    <Compile Remove="Migrations\20200305061855_Added-Column-IsLocal-DynamicFormAttribute.cs" />
+    <Compile Remove="Migrations\20200305061855_Added-Column-IsLocal-DynamicFormAttribute.Designer.cs" />
+    <Compile Remove="Migrations\20200305065129_test.cs" />
+    <Compile Remove="Migrations\20200305065129_test.Designer.cs" />
+    <Compile Remove="Migrations\20200306045654_Alter-ApplicationRoleClaim.cs" />
+    <Compile Remove="Migrations\20200306045654_Alter-ApplicationRoleClaim.Designer.cs" />
+    <Compile Remove="Migrations\20200306140623_New-Updates.cs" />
+    <Compile Remove="Migrations\20200306140623_New-Updates.Designer.cs" />
+    <Compile Remove="Migrations\20200306140828_New-Updates.cs" />
+    <Compile Remove="Migrations\20200306140828_New-Updates.Designer.cs" />
+    <Compile Remove="Migrations\20200306141149_New-Updates.cs" />
+    <Compile Remove="Migrations\20200306141149_New-Updates.Designer.cs" />
+    <Compile Remove="Migrations\20200306141410_New-Updates.cs" />
+    <Compile Remove="Migrations\20200306141410_New-Updates.Designer.cs" />
+    <Compile Remove="Migrations\20200306141700_New-Updates.cs" />
+    <Compile Remove="Migrations\20200306141700_New-Updates.Designer.cs" />
+    <Compile Remove="Migrations\20200306045514_Alter-ApplicationRoleClaim.cs" />
+    <Compile Remove="Migrations\20200306045514_Alter-ApplicationRoleClaim.Designer.cs" />
+    <Compile Remove="Migrations\20200312064651_Alter-Role-Claim-Relationship.cs" />
+    <Compile Remove="Migrations\20200312064651_Alter-Role-Claim-Relationship.Designer.cs" />
+    <Compile Remove="Migrations\20200312065521_Alter-Role-Claim-Relationship.cs" />
+    <Compile Remove="Migrations\20200312065521_Alter-Role-Claim-Relationship.Designer.cs" />
+    <Compile Remove="Migrations\20200312065909_Alter-Role-Claim-Relationship.cs" />
+    <Compile Remove="Migrations\20200312065909_Alter-Role-Claim-Relationship.Designer.cs" />
+    <Compile Remove="Migrations\20200312071700_Alter-Role-Claim-Relationship.cs" />
+    <Compile Remove="Migrations\20200312071700_Alter-Role-Claim-Relationship.Designer.cs" />
+    <Compile Remove="Migrations\20200312071912_Alter-Role-Claim-Relationship.cs" />
+    <Compile Remove="Migrations\20200312071912_Alter-Role-Claim-Relationship.Designer.cs" />
+    <Compile Remove="Migrations\20200312072852_Added-Relationship-Menu-RoleClaim.cs" />
+    <Compile Remove="Migrations\20200312072852_Added-Relationship-Menu-RoleClaim.Designer.cs" />
+    <Compile Remove="Migrations\20200314071154_Alter-CollectionCampaignData.cs" />
+    <Compile Remove="Migrations\20200314071154_Alter-CollectionCampaignData.Designer.cs" />
+    <Compile Remove="Migrations\20200314095123_Added-Column-ColSpan-DynamicForm.cs" />
+    <Compile Remove="Migrations\20200314095123_Added-Column-ColSpan-DynamicForm.Designer.cs" />
+    <Compile Remove="Migrations\20200314095449_Added-Column-ColSpan-DynamicForm-DefaultValue.cs" />
+    <Compile Remove="Migrations\20200314095449_Added-Column-ColSpan-DynamicForm-DefaultValue.Designer.cs" />
+    <Compile Remove="Migrations\20200603195232_library-schemes.cs" />
+    <Compile Remove="Migrations\20200603195232_library-schemes.Designer.cs" />
+    <Compile Remove="Migrations\20200603195956_library-schemes.cs" />
+    <Compile Remove="Migrations\20200603195956_library-schemes.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+  </ItemGroup>
 
 </Project>

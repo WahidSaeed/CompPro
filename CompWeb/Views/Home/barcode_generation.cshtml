@@ -1,0 +1,359 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="page-content">
+    <!-- BEGIN PAGE HEAD-->
+    <div class="page-head">
+        <!-- BEGIN PAGE TITLE -->
+        <div class="page-title">
+            <h1>
+                User Control
+                <small>material design bootstrap inputs, input groups, custom checkboxes and radio controls and more</small>
+            </h1>
+        </div>
+        <!-- END PAGE TITLE -->
+        <!-- BEGIN PAGE TOOLBAR -->
+        <div class="page-toolbar">
+            <!-- BEGIN THEME PANEL -->
+            <div class="btn-group btn-theme-panel">
+                <a href="javascript:;" class="btn dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-settings"></i>
+                </a>
+                <div class="dropdown-menu theme-panel pull-right dropdown-custom hold-on-click">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <h3>HEADER</h3>
+                            <ul class="theme-colors">
+                                <li class="theme-color theme-color-default active" data-theme="default">
+                                    <span class="theme-color-view"></span>
+                                    <span class="theme-color-name">Dark Header</span>
+                                </li>
+                                <li class="theme-color theme-color-light " data-theme="light">
+                                    <span class="theme-color-view"></span>
+                                    <span class="theme-color-name">Light Header</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-8 col-sm-8 col-xs-12 seperator">
+                            <h3>LAYOUT</h3>
+                            <ul class="theme-settings">
+                                <li>
+                                    Theme Style
+                                    <select class="layout-style-option form-control input-small input-sm">
+                                        <option value="square">Square corners</option>
+                                        <option value="rounded" selected="selected">Rounded corners</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Layout
+                                    <select class="layout-option form-control input-small input-sm">
+                                        <option value="fluid" selected="selected">Fluid</option>
+                                        <option value="boxed">Boxed</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Header
+                                    <select class="page-header-option form-control input-small input-sm">
+                                        <option value="fixed" selected="selected">Fixed</option>
+                                        <option value="default">Default</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Top Dropdowns
+                                    <select class="page-header-top-dropdown-style-option form-control input-small input-sm">
+                                        <option value="light">Light</option>
+                                        <option value="dark" selected="selected">Dark</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Sidebar Mode
+                                    <select class="sidebar-option form-control input-small input-sm">
+                                        <option value="fixed">Fixed</option>
+                                        <option value="default" selected="selected">Default</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Sidebar Menu
+                                    <select class="sidebar-menu-option form-control input-small input-sm">
+                                        <option value="accordion" selected="selected">Accordion</option>
+                                        <option value="hover">Hover</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Sidebar Position
+                                    <select class="sidebar-pos-option form-control input-small input-sm">
+                                        <option value="left" selected="selected">Left</option>
+                                        <option value="right">Right</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    Footer
+                                    <select class="page-footer-option form-control input-small input-sm">
+                                        <option value="fixed">Fixed</option>
+                                        <option value="default" selected="selected">Default</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END THEME PANEL -->
+        </div>
+        <!-- END PAGE TOOLBAR -->
+    </div>
+    <!-- END PAGE HEAD-->
+    <!-- BEGIN PAGE BREADCRUMB -->
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <a href="#">Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <span class="active">User Entry</span>
+        </li>
+    </ul>
+    <!-- END PAGE BREADCRUMB -->
+    <!-- BEGIN PAGE BASE CONTENT -->
+    <div class="row">
+        <div class="col-md-12 ">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <!-- END SAMPLE FORM PORTLET-->
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+                        <span class="caption-subject bold uppercase">Input Groups & Icons</span>
+                    </div>
+                    <div class="actions">
+
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form role="form">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-success form-md-floating-label">
+                                        <div class="input-icon">
+                                            <input type="text" class="form-control">
+                                            <label for="form_control_1">Contact</label>
+                                            <span class="help-block">Some help goes here...</span>
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                            <option value="4">Option 4</option>
+                                        </select>
+                                        <label for="form_control_1">Department</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                            <option value="4">Option 4</option>
+                                        </select>
+                                        <label for="form_control_1">Division</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-success form-md-floating-label">
+                                        <div class="input-icon">
+                                            <input type="text" class="form-control">
+                                            <label for="form_control_1">Login ID</label>
+                                            <span class="help-block">Some help goes here...</span>
+                                            <i class="fa fa-bell-o"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                            <option value="4">Option 4</option>
+                                        </select>
+                                        <label for="form_control_1">Active</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-success form-md-floating-label">
+                                        <div class="input-icon">
+                                            <input type="text" class="form-control">
+                                            <label for="form_control_1">Employee Number</label>
+                                            <span class="help-block">Some help goes here...</span>
+                                            <i class="fa fa-bell-o"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-success form-md-floating-label">
+                                        <div class="input-icon">
+                                            <input type="text" class="form-control">
+                                            <label for="form_control_1">Email Address</label>
+                                            <span class="help-block">Some help goes here...</span>
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                            <option value="4">Option 4</option>
+                                        </select>
+                                        <label for="form_control_1">Is Aggregator Account </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-6 control-label" for="form_control_1">Remote Login</label>
+                                        <div class="col-md-6 right-checkbox">
+                                            <div class="md-checkbox-inline">
+
+                                                <div class="md-checkbox has-info">
+                                                    <input type="checkbox" id="checkbox34" class="md-check">
+                                                    <label for="checkbox34">
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span>
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
+
+                                        </select>
+                                        <label for="form_control_1">Active</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-md-line-input has-info form-md-floating-label">
+                                        <select class="form-control" id="form_control_1">
+                                            <option value=""></option>
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
+                                        </select>
+                                        <label for="form_control_1">Company</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+
+                                <div class="col-md-5">
+                                    <div class="form-group form-md-radios">
+                                        <label>Vendor Type</label>
+                                        <div class="md-radio-inline">
+                                            <div class="md-radio">
+                                                <input type="radio" id="radio14" name="radio2" class="md-radiobtn">
+                                                <label for="radio14">
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> Option 1
+                                                </label>
+                                            </div>
+                                            <div class="md-radio ">
+                                                <input type="radio" id="radio15" name="radio2" class="md-radiobtn" checked>
+                                                <label for="radio15">
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> Option 2
+                                                </label>
+                                            </div>
+                                            <div class="md-radio ">
+                                                <input type="radio" id="radio16" name="radio2" class="md-radiobtn">
+                                                <label for="radio16">
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> Option 3
+                                                </label>
+                                            </div>
+                                            <div class="md-radio ">
+                                                <input type="radio" id="radio17" name="radio2" class="md-radiobtn">
+                                                <label for="radio17">
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> Option 4
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <div class="form-group select2-bootstrap-append ">
+                                            <label for="multi-append" class="control-label">Branch</label>
+                                            <select id="multi-append" class="form-control select2" multiple>
+                                                <option></option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                            </select>
+
+                                            <span class="input-group-btn">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-actions noborder right">
+                            <button type="button" class="btn blue disabled">Submit</button>
+                            <button type="button" class="btn blue">Update</button>
+                            <button type="button" class="btn default">Clear</button>
+                            <button type="button" class="btn blue">Close</button>
+                            <button type="button" class="btn blue">Rules</button>
+                            <button type="button" class="btn blue">Data Rights</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+
+        </div>
+    </div>
+    <!-- END PAGE BASE CONTENT -->
+</div>

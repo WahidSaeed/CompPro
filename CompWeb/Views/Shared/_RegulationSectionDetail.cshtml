@@ -1,0 +1,20 @@
+﻿@using CompData.ViewModels.Library
+@model List<SectionItem>
+
+@foreach (var item in Model)
+{
+    <div class="col-md-8">
+        @{
+            <h4>@item.SectionTitle</h4>
+            if (!string.IsNullOrEmpty(item.Description))
+            {
+                <p>@item.Description</p>
+            }
+            var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId));
+            if (filterData.Count() > 0)
+            {
+                <partial name="_RegulationSectionDetail" model="filterData" />
+            }
+        }
+    </div>
+}

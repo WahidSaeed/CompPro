@@ -2,9 +2,13 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/CRMWeb",
+      "sslPort": 0
+    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:52611",
-      "sslPort": 44325
+      "applicationUrl": "http://localhost:12345",
+      "sslPort": 0
     }
   },
   "profiles": {
@@ -13,9 +17,10 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "ancmHostingModel": "InProcess"
     },
-    "CompWeb": {
+    "CRMWeb": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

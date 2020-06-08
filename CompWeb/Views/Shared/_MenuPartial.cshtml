@@ -1,0 +1,14 @@
+﻿@{
+    List<UserAccessibleClaims> userAccessibleClaims = ViewBag.UserAccessibleClaims as List<UserAccessibleClaims>;
+}
+
+@if (userAccessibleClaims != null)
+{
+    @foreach (var userAccessibleClaim in userAccessibleClaims.Where(x => x.ParentID == null).OrderBy(x => x.Order))
+    {
+        <li class="nav-item  ">
+            <partial name="_MenuList" model="userAccessibleClaim" />
+        </li>
+    }
+}
+

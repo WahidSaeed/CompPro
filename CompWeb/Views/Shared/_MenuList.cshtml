@@ -1,0 +1,35 @@
+﻿@using CRMData.ViewModels;
+@model UserAccessibleClaims
+@{
+    List<UserAccessibleClaims> userAccessibleClaims = ViewBag.UserAccessibleClaims as List<UserAccessibleClaims>;
+    List<UserAccessibleClaims> filterdUserAccessibleClaims = userAccessibleClaims.Where(x => x.ParentID != null && x.ParentID.Equals(Model.MenuID)).ToList();
+    List<UserAccessibleClaims> selectedMenuItems = ViewBag.SelectedMenuItems as List<UserAccessibleClaims>;
+    bool isSelected = selectedMenuItems.Count(x => x.MenuID.Equals(Model.MenuID)) > 0;
+}
+
+
+@if (filterdUserAccessibleClaims.Count > 0)
+{   
+    <li class="nav-item">
+        <a href="javascript:;" class="@(isSelected ? "nav-link nav-toggle open" : "nav-link nav-toggle")">
+            <i class="icon-docs"></i>
+            <span class="title">@Model.DisplayName</span>
+            <span class="@(isSelected ? "arrow open" : "arrow")"></span>
+        </a>
+        <ul class="sub-menu" style="@(isSelected ? "display: block;" : "display: none;")">
+            @foreach (var accessibleClaims in filterdUserAccessibleClaims.OrderBy(x => x.Order))
+            {
+                <partial name="_MenuList" model="accessibleClaims" />
+            }
+        </ul>
+    </li>
+}
+else
+{
+    <li class="@(isSelected ? "nav-item active open" : "nav-item")">
+        <a href="@Model.URL" target="@(Model.IsLocal == true ? "" : "_blank")" class="nav-link ">
+            <i class="icon-clock"></i>
+            <span class="title">@Model.DisplayName</span>
+        </a>
+    </li>
+}

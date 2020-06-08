@@ -1,0 +1,202 @@
+﻿@using CompData.ViewModels.Library
+@model SelectedRegulationViewModel
+@{
+    ViewData["Title"] = "Regulation - " + Model.RegTitle;
+}
+
+@section Styles {
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+}
+
+<!-- BEGIN PAGE HEAD-->
+<div class="page-head">
+    <div class="container">
+        <!-- BEGIN PAGE TITLE -->
+        <div class="page-title">
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <a href="/">Home</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <a href="../Source/@Model.SourceId">@Model.SourceTitle</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <span>@Model.RegTitle</span>
+                </li>
+            </ul>
+            <h3>
+                @Model.RegTitle
+            </h3>
+            <div class="actions">
+                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                    <i class="fa fa-plus-circle"></i>
+                </a>
+                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                    <i class="fa fa-rss"></i>
+                </a>
+            </div>
+        </div>
+        <!-- END PAGE TITLE -->
+    </div>
+</div>
+<!-- END PAGE HEAD-->
+<!-- BEGIN PAGE CONTENT BODY -->
+<div class="page-content">
+    <div class="container">
+        <!-- BEGIN PAGE CONTENT INNER -->
+        <div class="page-content-inner">
+            <div class="search-page search-content-2">
+                <div class="row">
+                    <div class="col-md-8 portlet light ">
+                        @foreach (var item in Model.SectionItems.Where(x => x.ParentId == null).OrderBy(x => x.Sequence))
+                        {
+                            var anchor = @item.SectionTitle.Replace(" ", "_");
+                            <div class="col-8 portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-edit font-dark"></i>
+                                        <h3 id="@anchor" class="caption-subject font-dark bold uppercase">@item.SectionTitle</h3>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <p>@Html.Raw(@item.Description)</p>
+                                    }
+                                </div>
+                                @{
+                                    var filterData = Model.SectionItems.Where(x => x.ParentId.Equals(item.SectionId));
+                                }
+                                @if (filterData.Count() > 0)
+                                {
+                                    @foreach (var itemChild in filterData)
+                                    {
+                                        var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
+                                        <div class="col-8 portlet light">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="icon-edit font-dark"></i>
+                                                    <h4 id="@childAnchor" class="caption-subject font-dark bold uppercase">@itemChild.SectionTitle</h4>
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                @if (!string.IsNullOrEmpty(item.Description))
+                                                {
+                                                    <p>@Html.Raw(@itemChild.Description)</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Table of Content</span>
+                                </div>
+                                <div class="actions">
+                                    <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                        <i class="fa fa-rss"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div id="tree_1" class="tree-demo jstree jstree-1 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j1_3" aria-busy="false" style="overflow: hidden;">
+                                    <ul class="jstree-container-ul jstree-children" role="group">
+                                        @foreach (var item in Model.SectionItems.Where(x => x.ParentId == null).OrderBy(x => x.Sequence))
+                                        {
+                                            var id = "j1_" + item.SectionId;
+                                            var anchor = id + "_anchor";
+                                            var anchorLink = "#" + @item.SectionTitle.Replace(" ", "_");
+                                            <li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="@anchor" aria-expanded="true" id="@id" class="jstree-node  jstree-open" title="@item.SectionTitle">
+                                                <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                                <a class="jstree-anchor" href="@anchorLink" tabindex="-1" id="@anchor">
+                                                    <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @item.SectionTitle
+                                                </a>
+                                                @{
+                                                    var filterData = Model.SectionItems.Where(x => x.ParentId.Equals(item.SectionId)).OrderBy(x => x.Sequence);
+                                                }
+                                                @if (filterData.Count() > 0)
+                                                {
+                                                    <ul role="group" class="jstree-children">
+                                                        @foreach (var itemChild in filterData)
+                                                        {
+                                                            var childId = "j1_" + itemChild.SectionId;
+                                                            var childAnchor = childId + "_anchor";
+                                                            var childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
+                                                            <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
+                                                                <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                                                <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
+                                                                    <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Filter by Tags</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <button class="btn default">anti-money laundering</button>
+                                <button class="btn default">account opening</button>
+                                <button class="btn default">advertising</button>
+                                <button class="btn default">agent banking</button>
+                                <button class="btn default">agreement</button>
+                                <button class="btn default">risk management</button>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Related Regulations</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <ul>
+                                    <li style="list-style: disc;">Rules on Management of Problem Loans</li>
+                                    <li style="list-style: disc;">Account Opening Rules, 5th</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END PAGE CONTENT INNER -->
+    </div>
+</div>
+<!-- END PAGE CONTENT BODY -->
+
+@section Scripts {
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/pages/scripts/ui-tree.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+}

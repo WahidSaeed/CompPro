@@ -1,37 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CompData.Services.Regulation;
+using CRMConfiguration.Configurations.Attributes.Identity;
+using CRMData.Configurations.Attributes.Identity;
+using CRMData.Services.Account.ProfileClaimConfiguration;
+using CRMData.ViewModels;
+using CRMWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using CompWeb.Models;
+using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace CompWeb.Controllers
+namespace CRMWeb.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRegulationService regulationService;
+        //private readonly IProfileClaimConfiguration profileClaimConfiguration;
 
-        public HomeController(ILogger<HomeController> logger)
+        //public HomeController(ILogger<HomeController> logger, IProfileClaimConfiguration profileClaimConfiguration)
+        //{
+        //    this._logger = logger;
+        //    this.profileClaimConfiguration = profileClaimConfiguration;
+        //}
+
+        public HomeController(ILogger<HomeController> logger, IRegulationService regulationService)
         {
-            _logger = logger;
+            this._logger = logger;
+            this.regulationService = regulationService;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var model = this.regulationService.GetAllRegulationGroupBySource();
+            return View(model);
         }
     }
 }
