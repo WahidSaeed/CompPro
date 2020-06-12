@@ -2,6 +2,12 @@
 
 namespace CRMData.Generics
 {
+    public enum IPType
+    {
+        WhiteList = 1,
+        BlackList = 2
+    }
+
     public enum FormType
     {
         SearchForm = 1,

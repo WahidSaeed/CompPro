@@ -23,6 +23,9 @@ namespace CRMData.Data
         public DbSet<ApplicationClaim> ApplicationClaims { get; set; }
         public DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; }
         public DbSet<ApplicationRoleClaim> ApplicationRoleClaims { get; set; }
+        public DbSet<ApplicationLoginAudit> ApplicationLoginAudits { get; set; }
+        public DbSet<ApplicationPasswordLog> ApplicationPasswordLogs { get; set; }
+        public DbSet<ApplicationIP> ApplicationIPs { get; set; }
 
         #endregion Identity
 

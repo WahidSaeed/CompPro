@@ -1,5 +1,13 @@
 ﻿namespace CRMData.Configurations.Constants.Enums
 {
+    public enum AuditType
+    {
+        LogIn,
+        LogOut,
+        BlockListIPLoginFailed,
+        PasswordExpiredLoginFailed
+    };
+
     public enum ResultStatus
     {
         Success = 100,
