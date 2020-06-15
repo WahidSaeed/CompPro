@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CompData.Models.Config;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRMData.Models.Identity
 {
@@ -16,5 +18,13 @@ namespace CRMData.Models.Identity
         public Guid EditBy { get; set; }
         public DateTime EditOn { get; set; }
         public string EditIP { get; set; }
+        public string City { get; set; }
+        [MaxLength(3)]
+        public string CountryCode { get; set; }
+        public string Region { get; set; }
+        public bool IsAllowRemoteLogin { get; set; } = true;
+
+        [ForeignKey("CountryCode")]
+        public virtual Country Country { get; set; }
     }
 }

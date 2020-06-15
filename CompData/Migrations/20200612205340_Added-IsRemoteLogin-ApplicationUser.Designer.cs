@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200612205340_Added-IsRemoteLogin-ApplicationUser")]
+    partial class AddedIsRemoteLoginApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +241,8 @@ namespace CompData.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CountryCode")
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("EditBy")
                         .HasColumnType("uniqueidentifier");
@@ -300,8 +301,6 @@ namespace CompData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryCode");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -357,38 +356,6 @@ namespace CompData.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ApplicationUserLogin","Security");
-                });
-
-            modelBuilder.Entity("CRMData.Models.Identity.ApplicationUserNotification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("FK_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Notification")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
-                    b.Property<DateTime>("NotificationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PageRedirect")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FK_UserId");
-
-                    b.ToTable("ApplicationUserNotification","Security");
                 });
 
             modelBuilder.Entity("CRMData.Models.Identity.ApplicationUserRole", b =>
@@ -462,105 +429,6 @@ namespace CompData.Migrations
                     b.ToTable("UserAccessibleClaims","ProcedureView");
                 });
 
-            modelBuilder.Entity("CompData.Models.Config.AppSetting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Key")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppSetting","Config");
-                });
-
-            modelBuilder.Entity("CompData.Models.Config.Country", b =>
-                {
-                    b.Property<string>("CountryId")
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
-
-                    b.Property<string>("CountryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
-                    b.HasKey("CountryId");
-
-                    b.ToTable("Country","Config");
-                });
-
-            modelBuilder.Entity("CompData.Models.Config.OrganizationDomain", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrganizationDomain","Config");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RegSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RegSourceId");
-
-                    b.HasIndex("RegTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LinkUserRegTypeSubscription","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("SourceId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SourceId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LinkedUserRegulationSource","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.Regulation", b =>
                 {
                     b.Property<int>("RegId")
@@ -568,11 +436,25 @@ namespace CompData.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<Guid?>("AddBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddIP")
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<DateTime?>("AddOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("CreatedBy")
+                    b.Property<Guid?>("EditBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EditIP")
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<DateTime?>("EditOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("EffectiveDate")
                         .HasColumnType("datetime2");
@@ -595,24 +477,13 @@ namespace CompData.Migrations
                     b.Property<int>("SourceID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("Views")
-                        .HasColumnType("bigint");
-
                     b.HasKey("RegId");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("AddBy");
 
-                    b.HasIndex("RegTypeID");
+                    b.HasIndex("EditBy");
 
                     b.HasIndex("SourceID");
-
-                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Regulation","Library");
                 });
@@ -679,9 +550,6 @@ namespace CompData.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CountryId")
-                        .HasColumnType("nvarchar(3)");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)")
@@ -694,28 +562,7 @@ namespace CompData.Migrations
 
                     b.HasKey("SourceId");
 
-                    b.HasIndex("CountryId");
-
                     b.ToTable("RegulationSource","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.RegulationType", b =>
-                {
-                    b.Property<int>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("TypeCode")
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TypeId");
-
-                    b.ToTable("RegulationType","Library");
                 });
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.RegulationFilteredBySource", b =>
@@ -737,6 +584,9 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.RegulationGroupBySourceProcedure", b =>
                 {
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RegId")
                         .HasColumnType("int");
 
@@ -746,14 +596,8 @@ namespace CompData.Migrations
                     b.Property<int>("Regcount")
                         .HasColumnType("int");
 
-                    b.Property<int>("TypeId")
+                    b.Property<int>("SourceId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Views")
-                        .HasColumnType("bigint");
 
                     b.ToTable("RegulationGroupBySourceProcedure","ProcedureView");
                 });
@@ -833,13 +677,6 @@ namespace CompData.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CRMData.Models.Identity.ApplicationUser", b =>
-                {
-                    b.HasOne("CompData.Models.Config.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryCode");
-                });
-
             modelBuilder.Entity("CRMData.Models.Identity.ApplicationUserClaim", b =>
                 {
                     b.HasOne("CRMData.Models.Identity.ApplicationUser", null)
@@ -854,15 +691,6 @@ namespace CompData.Migrations
                     b.HasOne("CRMData.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CRMData.Models.Identity.ApplicationUserNotification", b =>
-                {
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("FK_UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -891,61 +719,21 @@ namespace CompData.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
-                {
-                    b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("RegSourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
-                        .WithMany()
-                        .HasForeignKey("RegTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
-                {
-                    b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CompData.Models.Library.Regulation", b =>
                 {
                     b.HasOne("CRMData.Models.Identity.ApplicationUser", "AddApplicationUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("AddBy");
 
-                    b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
+                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
                         .WithMany()
-                        .HasForeignKey("RegTypeID");
+                        .HasForeignKey("EditBy");
 
                     b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
                         .WithMany()
                         .HasForeignKey("SourceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("CompData.Models.Library.RegulationDetail", b =>
@@ -975,13 +763,6 @@ namespace CompData.Migrations
                         .HasForeignKey("RegulationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.RegulationSource", b =>
-                {
-                    b.HasOne("CompData.Models.Config.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
                 });
 #pragma warning restore 612, 618
         }

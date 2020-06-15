@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CRMWeb.Areas.Account.Controllers
 {
+    [AllowAnonymous]
     [Area("Account")]
     public class AccessDeniedController : Controller
     {

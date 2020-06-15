@@ -24,6 +24,10 @@ namespace CompData.Models.Library
         [ForeignKey("SourceID")]
         public virtual RegulationSource RegulationSource { get; set; }
 
+        [ForeignKey("RegTypeID")]
+        public virtual RegulationType RegulationType { get; set; }
+        public long Views { get; set; } = 0;
+
         public virtual ICollection<RegulationSection> RegulationSections { get; set; }
 
     }

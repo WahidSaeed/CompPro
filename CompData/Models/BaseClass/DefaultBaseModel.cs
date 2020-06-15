@@ -9,22 +9,18 @@ namespace CRMData.Models.BaseClass
     public class DefaultBaseModel
     {
         [Column(Order = 994)]
-        public Guid? AddBy { get; set; }
-        [MaxLength(15), Column(Order = 995)]
-        public string AddIP { get; set; }
+        public Guid? CreatedBy { get; set; }
         [Column(Order = 996)]
-        public DateTime? AddOn { get; set; }
+        public DateTime? CreatedAt { get; set; }
         [Column(Order = 997)]
-        public Guid? EditBy { get; set; }
+        public Guid? UpdatedBy { get; set; }
         [Column(Order = 998)]
-        public DateTime? EditOn { get; set; }
-        [MaxLength(15), Column(Order = 999)]
-        public string EditIP { get; set; }
+        public DateTime? UpdateAt { get; set; }
 
 
-        [ForeignKey("AddBy")]
+        [ForeignKey("CreatedBy")]
         public virtual ApplicationUser AddApplicationUser { get; set; }
-        [ForeignKey("EditBy")]
+        [ForeignKey("UpdatedBy")]
         public virtual ApplicationUser EditApplicationUser { get; set; }
         
     }

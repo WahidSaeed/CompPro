@@ -1,5 +1,4 @@
-﻿using CRMData.Generics;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,16 +20,6 @@ namespace CRMData.ViewModels.BaseViewModel
     {
         public int Id { get; set; }
         public string Text { get; set; }
-    }
-
-    public class jQueryDataTableHeader 
-    {
-        public string ColumnName { get; set; }
-        public string DisplayText { get; set; }
-        public ControlType ControlTypeId { get; set; }
-        public int TabOrder { get; set; }
-        public bool? IsVisible { get; set; } = false;
-        public bool? IsSupervisor { get; set; } = true;
     }
 
     public class jQueryDataTableInput

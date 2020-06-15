@@ -1,6 +1,8 @@
 ﻿using CompData.Dao.Regulation;
+using CompData.Models.Library;
 using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
+using CRMData.Configurations.Generics;
 using Microsoft.EntityFrameworkCore.Internal;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
@@ -22,21 +24,22 @@ namespace CompData.Services.Regulation.Impl
             return regulationDao.GetAllRegulationFilteredBySourceID(sourceId);
         }
 
-        public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource()
+        public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId)
         {
             List<GetAllRegulationGroupBySourceViewModel> groupBySourceViewModels = new List<GetAllRegulationGroupBySourceViewModel>();
-            List<RegulationGroupBySourceProcedure> groupBySourceProcedures = this.regulationDao.GetAllRegulationGroupBySource();
-            var sources = groupBySourceProcedures.Select(e => new { e.SourceId, e.FullName, e.Regcount }).Distinct().ToList();
+            List<RegulationGroupBySourceProcedure> groupBySourceProcedures = this.regulationDao.GetAllRegulationGroupBySource(sourceId);
+            var sources = groupBySourceProcedures.Select(e => new { e.TypeId, e.TypeName, e.Regcount }).Distinct().ToList();
 
             foreach (var source in sources)
             {
                 GetAllRegulationGroupBySourceViewModel viewModel = new GetAllRegulationGroupBySourceViewModel();
-                viewModel.SourceId = source.SourceId;
-                viewModel.SourceTitle = source.FullName;
+                viewModel.TypeId = source.TypeId;
+                viewModel.TypeTitle = source.TypeName;
                 viewModel.TotalRegulation = source.Regcount;
-                viewModel.RegulationsList = groupBySourceProcedures.Where(x => x.SourceId.Equals(source.SourceId)).Select(x => new RegulationListItem { 
+                viewModel.RegulationsList = groupBySourceProcedures.Where(x => x.TypeId.Equals(source.TypeId)).Select(x => new RegulationListItem { 
                     RegulationId = x.RegId,
-                    RegulationTitle = x.RegTitle
+                    RegulationTitle = x.RegTitle,
+                    Views = x.Views
                 }).ToList();
 
                 groupBySourceViewModels.Add(viewModel);
@@ -44,6 +47,12 @@ namespace CompData.Services.Regulation.Impl
 
             return groupBySourceViewModels;
         }
+
+        public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode)
+        {
+            return this.regulationDao.GetRegulationSourcesByCountryCode(countryCode);
+        }
+
         public SelectedRegulationViewModel GetSelectedRegulation(int regulationId)
         {
             SelectedRegulationViewModel regulationViewModels = new SelectedRegulationViewModel();
@@ -72,6 +81,32 @@ namespace CompData.Services.Regulation.Impl
             }
             
             return regulationViewModels;
+        }
+
+        public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId)
+        {
+            return this.regulationDao.GetSelectedRegulationSourcesByUserId(userId);
+        }
+
+        public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId)
+        {
+            return this.regulationDao.GetSubscribedRegulationTypeByUserId(userId,sourceId);
+        }
+
+        public List<Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId)
+        {
+            var updatedRegulations = this.regulationDao.GetUpdatedRegulationsBySource(sourceId);
+            return updatedRegulations;
+        }
+
+        public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds)
+        {
+            return this.regulationDao.LinkUserByRegulationSource(userID, SourceIds);
+        }
+
+        public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
+        {
+            return this.regulationDao.SubscribeRegulationTypeByUser(userID, typeId, sourceId);
         }
     }
 }

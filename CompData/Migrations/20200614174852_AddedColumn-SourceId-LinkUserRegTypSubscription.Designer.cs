@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200614174852_AddedColumn-SourceId-LinkUserRegTypSubscription")]
+    partial class AddedColumnSourceIdLinkUserRegTypSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -530,8 +532,6 @@ namespace CompData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegSourceId");
-
                     b.HasIndex("RegTypeId");
 
                     b.HasIndex("UserId");
@@ -893,12 +893,6 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
                 {
-                    b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("RegSourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
                         .WithMany()
                         .HasForeignKey("RegTypeId")

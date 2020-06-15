@@ -1,4 +1,5 @@
-﻿using CompData.Models.Library;
+﻿using CompData.Models.Config;
+using CompData.Models.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Models.Identity;
 using CRMData.ViewModels;
@@ -26,6 +27,7 @@ namespace CRMData.Data
         public DbSet<ApplicationLoginAudit> ApplicationLoginAudits { get; set; }
         public DbSet<ApplicationPasswordLog> ApplicationPasswordLogs { get; set; }
         public DbSet<ApplicationIP> ApplicationIPs { get; set; }
+        public DbSet<ApplicationUserNotification> ApplicationUserNotifications { get; set; }
 
         #endregion Identity
 
@@ -34,6 +36,15 @@ namespace CRMData.Data
         public virtual DbSet<RegulationDetail> RegulationDetails { get; set; }
         public virtual DbSet<RegulationSection> RegulationSections { get; set; }
         public virtual DbSet<RegulationSource> RegulationSources { get; set; }
+        public virtual DbSet<RegulationType> RegulationTypes { get; set; }
+        public virtual DbSet<LinkedUserRegulationSource> LinkedUserRegulationSources { get; set; }
+        public virtual DbSet<LinkUserRegTypeSubscription> LinkUserRegTypeSubscriptions { get; set; }
+        #endregion
+
+        #region Config
+        public virtual DbSet<AppSetting> AppSettings { get; set; }
+        public virtual DbSet<OrganizationDomain> OrganizationDomains { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         #endregion
 
         #region ProcedureView

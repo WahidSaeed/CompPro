@@ -6,6 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using CRMData.Data;
 
 namespace CRMData.Configurations.Extensions
 {
@@ -13,11 +17,13 @@ namespace CRMData.Configurations.Extensions
     {
         private readonly IHttpContextAccessor _httpContext;
         private readonly SessionKeys _sessionKeys;
+        private readonly ApplicationDbContext _context;
 
-        public Utility(IHttpContextAccessor httpContext) 
+        public Utility(IHttpContextAccessor httpContext, ApplicationDbContext context) 
         {
             _httpContext = httpContext;
             _sessionKeys = new SessionKeys();
+            _context = context;
         }
 
         public Guid GetLoggedUserId() 
@@ -72,6 +78,70 @@ namespace CRMData.Configurations.Extensions
             }
 
             return selectedMenuItems;
+        }
+
+        public bool IsDomain(string domain) 
+        {
+            var isDomained = _context.OrganizationDomains.Any(x => x.Domain.ToLower().Equals(domain.ToLower()));
+            return isDomained;
+        }
+
+        public bool IsCountry(string countryCode) 
+        { 
+            string countryCodeL = countryCode.ToLower();
+            bool isCountry = _context.Countries.Any(x => x.CountryId.Equals(countryCodeL));
+            return isCountry;
+        }
+
+        public string GetAppSetting(string key)
+        {
+            var appSetting = _context.AppSettings.Where(x => x.Key.ToLower().Equals(key.ToLower())).FirstOrDefault();
+            return appSetting.Value;
+        }
+
+
+        public async Task<T> PostRequestAsync<T>(string requestURI, dynamic content = null)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.PostAsync(requestURI, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    var results = await response.Content.ReadAsStringAsync();
+                    var _response = JsonConvert.DeserializeObject<T>(results);
+                    return _response;
+                }
+                return default(T);
+            }
+        }
+
+        public async Task<T> GetRequestAsync<T>(string requestURI)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(requestURI);
+                if (response.IsSuccessStatusCode)
+                {
+                    var results = await response.Content.ReadAsStringAsync();
+                    var _response = JsonConvert.DeserializeObject<T>(results);
+                    return _response;
+                }
+                return default(T);
+            }
+        }
+
+        public async Task<string> GetRequestAsync(string requestURI)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(requestURI);
+                if (response.IsSuccessStatusCode)
+                {
+                    var results = await response.Content.ReadAsStringAsync();
+                    return results;
+                }
+                return null;
+            }
         }
     }
 }

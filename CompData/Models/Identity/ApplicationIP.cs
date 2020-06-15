@@ -1,4 +1,4 @@
-﻿using CRMData.Generics;
+﻿using CRMData.Configurations.Constants.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -2,6 +2,24 @@
 @model List<GetAllRegulationGroupBySourceViewModel>
 @{
     ViewData["Title"] = "Home Page";
+
+    var sources = ViewBag.Sources as List<CompData.Models.Library.RegulationSource>;
+    var updatedRegulation = ViewBag.UpdatedRegulation as List<CompData.Models.Library.Regulation>;
+    var subscribedRegType = ViewBag.SubscribedRegType as List<int>;
+}
+
+@section Styles {
+
+    <link href="~/assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .subs {
+            color: #fff;
+            background: #32c5d2;
+            border-color: #32c5d2;
+        }
+    </style>
+
 }
 
 <!-- BEGIN PAGE HEAD-->
@@ -11,23 +29,23 @@
         <div class="page-title">
 
             <ul class="page-breadcrumb breadcrumb">
-                <li>
-                    <h3>
-                        <a><b>Saudi Arabian Monetary Authority</b></a>
-                        <small>|</small>
-                    </h3>
-                </li>
-                <li>
-                    <h3>
-                        <a>Capital Market Authority</a>
-                        <small>|</small>
-                    </h3>
-                </li>
-                <li>
-                    <h3>
-                        <a>Ministry of Commerce</a>
-                    </h3>
-                </li>
+                @foreach (var source in sources)
+                {
+                    var routeData = new Dictionary<string, string> { { "sourceId", source.SourceId.ToString() } };
+                    <li>
+                        <h3>
+                            @if (source.SourceId.Equals(ViewBag.SourceSelected))
+                            {
+                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData"><b>@source.ShortName</b></a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData">@source.ShortName</a>
+                            }
+                            <small>|</small>
+                        </h3>
+                    </li>
+                }
             </ul>
         </div>
         <!-- END PAGE TITLE -->
@@ -49,27 +67,36 @@
                                     <div class="portlet-title">
                                         <div class="caption">
                                             <i class="icon-edit font-dark"></i>
-                                            <span class="caption-subject font-dark bold uppercase">@sourceItem.SourceTitle</span>
+                                            <span class="caption-subject font-dark bold uppercase">@sourceItem.TypeTitle</span>
                                         </div>
                                         <div class="actions">
                                             <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
                                                 <i class="fa fa-plus-circle"></i>
                                             </a>
-                                            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                                <i class="fa fa-rss"></i>
-                                            </a>
+                                            @{
+                                                var subs = subscribedRegType.Contains(sourceItem.TypeId) ? "btn btn-info mt-ladda-btn ladda-button btn-circle" : "btn btn-default mt-ladda-btn ladda-button btn-circle";
+                                            }
+                                            @*<a class="@subs" data-type="@sourceItem.TypeId" data-source="@ViewBag.DefaultSourceId" href="javascript:;">
+                                                    <i class="fa fa-rss"></i>
+                                                </a>*@
+                                            <button type="button" class="@subs" data-style="slide-down" data-spinner-color="#333" data-type="@sourceItem.TypeId" data-source="@ViewBag.DefaultSourceId">
+                                                <span class="ladda-label">
+                                                    <i class="fa fa-rss"></i>
+                                                </span>
+                                                <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="portlet-body">
                                         <ul>
-                                            @foreach (var Regulation in sourceItem.RegulationsList)
+                                            @foreach (var Regulation in sourceItem.RegulationsList.OrderByDescending(x => x.Views))
                                             {
                                                 <li>
                                                     <a href="Library/Regulation/@Regulation.RegulationId">@Regulation.RegulationTitle</a>
                                                 </li>
                                             }
                                         </ul>
-                                        <small><a href="Library/Source/@sourceItem.SourceId">See all @sourceItem.TotalRegulation documents</a></small>
+                                        <small><a href="Library/Type/@sourceItem.TypeId">See all @sourceItem.TotalRegulation documents</a></small>
                                     </div>
                                 </div>
                             </div>
@@ -83,44 +110,15 @@
                                     <i class="icon-edit font-dark"></i>
                                     <span class="caption-subject font-dark bold uppercase">Recently Updated</span>
                                 </div>
-                                <div class="actions">
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                        <i class="fa fa-rss"></i>
-                                    </a>
-                                </div>
                             </div>
                             <div class="portlet-body">
                                 <ul>
-                                    <li>
-                                        Rules on Management of Problem Loans
-                                    </li>
-                                    <li>
-                                        Account Opening Rules, 5th
-                                    </li>
-                                    <li>
-                                        Requirements for Appointments to Senior Positions ...
-                                    </li>
-                                    <li>
-                                        E-Banking Rules
-                                    </li>
-                                    <li>
-                                        Whistle Blowing Policy for Financial Institutions
-                                    </li>
-                                    <li>
-                                        Code of Conduct and Work Ethics in Financial Insti...
-                                    </li>
-                                    <li>
-                                        Financial Entities Ethical Red Teaming Framework
-                                    </li>
-                                    <li>
-                                        Regulation of Agent Banking in the Kingdom of Saud...
-                                    </li>
-                                    <li>
-                                        SAMA Banking Licensing Guidelines and Minimum Crit...
-                                    </li>
-                                    <li>
-                                        Excluding expatriate labor accounts from freezing
-                                    </li>
+                                    @foreach (var Regulation in updatedRegulation)
+                                    {
+                                        <li>
+                                            <a href="Library/Regulation/@Regulation.RegId">@Regulation.RegulationTitle</a>
+                                        </li>
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -133,3 +131,48 @@
     </div>
 </div>
 <!-- END PAGE CONTENT BODY -->
+
+@section Scripts {
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="../assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="../assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script type="text/javascript">
+        $('[data-type]').click(function () {
+            var btnObj = this;
+            var typeId = $(btnObj).attr('data-type');
+            var sourceId = $(btnObj).attr('data-source');
+            var l = Ladda.create(btnObj);
+            l.start();
+            $.post("/Library/Subscribe",
+                {
+                    typeId: typeId,
+                    sourceId: sourceId
+                },
+                function (response) {
+                    if (response.status === 200) {
+                        toastr.success(response.message);
+                        if ($(btnObj).css('btn-default') != null) {
+                            $(btnObj).removeClass('btn-default').addClass('btn-info');
+                        }
+                        else {
+                            $(btnObj).removeClass('btn-info').addClass('btn-default');
+                        }
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }, "json")
+                .always(function () { l.stop(); });
+        });
+    </script>
+}

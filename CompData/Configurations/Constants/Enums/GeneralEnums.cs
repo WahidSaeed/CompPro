@@ -1,5 +1,11 @@
 ﻿namespace CRMData.Configurations.Constants.Enums
 {
+    public enum IPType
+    {
+        WhiteList = 1,
+        BlackList = 2
+    }
+
     public enum AuditType
     {
         LogIn,
@@ -10,12 +16,10 @@
 
     public enum ResultStatus
     {
-        Success = 100,
-        Error = 200,
-        NotFound = 300,
-        Warning = 400,
-        InProcess = 500,
-        AlreadyExist = 600
+        Success = 200,
+        Error = 500,
+        NotFound = 400,
+        Warning = 300
     };
     public enum CurrentStatus
     {

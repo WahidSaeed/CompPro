@@ -33,6 +33,12 @@ using CompData.Models.Library;
 using CompData.Dao.Regulation.Impl;
 using CompData.Services.Regulation;
 using CompData.Services.Regulation.Impl;
+using CompWeb.Configurations.Email;
+using CompWeb.Configurations.Email.Impl;
+using CRMData.Services.SystemAudit;
+using CRMData.Services.SystemAudit.Impl;
+using CRMData.Dao.SystemAudit;
+using CRMData.Dao.SystemAudit.Impl;
 
 namespace CRMWeb
 {
@@ -108,7 +114,10 @@ namespace CRMWeb
             #endregion
 
             #region Utility
-            services.AddSingleton<Utility>();
+            services.AddTransient<Utility>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ISystemAuditService, SystemAuditService>();
+            services.AddTransient<ISystemAuditDao, SystemAuditDao>();
             #endregion
 
             services.AddControllersWithViews(config =>
@@ -117,6 +126,9 @@ namespace CRMWeb
                 //config.Filters.Add(new AuthorizeFilter(policy));
                 //config.Filters.Add(typeof(ActionFilter));
             });
+            //  .AddXmlSerializerFormatters()
+            //  .AddRazorRuntimeCompilation();
+
             services.AddMvc()
                 .AddXmlSerializerFormatters()
                 .AddRazorRuntimeCompilation();
@@ -143,13 +155,27 @@ namespace CRMWeb
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();
+            app.UseCors();
             //app.UseUserRights();
+
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //      name: "areas",
+            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+            //    );
+            //
+            //    routes.MapRoute(
+            //      name: "default",
+            //      template: "{controller=Home}/{action=Index}/{id?}"
+            //    );
+            //});
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "area",
-                    pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",

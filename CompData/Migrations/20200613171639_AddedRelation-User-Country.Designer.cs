@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200613171639_AddedRelation-User-Country")]
+    partial class AddedRelationUserCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,55 +514,6 @@ namespace CompData.Migrations
                     b.ToTable("OrganizationDomain","Config");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RegSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RegSourceId");
-
-                    b.HasIndex("RegTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LinkUserRegTypeSubscription","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("SourceId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SourceId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LinkedUserRegulationSource","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.Regulation", b =>
                 {
                     b.Property<int>("RegId")
@@ -568,11 +521,25 @@ namespace CompData.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<Guid?>("AddBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddIP")
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<DateTime?>("AddOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("CreatedBy")
+                    b.Property<Guid?>("EditBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EditIP")
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<DateTime?>("EditOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("EffectiveDate")
                         .HasColumnType("datetime2");
@@ -595,24 +562,15 @@ namespace CompData.Migrations
                     b.Property<int>("SourceID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("Views")
-                        .HasColumnType("bigint");
-
                     b.HasKey("RegId");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("AddBy");
+
+                    b.HasIndex("EditBy");
 
                     b.HasIndex("RegTypeID");
 
                     b.HasIndex("SourceID");
-
-                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Regulation","Library");
                 });
@@ -737,6 +695,9 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.RegulationGroupBySourceProcedure", b =>
                 {
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RegId")
                         .HasColumnType("int");
 
@@ -746,14 +707,8 @@ namespace CompData.Migrations
                     b.Property<int>("Regcount")
                         .HasColumnType("int");
 
-                    b.Property<int>("TypeId")
+                    b.Property<int>("SourceId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Views")
-                        .HasColumnType("bigint");
 
                     b.ToTable("RegulationGroupBySourceProcedure","ProcedureView");
                 });
@@ -891,47 +846,15 @@ namespace CompData.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
-                {
-                    b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("RegSourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
-                        .WithMany()
-                        .HasForeignKey("RegTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
-                {
-                    b.HasOne("CompData.Models.Library.RegulationSource", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CompData.Models.Library.Regulation", b =>
                 {
                     b.HasOne("CRMData.Models.Identity.ApplicationUser", "AddApplicationUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("AddBy");
+
+                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("EditBy");
 
                     b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
                         .WithMany()
@@ -942,10 +865,6 @@ namespace CompData.Migrations
                         .HasForeignKey("SourceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("CompData.Models.Library.RegulationDetail", b =>

@@ -1,7 +1,6 @@
 ﻿using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Extensions;
 using CRMData.Data;
-using CRMData.Generics;
 using CRMData.Models.Identity;
 using Microsoft.AspNetCore.Http;
 using System;

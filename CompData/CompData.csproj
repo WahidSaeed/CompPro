@@ -118,6 +118,18 @@
     <Compile Remove="Migrations\20200612202901_Added-LocationColumns-ApplicationUser1.Designer.cs" />
     <Compile Remove="Migrations\20200612203148_Added-LocationColumns-ApplicationUser1.cs" />
     <Compile Remove="Migrations\20200612203148_Added-LocationColumns-ApplicationUser1.Designer.cs" />
+    <Compile Remove="Migrations\20200613114338_Added-Country-RegType-AppSetting.cs" />
+    <Compile Remove="Migrations\20200613114338_Added-Country-RegType-AppSetting.Designer.cs" />
+    <Compile Remove="Migrations\20200613114543_Added-Country-RegType-AppSetting-OrgPostfix.cs" />
+    <Compile Remove="Migrations\20200613114543_Added-Country-RegType-AppSetting-OrgPostfix.Designer.cs" />
+    <Compile Remove="Migrations\20200613114721_Added-Country-RegType-AppSetting-OrgDomain.cs" />
+    <Compile Remove="Migrations\20200613114721_Added-Country-RegType-AppSetting-OrgDomain.Designer.cs" />
+    <Compile Remove="Migrations\20200613173106_Added-LinkedUserRegSource.cs" />
+    <Compile Remove="Migrations\20200613173106_Added-LinkedUserRegSource.Designer.cs" />
+    <Compile Remove="Migrations\20200614173923_AddedColumn-SourceId-LinkUserRegTypSubscription.cs" />
+    <Compile Remove="Migrations\20200614173923_AddedColumn-SourceId-LinkUserRegTypSubscription.Designer.cs" />
+    <Compile Remove="Migrations\20200614174959_AddedColumn-SourceId-LinkUserRegTypSubscription-Contraint.cs" />
+    <Compile Remove="Migrations\20200614174959_AddedColumn-SourceId-LinkUserRegTypSubscription-Contraint.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
