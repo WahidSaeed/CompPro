@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CompData.Services.Regulation.Impl
 {
@@ -102,6 +103,11 @@ namespace CompData.Services.Regulation.Impl
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds)
         {
             return this.regulationDao.LinkUserByRegulationSource(userID, SourceIds);
+        }
+
+        public async Task<Result> SaveRegulation(SaveRegulationViewModel viewModel)
+        {
+            return await this.regulationDao.SaveRegulation(viewModel);
         }
 
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)

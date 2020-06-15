@@ -5,6 +5,7 @@ using CRMData.Configurations.Generics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CompData.Dao.Regulation
 {
@@ -19,5 +20,6 @@ namespace CompData.Dao.Regulation
         public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId);
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId);
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds);
+        public Task<Result> SaveRegulation(SaveRegulationViewModel viewModel);
     }
 }

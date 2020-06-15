@@ -4,6 +4,9 @@ using CompData.ViewModels.Procedure.Library;
 using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Generics;
 using CRMData.Data;
+using CRMData.Models.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
@@ -11,15 +14,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CompData.Dao.Regulation.Impl
 {
     public class RegulationDao : IRegulationDao
     {
         private readonly ApplicationDbContext dbContext;
-        public RegulationDao(ApplicationDbContext dbContext) 
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IHttpContextAccessor httpContext;
+
+        public RegulationDao(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext) 
         {
             this.dbContext = dbContext;
+            this.userManager = userManager;
+            this.httpContext = httpContext;
         }
 
         public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId)
@@ -63,6 +72,7 @@ namespace CompData.Dao.Regulation.Impl
             List<int> regulationTypes = this.dbContext.LinkUserRegTypeSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegSourceId.Equals(sourceId)).Select(x => x.RegTypeId).ToList();
             return regulationTypes;
         }
+
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
         {
             try
@@ -140,6 +150,47 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
-        
+        public async Task<Result> SaveRegulation(SaveRegulationViewModel viewModel) 
+        {
+            try
+            {
+                string message = string.Empty;
+                var httpUser = httpContext.HttpContext.User;
+                var user = await userManager.GetUserAsync(httpUser);
+                Models.Library.Regulation regulation = new Models.Library.Regulation
+                {
+                    RegulationTitle = viewModel.Title,
+                    ReferenceNumber = viewModel.ReferenceNumber,
+                    IssueDate = viewModel.IssueDate,
+                    EffectiveDate = viewModel.EffectiveDate,
+                    SourceID = viewModel.SourceID,
+                    RegTypeID = viewModel.TypeID,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = user.Id
+                };
+                this.dbContext.Entry<Models.Library.Regulation>(regulation).State = EntityState.Added;
+                int result = this.dbContext.SaveChanges();
+                if (result == 0) throw new Exception("Something went wrong please try again");
+                message = "New Regulation has been saved.";
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CompData.Services.Regulation;
+using CompData.ViewModels.Library;
 using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Generics;
 using CRMData.Models.Identity;
@@ -58,6 +59,13 @@ namespace CompWeb.Controllers
         {
             var user = await userManager.GetUserAsync(User);
             var result = this.regulationService.SubscribeRegulationTypeByUser(user.Id, typeId, sourceId);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveRegulation(SaveRegulationViewModel viewModel)
+        {
+            var result = await this.regulationService.SaveRegulation(viewModel);
             return Json(result);
         }
 

@@ -3,9 +3,15 @@ using CompData.Models.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Models.Identity;
 using CRMData.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CRMData.Data
 {
@@ -14,8 +20,7 @@ namespace CRMData.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
-        }
+        { }
 
         #region Identity
 
@@ -139,6 +144,42 @@ namespace CRMData.Data
             builder.Entity<SelectedRegulationProcedure>().HasNoKey();
             builder.Entity<RegulationFilteredBySource>().HasNoKey();
             #endregion
+        }
+
+        public override int SaveChanges()
+        {
+            //var changedEntities = ChangeTracker
+            //.Entries()
+            //.Where(_ => _.State == EntityState.Added ||
+            //            _.State == EntityState.Modified);
+            //
+            //var errors = new List<ValidationResult>(); // all errors are here
+            //foreach (var e in changedEntities)
+            //{
+            //    var vc = new ValidationContext(e.Entity, null, null);
+            //    Validator.TryValidateObject(
+            //        e.Entity, vc, errors, validateAllProperties: true);
+            //}
+
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            //var changedEntities = ChangeTracker
+            //.Entries()
+            //.Where(_ => _.State == EntityState.Added ||
+            //            _.State == EntityState.Modified);
+            //
+            //var errors = new List<ValidationResult>(); // all errors are here
+            //foreach (var e in changedEntities)
+            //{
+            //    var vc = new ValidationContext(e.Entity, null, null);
+            //    Validator.TryValidateObject(
+            //        e.Entity, vc, errors, validateAllProperties: true);
+            //}
+
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }
