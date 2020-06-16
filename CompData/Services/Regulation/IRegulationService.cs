@@ -13,7 +13,7 @@ namespace CompData.Services.Regulation
     {
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId);
         public SelectedRegulationViewModel GetSelectedRegulation(int regulationId);
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId);
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId = null);
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode);
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
         public List<Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId);

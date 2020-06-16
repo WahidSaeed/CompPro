@@ -20,9 +20,9 @@ namespace CompData.Services.Regulation.Impl
             this.regulationDao = regulationDao;
         }
 
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId)
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId = null)
         {
-            return regulationDao.GetAllRegulationFilteredBySourceID(sourceId);
+            return regulationDao.GetAllRegulationFilteredBySourceID(sourceId, typeId);
         }
 
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId)

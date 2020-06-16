@@ -2,7 +2,7 @@
 @model List<RegulationFilteredBySource>
 @{
     var data = Model.FirstOrDefault();
-    ViewData["Title"] = "Source - " + data.FullName;
+    ViewData["Title"] = "Type - " + data.FullName;
 }
 
 @section Styles {
@@ -13,11 +13,13 @@
         .table-scrollable {
             border: none !important;
         }
+
         .regulation-title {
             float: left;
             background: #fff;
             padding-right: 10px;
         }
+
         .ln {
             border-bottom: 1px dotted;
             margin-top: 10px;
@@ -36,11 +38,15 @@
                     <i class="fa fa-circle"></i>
                 </li>
                 <li>
-                    <span>@data.FullName</span>
+                    <a href="/Library/Source/@data.SourceId">@data.FullName</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <span>@data.FullName - @data.TypeName</span>
                 </li>
             </ul>
             <h3>
-                @data.FullName
+                @data.TypeName
             </h3>
         </div>
         <!-- END PAGE TITLE -->

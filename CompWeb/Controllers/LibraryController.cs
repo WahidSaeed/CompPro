@@ -27,6 +27,13 @@ namespace CompWeb.Controllers
             var model = this.regulationService.GetAllRegulationFilteredBySourceID(id);
             return View(model);
         }
+        
+        [Route("/Library/Type/{sourceId}-{typeId}")]
+        public IActionResult Type(int sourceId, int typeId)
+        {
+            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceId, typeId);
+            return View(model);
+        }
 
         public IActionResult Regulation(int id)
         {

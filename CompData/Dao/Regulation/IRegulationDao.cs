@@ -13,7 +13,7 @@ namespace CompData.Dao.Regulation
     {
         public List<RegulationGroupBySourceProcedure> GetAllRegulationGroupBySource(int sourceId);
         public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId);
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId);
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId);
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode);
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
         public List<CompData.Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId);

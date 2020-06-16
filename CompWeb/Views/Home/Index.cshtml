@@ -14,6 +14,11 @@
     <link href="~/assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .validation {
+            outline: 1px solid red !important;
+        }
+    </style>
 }
 
 <!-- BEGIN PAGE HEAD-->
@@ -90,7 +95,7 @@
                                                 </li>
                                             }
                                         </ul>
-                                        <small><a href="Library/Type/@sourceItem.TypeId">See all @sourceItem.TotalRegulation documents</a></small>
+                                        <small><a href="Library/Type/@ViewBag.DefaultSourceId-@sourceItem.TypeId">See all @sourceItem.TotalRegulation documents</a></small>
                                     </div>
                                 </div>
                             </div>
@@ -180,6 +185,23 @@
         </div>
     </div>
 </div>
+<div id="confirmModal" class="modal fade modal-scroll in" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="width: 400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">New Regulation Has Been Saved</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you wish to continue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
+                <button type="button" class="btn green">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- END PAGE CONTENT BODY -->
 
 @section Scripts {
@@ -203,27 +225,36 @@
         });
 
         $('[data-save-regulation]').click(function () {
-            var referenceNumber = $('#input-reference').val();
-            var title = $('#input-title').val();
-            var issueDate = $('#input-issueDate').val();
+            
+            var referenceNumber = $('#input-reference');
+            var title = $('#input-title');
+            var issueDate = $('#input-issueDate');
             var isFinal = $('#input-isFinal').is(':checked');
-            var effectiveDate = $('#input-effectiveDate').val();
-            var sourceId = $('#input-source').val();
-            var typeId = $('#input-type').val();
+            var effectiveDate = $('#input-effectiveDate');
+            var sourceId = $('#input-source');
+            var typeId = $('#input-type');
+
+            if (!(referenceNumber.val() && title.val() && effectiveDate.val() && issueDate.val()))
+            {
+                toastr.error('Fill all fields to continue.');
+                return;
+            }
+
             var objSave = {
-                referenceNumber,
-                title,
-                issueDate,
-                isFinal,
-                effectiveDate,
-                sourceId,
-                typeId
+                referenceNumber: referenceNumber.val(),
+                title: title.val(),
+                issueDate: issueDate.val(),
+                isFinal: isFinal,
+                effectiveDate: effectiveDate.val(),
+                sourceId: sourceId.val(),
+                typeId: typeId.val()
             };
             $.post("/Library/SaveRegulation", objSave,
                 function (response) {
                     if (response.status === 200) {
                         $('#modalSaveRegulation').modal('hide');
                         toastr.success(response.message);
+                        $('#confirmModal').modal('show');
                     }
                     else {
                         toastr.error(response.message);

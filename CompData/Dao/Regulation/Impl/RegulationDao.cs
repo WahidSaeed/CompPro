@@ -31,9 +31,17 @@ namespace CompData.Dao.Regulation.Impl
             this.httpContext = httpContext;
         }
 
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId)
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId)
         {
-            List<RegulationFilteredBySource> sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC Library.GetAllRegulationFilteredBySourceID {sourceId}").ToList();
+            List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
+            if (typeId == null)
+            {
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] {sourceId}").ToList(); 
+            }
+            else
+            {
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredByTypeID] {sourceId}, {typeId}").ToList();
+            }
             return sourceProcedure;
         }
 

@@ -10,7 +10,10 @@ namespace CompData.ViewModels.Procedure.Library
     {
         public int RegId { get; set; }
         public string RegulationTitle { get; set; }
+        public DateTime IssueDate { get; set; }
         public int SourceId { get; set; }
         public string FullName { get; set; }
+        public int? TypeId { get; set; }
+        public string TypeName { get; set; }
     }
 }
