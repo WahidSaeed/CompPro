@@ -130,6 +130,12 @@
     <Compile Remove="Migrations\20200614173923_AddedColumn-SourceId-LinkUserRegTypSubscription.Designer.cs" />
     <Compile Remove="Migrations\20200614174959_AddedColumn-SourceId-LinkUserRegTypSubscription-Contraint.cs" />
     <Compile Remove="Migrations\20200614174959_AddedColumn-SourceId-LinkUserRegTypSubscription-Contraint.Designer.cs" />
+    <Compile Remove="Migrations\20200623202552_Added-TagMap.cs" />
+    <Compile Remove="Migrations\20200623202552_Added-TagMap.Designer.cs" />
+    <Compile Remove="Migrations\20200623202834_Added-TagMap.cs" />
+    <Compile Remove="Migrations\20200623202834_Added-TagMap.Designer.cs" />
+    <Compile Remove="Migrations\20200626163150_Add-LinkedUserRegulationSubscription.cs" />
+    <Compile Remove="Migrations\20200626163150_Add-LinkedUserRegulationSubscription.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

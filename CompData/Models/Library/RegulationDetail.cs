@@ -14,10 +14,13 @@ namespace CompData.Models.Library
         public string RegDescription { get; set; }
         public int RegulationId { get; set; }
         public int SectionId { get; set; }
+        public int Sequence { get; set; }
 
         [ForeignKey("SectionId")]
         public virtual RegulationSection RegulationSection { get; set; }
         [ForeignKey("RegulationId")]
         public virtual Regulation Regulation { get; set; }
+
+        public virtual List<TagMap> TagMaps { get; set; }
     }
 }

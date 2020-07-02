@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200623203926_Added-TagMap")]
+    partial class AddedTagMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -539,28 +541,6 @@ namespace CompData.Migrations
                     b.ToTable("LinkUserRegTypeSubscription","Library");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegulationSubscription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RegId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RegId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LinkUserRegulationSubscription","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
                 {
                     b.Property<int>("Id")
@@ -985,21 +965,6 @@ namespace CompData.Migrations
                     b.HasOne("CompData.Models.Library.RegulationType", "RegulationType")
                         .WithMany()
                         .HasForeignKey("RegTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkUserRegulationSubscription", b =>
-                {
-                    b.HasOne("CompData.Models.Library.Regulation", "Regulation")
-                        .WithMany()
-                        .HasForeignKey("RegId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

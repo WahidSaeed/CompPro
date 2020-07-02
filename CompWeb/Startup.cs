@@ -39,6 +39,8 @@ using CRMData.Services.SystemAudit;
 using CRMData.Services.SystemAudit.Impl;
 using CRMData.Dao.SystemAudit;
 using CRMData.Dao.SystemAudit.Impl;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace CRMWeb
 {
@@ -54,8 +56,12 @@ namespace CRMWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
+            {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging(true);
+                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole() ));
+            });
 
             services.Configure<IdentityDefaultOptions>(Configuration.GetSection("IdentityDefaultOptions"));
             var identityDefaultOptions = Configuration.Get<IdentityDefaultOptions>();

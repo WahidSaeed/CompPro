@@ -1,0 +1,508 @@
+﻿@using CompData.ViewModels.Procedure.Library
+@model List<SelectedRegulationProcedure>
+@{
+    var defaultModel = Model.FirstOrDefault();
+    ViewData["Title"] = "Regulation - " + defaultModel.RegTitle + " (Edit Mode)";
+}
+
+@section Styles {
+    <link href="~/assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/css/medium.css" type="text/css" media="screen" charset="utf-8">
+    <link href="~/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        h2, h3 {
+            font-weight: bold;
+        }
+
+        .tag-highlight {
+            font-weight: 400;
+            background: #faebd7;
+            padding: 2px;
+            border: 1px solid #ffcb85;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+    </style>
+}
+
+<!-- BEGIN PAGE HEAD-->
+<div class="page-head">
+    <div class="container">
+        <!-- BEGIN PAGE TITLE -->
+        <div class="page-title">
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <a href="/">Home</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <a href="../Source/@defaultModel.SourceId">@defaultModel.FullName</a>
+                    <i class="fa fa-circle"></i>
+                </li>
+                <li>
+                    <span>@defaultModel.RegTitle</span>
+                </li>
+            </ul>
+            <h1>
+                @ViewData["Title"]
+            </h1>
+        </div>
+        <!-- END PAGE TITLE -->
+    </div>
+</div>
+<!-- END PAGE HEAD-->
+<!-- BEGIN PAGE CONTENT BODY -->
+<div style="display: none">
+    <textarea id="nestable_list_1_output" class="form-control col-md-12 margin-bottom-10"></textarea>
+</div>
+<div class="page-content">
+    <div class="container">
+        <!-- BEGIN PAGE CONTENT INNER -->
+        <div class="page-content-inner">
+            <div class="search-page search-content-2">
+                <div class="row">
+                    <div class="col-md-8 portlet light " style="min-height: 400px">
+                        <div class="portlet-title">
+                            <div class="actions">
+                                <div class="btn-group btn-group-devided">
+                                    <button class="btn btn-transparent grey-salsa btn-circle btn-sm active" id="btn-new-section">Add New Section Below</button>
+                                </div>
+                                <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                    <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+                                        <input type="radio" name="options" class="toggle" id="btn-publish">Publish
+                                    </label>
+                                </div>
+                                <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                    <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+                                        <input type="radio" name="options" class="toggle" id="btn-draft">Draft
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dd" id="nestable_list_1">
+                            <ol class="dd-list">
+                                @foreach (var item in Model.Where(x => x.ParentId == null && x.SectionId != null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
+                                {
+                                    <li class="dd-item dd3-item" data-item-section="@item.SectionId">
+                                        <div class="dd-handle dd3-handle"></div>
+                                        <div class="dd3-content">
+                                            <div class="editable" style="outline: none">
+                                                <h2>@Html.Raw(item.SectionTitle)</h2>
+                                                @{
+                                                    var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
+                                                }
+                                                @if (descs.Count() > 0)
+                                                {
+                                                    foreach (var desc in descs)
+                                                    {
+                                                        <p data-item-desc="@desc.RegDescId">@Html.Raw(desc.RegDescription)</p>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        @{
+                                            var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
+                                        }
+                                        @if (filterData.Count() > 0)
+                                        {
+                                            <ol class="dd-list">
+                                                @foreach (var itemChild in filterData)
+                                                {
+                                                    <li class="dd-item dd3-item" data-item-section="@itemChild.SectionId">
+                                                        <div class="dd-handle dd3-handle"></div>
+                                                        <div class="dd3-content">
+                                                            <div class="editable" style="outline: none">
+                                                                <h3>@Html.Raw(itemChild.SectionTitle)</h3>
+                                                                @{
+                                                                    var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
+                                                                }
+                                                                @if (childDescs.Count() > 0)
+                                                                {
+                                                                    foreach (var desc in childDescs)
+                                                                    {
+                                                                        <p data-item-desc="@desc.RegDescId">@Html.Raw(desc.RegDescription)</p>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ol>
+                                        }
+
+                                    </li>
+                                }
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Table of Content</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div id="tree_1" class="tree-demo jstree jstree-1 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j1_3" aria-busy="false" style="overflow: hidden;">
+                                    <ul class="jstree-container-ul jstree-children" role="group">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Filter by Tags</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <button class="btn default">anti-money laundering</button>
+                                <button class="btn default">account opening</button>
+                                <button class="btn default">advertising</button>
+                                <button class="btn default">agent banking</button>
+                                <button class="btn default">agreement</button>
+                                <button class="btn default">risk management</button>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-edit font-dark"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Related Regulations</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <ul>
+                                    <li style="list-style: disc;">Rules on Management of Problem Loans</li>
+                                    <li style="list-style: disc;">Account Opening Rules, 5th</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END PAGE CONTENT INNER -->
+    </div>
+</div>
+<!-- END PAGE CONTENT BODY -->
+
+<div id="tagModal" class="modal fade modal-scroll in" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="width: 400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Link Tags</h4>
+            </div>
+            <div class="modal-body">
+                <p id="tag-statement"></p>
+                <input type="text" id="tag-mapper" class="form-control input-large" value="" data-role="tagsinput">
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
+                <button type="button" data-link-tag-group data-reg data-sec data-desc class="btn green">Link Tags</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="linkRegModal" class="modal fade modal-scroll in" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="width: 400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Link Regulation</h4>
+            </div>
+            <div class="modal-body">
+                <p id="link-statement"></p>
+                <input type="hidden" id="regId" />
+                <div class="form-group">
+                    <select id="seletedregulation" class="form-control select2-multiple select2-hidden-accessible" multiple="" name="regId" tabindex="-1" aria-hidden="true">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
+                <button type="button" data-link-regulation class="btn green">Link Regulation</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-tree.min.js" type="text/javascript"></script>
+    <script src="~/js/medium.js" type="text/javascript"></script>
+    <script src="~/js/customHTML.min.js" type="text/javascript"></script>
+    <script src="~/js/medium-button.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-nestable.min.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    @*<script src="~/assets/pages/scripts/components-bootstrap-tagsinput.min.js" type="text/javascript"></script>*@
+
+    <script>
+
+        window.onload = function () {
+            initMediumEditor();
+            initSelect2DD();
+        };
+
+        var regId = @ViewBag.RegId;
+        var selectedStatement;
+
+        function initSelect2DD() {
+            $('#seletedregulation').select2({
+                minimumInputLength: 10,
+                placeholder: 'Type the desired regulation',
+                width: 'resolve',
+                maximumSelectionLength: 1,
+                ajax: {
+                    url: '/Library/GetAllRegulations/',
+                    processResults: function (response) {
+                        return {
+                            results: response,
+                            pagination: {
+                                more: true
+                            }
+                        };
+                    }
+                }
+            });
+        }
+
+        function initMediumEditor() {
+            var myEditor = new MediumEditor(".editable", {
+                buttons: [
+                    "bold"
+                    , "italic"
+                    , "underline"
+                    , "strikethrough"
+                    , "superscript"
+                    , "image"
+                    , "orderedlist"
+                    , "unorderedlist"
+                    , "header1"
+                    , "header2"
+                    , "quote"
+                    , "outdent"
+                    , "indent"
+                    , "warning"
+                    , "tags"
+                    , "linkReg"
+                ]
+                , buttonLabels: 'fontawesome'
+                , extensions: {
+                    'tags': new MediumButton({
+                        label: '<i class="fa fa-tags" title="Add Tags"></i>',
+                        action: function (html, mark, parent, sel) {
+                            console.log(html, mark, parent, sel);
+                            var secId, descId;
+                            var tagGroupId = $(parent).attr('data-item-tag');
+                            tagGroupId = tagGroupId ?? new Date().getTime();
+                            descId = $(parent).closest('[data-item-desc]').attr('data-item-desc');
+                            secId = $(parent).closest('[data-item-section]').attr('data-item-section');
+
+                            var tagSaveButton = $('[data-link-tag-group]');
+                            tagSaveButton.attr('data-reg', regId);
+                            tagSaveButton.attr('data-sec', secId);
+                            tagSaveButton.attr('data-desc', descId);
+                            tagSaveButton.attr('data-link-tag-group', tagGroupId);
+
+                            selectedStatement = '<span class="tag-highlight" data-item-tag="' + tagGroupId + '">' + html + '</span>';
+
+                            $('#tag-statement').html(html);
+
+                            getTags(tagGroupId);
+
+                            return '<span selected-medium >' + html + '</span>';
+                        }
+                    }),
+                    'linkReg': new MediumButton({
+                        label: '<i class="fa fa-link" title="Link Related Regulation"></i>',
+                        action: function (html, mark, parent) {
+
+                            $('#linkRegModal').modal('show');
+
+                            $('#link-statement').html(html);
+                            selectedStatement = html;
+
+                            return '<span selected-medium >' + html + '</span>';
+                        }
+                    }),
+                }
+            });
+        }
+
+        
+        $('#btn-new-section').click(function () {
+            var sectionList = $('.dd-list:nth(0)');
+            var sectionListItems = sectionList.find('.dd-item');
+            var itemCount = sectionListItems.length;
+            var newItem = '<li class="dd-item dd3-item"> \
+                                        </button > \
+                                        <div class="dd-handle dd3-handle"></div > \
+                                            <div class="dd3-content"> \
+                                                <div class="editable" style="outline: none"> \
+                                                </div> \
+                                            </div> \
+                                   </li>';
+            sectionList.append(newItem);
+            initMediumEditor();
+        });
+
+        function getDetailObject(child, pId)
+        {
+            if (!child) {
+                let detailObj = {};
+                detailObj.regId = regId;
+                detailObj.sections = [];
+                $('#nestable_list_1 > ol.dd-list > li.dd-item.dd3-item').each(function (a) {
+                    let secId = $(this).attr('data-item-section');
+                    let title = $(this).find('.editable > h2, .editable > h3').html();
+                    let seq = a;
+                    let parentId = pId ?? undefined;
+                    let descriptions = Array.from($(this).find('.editable:nth(0) > p').map(function (a, b) {
+                        return {
+                            descId: $(b).attr('data-item-desc'),
+                            description: $(b).html(),
+                            seq: a
+                        };
+                    }));
+                    let children = $(this).find('ol.dd-list > li.dd-item.dd3-item');
+                    detailObj.sections.push({ secId, title, descriptions, seq, parentId, children: getDetailObject(children, secId) });
+                });
+
+                return detailObj;
+            }
+            else {
+                var childSectionObj = [];
+                $(child).each(function (a) {
+                    let secId = $(this).attr('data-item-section');
+                    let title = $(this).find('.editable > h2, .editable > h3').html();
+                    let seq = a;
+                    let parentId = pId ?? undefined;
+                    let descriptions = Array.from($(this).find('.editable:nth(0) > p').map(function (a, b) {
+                        return {
+                            descId: $(b).attr('data-item-desc'),
+                            description: $(b).html(),
+                            seq: a
+                        };
+                    }));
+                    let children = $(this).find('ol.dd-list > li.dd-item.dd3-item');
+                    childSectionObj.push({ secId, title, descriptions, seq, parentId, children: getDetailObject(children, secId) });
+                });
+
+                return childSectionObj;
+            }
+        }
+
+        function publish()
+        {
+            var detailObj = getDetailObject();
+            $.post("/Library/SaveRegulationDetail",
+                detailObj,
+                function (response) {
+                    if (response.status === 200) {
+                        toastr.success(response.message);
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }, "json")
+                .always(function () { l.stop(); });
+        }
+
+
+        function getTags(tagGroupId) {
+            $.get("/Library/GetTagsGroup/" + tagGroupId,
+                function (response) {
+                    var tagMapper = $('#tag-mapper');
+                    tagMapper.tagsinput({
+                        itemValue: 'id',
+                        itemText: 'text',
+                    });
+                    var tags = response.data;
+                    for (var i = 0; i < tags.length; i++) {
+                        tagMapper.tagsinput("add", {
+                            id: tags[i],
+                            text: tags[i]
+                        })
+                    }
+                    $('#tagModal').modal('show');
+
+                }, "json")
+                .always(function () {
+
+                });
+        }
+
+        function setTags(tags, tagGroupId, regId, secId, descId) {
+            $.post("/Library/SetTagsGroup",
+                {
+                    tags,
+                    tagGroupId,
+                    regId,
+                    secId,
+                    descId
+                },
+                function (response) {
+                    console.log(response);
+
+                    $('#tagModal').modal('hide');
+
+                    $(selectedStatement).insertAfter($('[selected-medium]'));
+                    $('[selected-medium]').remove();
+
+                }, "json")
+                .always(function () {
+
+                });
+        }
+
+        $('[data-link-tag-group]').click(function () {
+            var tagGroupId = $(this).attr('data-link-tag-group');
+            var regId = $(this).attr('data-reg');
+            var secId = $(this).attr('data-sec');
+            var descId = $(this).attr('data-desc');
+            var tags = $('#tag-mapper').val();
+
+            setTags(tags.split(','), tagGroupId, regId, secId, descId);
+        });
+
+        $('[data-link-regulation]').click(function () {
+            var selectedRegulation = $('#seletedregulation').val();
+            if (selectedRegulation) {
+                selectedRegulation = selectedRegulation[0];
+                var linkHTML = '<a href="/Library/Regulation/' + selectedRegulation + '" data-item-regulation="' + selectedRegulation + '">' + selectedStatement +'</a>';
+                $(linkHTML).insertAfter($('[selected-medium]'));
+                $('[selected-medium]').remove();
+                $('#linkRegModal').modal('hide');
+            }
+        });
+
+
+    </script>
+
+}

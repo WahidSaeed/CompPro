@@ -1,13 +1,28 @@
-﻿@using CompData.ViewModels.Library
-@model SelectedRegulationViewModel
+﻿@using CompData.ViewModels.Procedure.Library
+@model List<SelectedRegulationProcedure>
 @{
-    ViewData["Title"] = "Regulation - " + Model.RegTitle;
+    var defaultModel = Model.FirstOrDefault();
+    ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
 }
 
 @section Styles {
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="~/assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS -->
+    <link href="~/assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        h2, h3 {
+            font-weight: bold;
+        }
+
+        .tag-highlight {
+            font-weight: 400;
+            background: #faebd7;
+            padding: 2px;
+            border: 1px solid #ffcb85;
+        }
+    </style>
 }
 
 <!-- BEGIN PAGE HEAD-->
@@ -21,23 +36,26 @@
                     <i class="fa fa-circle"></i>
                 </li>
                 <li>
-                    <a href="../Source/@Model.SourceId">@Model.SourceTitle</a>
+                    <a href="../Source/@defaultModel.SourceId">@defaultModel.FullName</a>
                     <i class="fa fa-circle"></i>
                 </li>
                 <li>
-                    <span>@Model.RegTitle</span>
+                    <span>@defaultModel.RegTitle</span>
                 </li>
             </ul>
-            <h3>
-                @Model.RegTitle
-            </h3>
+            <h1>
+                @defaultModel.RegTitle
+            </h1>
             <div class="actions">
-                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                    <i class="fa fa-plus-circle"></i>
-                </a>
-                <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                    <i class="fa fa-rss"></i>
-                </a>
+                @*@{
+                    var cssSubsStyle = subscribedRegType.Contains(sourceItem.TypeId) ? "btn btn-info mt-ladda-btn ladda-button btn-circle" : "btn btn-default mt-ladda-btn ladda-button btn-circle";
+                }*@
+                <button type="button" class="btn btn-info mt-ladda-btn ladda-button btn-circle" data-style="slide-down" data-spinner-color="#333" data-regId="@defaultModel.RegId" data-subs>
+                    <span class="ladda-label">
+                        <i class="fa fa-rss"></i>
+                    </span>
+                    <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                </button>
             </div>
         </div>
         <!-- END PAGE TITLE -->
@@ -52,24 +70,23 @@
             <div class="search-page search-content-2">
                 <div class="row">
                     <div class="col-md-8 portlet light ">
-                        @foreach (var item in Model.SectionItems.Where(x => x.ParentId == null).OrderBy(x => x.Sequence))
+                        @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                         {
                             var anchor = @item.SectionTitle.Replace(" ", "_");
                             <div class="col-8 portlet light">
-                                <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="icon-edit font-dark"></i>
-                                        <h3 id="@anchor" class="caption-subject font-dark bold uppercase">@item.SectionTitle</h3>
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    @if (!string.IsNullOrEmpty(item.Description))
-                                    {
-                                        <p>@Html.Raw(@item.Description)</p>
-                                    }
-                                </div>
+                                <h2 id="@anchor">@item.SectionTitle</h2>
                                 @{
-                                    var filterData = Model.SectionItems.Where(x => x.ParentId.Equals(item.SectionId));
+                                    var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
+                                }
+                                @if (descs.Count() > 0)
+                                {
+                                    foreach (var desc in descs)
+                                    {
+                                        <p>@Html.Raw(desc)</p>
+                                    }
+                                }
+                                @{
+                                    var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
                                 }
                                 @if (filterData.Count() > 0)
                                 {
@@ -77,18 +94,17 @@
                                     {
                                         var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
                                         <div class="col-8 portlet light">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <i class="icon-edit font-dark"></i>
-                                                    <h4 id="@childAnchor" class="caption-subject font-dark bold uppercase">@itemChild.SectionTitle</h4>
-                                                </div>
-                                            </div>
-                                            <div class="portlet-body">
-                                                @if (!string.IsNullOrEmpty(item.Description))
+                                            <h3 id="@childAnchor">@itemChild.SectionTitle</h3>
+                                            @{
+                                                var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
+                                            }
+                                            @if (childDescs.Count() > 0)
+                                            {
+                                                foreach (var desc in childDescs)
                                                 {
-                                                    <p>@Html.Raw(@itemChild.Description)</p>
+                                                    <p>@Html.Raw(desc)</p>
                                                 }
-                                            </div>
+                                            }
                                         </div>
                                     }
                                 }
@@ -103,16 +119,16 @@
                                     <i class="icon-edit font-dark"></i>
                                     <span class="caption-subject font-dark bold uppercase">Table of Content</span>
                                 </div>
-                                <div class="actions">
-                                    <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                        <i class="fa fa-rss"></i>
-                                    </a>
-                                </div>
+                                @*<div class="actions">
+                                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                            <i class="fa fa-rss"></i>
+                                        </a>
+                                    </div>*@
                             </div>
                             <div class="portlet-body">
                                 <div id="tree_1" class="tree-demo jstree jstree-1 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j1_3" aria-busy="false" style="overflow: hidden;">
                                     <ul class="jstree-container-ul jstree-children" role="group">
-                                        @foreach (var item in Model.SectionItems.Where(x => x.ParentId == null).OrderBy(x => x.Sequence))
+                                        @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                                         {
                                             var id = "j1_" + item.SectionId;
                                             var anchor = id + "_anchor";
@@ -123,7 +139,7 @@
                                                     <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @item.SectionTitle
                                                 </a>
                                                 @{
-                                                    var filterData = Model.SectionItems.Where(x => x.ParentId.Equals(item.SectionId)).OrderBy(x => x.Sequence);
+                                                    var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
                                                 }
                                                 @if (filterData.Count() > 0)
                                                 {
@@ -199,4 +215,36 @@
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
     <script src="~/assets/pages/scripts/ui-tree.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+        $('[data-subs]').click(function () {
+            var btnObj = this;
+            var regId = $(btnObj).attr('data-regId');
+            var l = Ladda.create(btnObj);
+            l.start();
+            $.post("/Library/Subscribe",
+                { regId },
+                function (response) {
+                    if (response.status === 200) {
+                        toastr.success(response.message);
+                        if ($(btnObj).css('btn-default') != null) {
+                            $(btnObj).removeClass('btn-default').addClass('btn-info');
+                        }
+                        else {
+                            $(btnObj).removeClass('btn-info').addClass('btn-default');
+                        }
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }, "json")
+                .always(function () { l.stop(); });
+        });
+    </script>
 }

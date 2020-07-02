@@ -28,7 +28,11 @@ namespace CompData.Models.Library
         public virtual RegulationType RegulationType { get; set; }
         public long Views { get; set; } = 0;
 
+        [MaxLength(500)]
+        public string CustomURL { get; set; }
+
         public virtual ICollection<RegulationSection> RegulationSections { get; set; }
+        public virtual ICollection<TagMap> TagMaps { get; set; }
 
     }
 }

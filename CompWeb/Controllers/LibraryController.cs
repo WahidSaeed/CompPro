@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CompData.Services.Regulation;
+using CompData.ViewModels;
 using CompData.ViewModels.Library;
 using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Generics;
@@ -41,11 +42,25 @@ namespace CompWeb.Controllers
             return View(model);
         }
 
+        [Route("/Library/Regulation/{id}/Edit")]
+        public IActionResult RegulationEdit(int id)
+        {
+            var model = this.regulationService.GetSelectedRegulation(id);
+            ViewBag.RegId = id;
+            return View(model);
+        }
+
         public async Task<IActionResult> SelectSources() 
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetRegulationSourcesByCountryCode(user.CountryCode);
             return View(model);
+        }
+
+        public async Task<JsonResult> GetAllRegulations(AjaxDropDown ajaxDropDown)
+        {
+            var result = await this.regulationService.GetAllRegulations(ajaxDropDown);
+            return Json(result.Data);
         }
 
         [HttpPost]
@@ -70,9 +85,38 @@ namespace CompWeb.Controllers
         }
 
         [HttpPost]
+        public async Task<JsonResult> Subscribe(int regId)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var result = this.regulationService.SubscribeRegulationByUser(user.Id, regId);
+            return Json(result);
+        }
+
+        [HttpPost]
         public async Task<JsonResult> SaveRegulation(SaveRegulationViewModel viewModel)
         {
             var result = await this.regulationService.SaveRegulation(viewModel);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel)
+        {
+            var result = await this.regulationService.SaveRegulationDetail(viewModel);
+            return Json(result);
+        }
+
+        [Route("/Library/GetTagsGroup/{tagGroupId}")]
+        public async Task<JsonResult> GetTagsGroup(string tagGroupId)
+        {
+            var result = await this.regulationService.GetTagsGroup(tagGroupId);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId)
+        {
+            var result = await this.regulationService.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
             return Json(result);
         }
 

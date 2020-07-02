@@ -1,5 +1,6 @@
 ﻿using CompData.Dao.Regulation;
 using CompData.Models.Library;
+using CompData.ViewModels;
 using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Configurations.Generics;
@@ -54,34 +55,14 @@ namespace CompData.Services.Regulation.Impl
             return this.regulationDao.GetRegulationSourcesByCountryCode(countryCode);
         }
 
-        public SelectedRegulationViewModel GetSelectedRegulation(int regulationId)
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId)
         {
-            SelectedRegulationViewModel regulationViewModels = new SelectedRegulationViewModel();
+            List<SelectedRegulationProcedure> selectedRegulationDetails = new List<SelectedRegulationProcedure>();
             if (regulationId != 0)
             {
-                List<SelectedRegulationProcedure> selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId);
-                List<SectionItem> sectionItems = new List<SectionItem>();
-                foreach (var x in selectedRegulationDetails)
-                {
-                    SectionItem sectionItem = new SectionItem();
-                    sectionItem.SectionId = x.SectionId;
-                    sectionItem.SectionTitle = x.SectionTitle;
-                    sectionItem.Description = x.RegDescription;
-                    sectionItem.ParentId = x.ParentId;
-                    sectionItem.Sequence = x.Sequence;
-
-                    sectionItems.Add(sectionItem);
-                }
-
-                var viewModel = selectedRegulationDetails.FirstOrDefault();
-                regulationViewModels.RegId = viewModel.RegId;
-                regulationViewModels.RegTitle = viewModel.RegTitle;
-                regulationViewModels.SourceId = viewModel.SourceId;
-                regulationViewModels.SourceTitle = viewModel.FullName;
-                regulationViewModels.SectionItems = sectionItems; 
+                selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId);
             }
-            
-            return regulationViewModels;
+            return selectedRegulationDetails;
         }
 
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId)
@@ -110,9 +91,34 @@ namespace CompData.Services.Regulation.Impl
             return await this.regulationDao.SaveRegulation(viewModel);
         }
 
+        public async Task<Result> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel)
+        {
+            return await this.regulationDao.SaveRegulationDetail(viewModel);
+        }
+
+        public async Task<Result> GetTagsGroup(string tagGroupId)
+        {
+            return await this.regulationDao.GetTagsGroup(tagGroupId);
+        }
+
+        public async Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId)
+        {
+            return await this.regulationDao.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
+        }
+
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
         {
             return this.regulationDao.SubscribeRegulationTypeByUser(userID, typeId, sourceId);
+        }
+
+        public Result SubscribeRegulationByUser(Guid userID, int regId)
+        {
+            return this.regulationDao.SubscribeRegulationByUser(userID, regId);
+        }
+
+        public async Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown)
+        {
+            return await this.regulationDao.GetAllRegulations(ajaxDropDown);
         }
     }
 }

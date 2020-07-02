@@ -20,8 +20,10 @@ namespace CompData.Models.Library
         public int Sequence { get; set; }
 
         public virtual RegulationSection Parent { get; set; }
-        public virtual ICollection<RegulationSection> Children { get; set; }
+        public virtual List<RegulationSection> Children { get; set; }
 
+        public virtual List<RegulationDetail> RegulationDetails { get; set; }
+        public virtual List<TagMap> TagMaps { get; set; }
         public virtual Regulation Regulation { get; set; }
     }
 }

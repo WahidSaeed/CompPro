@@ -44,6 +44,8 @@ namespace CRMData.Data
         public virtual DbSet<RegulationType> RegulationTypes { get; set; }
         public virtual DbSet<LinkedUserRegulationSource> LinkedUserRegulationSources { get; set; }
         public virtual DbSet<LinkUserRegTypeSubscription> LinkUserRegTypeSubscriptions { get; set; }
+        public virtual DbSet<LinkUserRegulationSubscription> LinkUserRegulationSubscriptions { get; set; }
+        public virtual DbSet<TagMap> TagMaps { get; set; }
         #endregion
 
         #region Config
@@ -134,6 +136,32 @@ namespace CRMData.Data
                 .WithMany(e => e.RegulationSections)
                 .HasForeignKey(x => x.RegulationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+                x.HasMany<RegulationDetail>(e => e.RegulationDetails)
+                .WithOne(x => x.RegulationSection)
+                .HasForeignKey(x => x.SectionId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+            builder.Entity<TagMap>(x =>
+            {
+                x.HasKey(e => e.Id);
+                x.Property(e => e.Id).ValueGeneratedOnAdd();
+                x.HasIndex(e => e.TagGroupKey);
+
+                x.HasOne<Regulation>(e => e.Regulation)
+                .WithMany(e => e.TagMaps)
+                .HasForeignKey(x => x.RegId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                x.HasOne<RegulationSection>(e => e.RegulationSection)
+                .WithMany(x => x.TagMaps)
+                .HasForeignKey(x => x.SecId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                x.HasOne<RegulationDetail>(e => e.RegulationDetail)
+                .WithMany(x => x.TagMaps)
+                .HasForeignKey(x => x.DescId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
             #endregion
 
