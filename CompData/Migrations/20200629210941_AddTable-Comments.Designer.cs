@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200629210941_AddTable-Comments")]
+    partial class AddTableComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,13 +533,13 @@ namespace CompData.Migrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("ParentID")
+                    b.Property<int>("ParentID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RegDetailID")
+                    b.Property<int>("RegDetailID")
                         .HasColumnType("int");
 
-                    b.Property<int>("RegID")
+                    b.Property<int?>("RegID")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateAt")
@@ -970,13 +972,13 @@ namespace CompData.Migrations
 
                     b.HasOne("CompData.Models.Library.RegulationDetail", "RegulationSource")
                         .WithMany()
-                        .HasForeignKey("RegDetailID");
+                        .HasForeignKey("RegDetailID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CompData.Models.Library.Regulation", "Regulation")
                         .WithMany()
-                        .HasForeignKey("RegID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegID");
 
                     b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
                         .WithMany()

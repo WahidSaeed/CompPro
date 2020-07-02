@@ -44,6 +44,7 @@ namespace CRMData.Data
         public virtual DbSet<RegulationType> RegulationTypes { get; set; }
         public virtual DbSet<LinkedUserRegulationSource> LinkedUserRegulationSources { get; set; }
         public virtual DbSet<LinkUserRegTypeSubscription> LinkUserRegTypeSubscriptions { get; set; }
+        public virtual DbSet<Comments> Comments { get; set; }
         #endregion
 
         #region Config
@@ -57,6 +58,7 @@ namespace CRMData.Data
         public virtual DbSet<RegulationGroupBySourceProcedure> RegulationGroupBySources { get; set; }
         public virtual DbSet<SelectedRegulationProcedure> SelectedRegulation { get; set; }
         public virtual DbSet<RegulationFilteredBySource> RegulationFilteredBySource { get; set; }
+        public virtual DbSet<SelectedRegulationRequirement> SelectedRegulationRequirement { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

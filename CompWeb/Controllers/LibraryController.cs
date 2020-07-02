@@ -38,8 +38,10 @@ namespace CompWeb.Controllers
         public IActionResult Regulation(int id)
         {
             var model = this.regulationService.GetSelectedRegulation(id);
+            ViewBag.Requirments = this.regulationService.GetSelectedRegRequirement(id);
             return View(model);
         }
+
 
         public async Task<IActionResult> SelectSources() 
         {

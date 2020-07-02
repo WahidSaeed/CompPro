@@ -225,7 +225,7 @@
         });
 
         $('[data-save-regulation]').click(function () {
-            
+
             var referenceNumber = $('#input-reference');
             var title = $('#input-title');
             var issueDate = $('#input-issueDate');
@@ -234,8 +234,7 @@
             var sourceId = $('#input-source');
             var typeId = $('#input-type');
 
-            if (!(referenceNumber.val() && title.val() && effectiveDate.val() && issueDate.val()))
-            {
+            if (!(referenceNumber.val() && title.val() && effectiveDate.val() && issueDate.val())) {
                 toastr.error('Fill all fields to continue.');
                 return;
             }
@@ -271,6 +270,7 @@
         });
 
         $('[data-subs]').click(function () {
+            debugger;
             var btnObj = this;
             var typeId = $(btnObj).attr('data-type');
             var sourceId = $(btnObj).attr('data-source');
@@ -283,6 +283,7 @@
                 },
                 function (response) {
                     if (response.status === 200) {
+                        debugger;
                         toastr.success(response.message);
                         if ($(btnObj).css('btn-default') != null) {
                             $(btnObj).removeClass('btn-default').addClass('btn-info');

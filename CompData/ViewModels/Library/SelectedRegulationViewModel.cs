@@ -10,6 +10,9 @@ namespace CompData.ViewModels.Library
         public string RegTitle { get; set; }
         public int SourceId { get; set; }
         public string SourceTitle { get; set; }
+        public string RegTypeName { get; set; }
+        public int RegTypeId { get; set; }
+        public string Summary { get; set; }
         public List<SectionItem> SectionItems { get; set; }
     }
 

@@ -78,10 +78,29 @@ namespace CompData.Services.Regulation.Impl
                 regulationViewModels.RegTitle = viewModel.RegTitle;
                 regulationViewModels.SourceId = viewModel.SourceId;
                 regulationViewModels.SourceTitle = viewModel.FullName;
+                regulationViewModels.RegTypeId = viewModel.RegTypeId;
+                regulationViewModels.RegTypeName = viewModel.RegTypeName;
+                regulationViewModels.Summary = viewModel.Summary;
                 regulationViewModels.SectionItems = sectionItems; 
             }
             
             return regulationViewModels;
+        }
+
+        public SelectedRegulationRequirementViewModel GetSelectedRegRequirement(int regulationId)
+        {
+            SelectedRegulationRequirementViewModel requirementViewModels = new SelectedRegulationRequirementViewModel();
+            if (regulationId != 0)
+            {
+                List<SelectedRegulationRequirement> selectedRegRequirementDetails = regulationDao.GetSelectedRegRequirement(regulationId);
+                List<SectionItem> sectionItems = new List<SectionItem>();
+
+                var viewModel = selectedRegRequirementDetails.FirstOrDefault();
+                requirementViewModels.CommentID = viewModel.CommentID;
+                requirementViewModels.Requirement = viewModel.Requirement;
+            }
+
+            return requirementViewModels;
         }
 
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId)

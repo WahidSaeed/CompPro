@@ -69,9 +69,21 @@ namespace CompData.Dao.Regulation.Impl
             return regulationProcedures;
         }
 
+        public List<SelectedRegulationRequirement> GetSelectedRegRequirement(int regulationId)
+        {
+            List<SelectedRegulationRequirement> requirementProcedures = this.dbContext.Set<SelectedRegulationRequirement>().FromSqlRaw($"EXEC Library.GetAllRegRequirement {regulationId}, '4' ").ToList();
+
+            var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
+            regulation.Views += 1;
+            this.dbContext.Entry<CompData.Models.Library.Regulation>(regulation).State = EntityState.Modified;
+            this.dbContext.SaveChanges();
+
+            return requirementProcedures;
+        }
+
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId)
         {
-            List<RegulationSource> regulationSources = this.dbContext.LinkedUserRegulationSources.Where(x => x.UserId.Equals(userId)).Select(x => x.RegulationSource).ToList();
+            List<RegulationSource> regulationSources = this.dbContext.LinkedUserRegulationSources.Where(x => x.UserId.Equals(userId)).OrderByDescending(x => x.IsDefault).Select(x => x.RegulationSource).ToList();
             return regulationSources;
         }
 
@@ -80,7 +92,7 @@ namespace CompData.Dao.Regulation.Impl
             List<int> regulationTypes = this.dbContext.LinkUserRegTypeSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegSourceId.Equals(sourceId)).Select(x => x.RegTypeId).ToList();
             return regulationTypes;
         }
-
+        
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
         {
             try
@@ -197,8 +209,5 @@ namespace CompData.Dao.Regulation.Impl
                 };
             }
         }
-
-
-
     }
 }

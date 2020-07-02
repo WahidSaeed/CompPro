@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200628222420_AlterColumn-LinkedUserRegulationSource")]
+    partial class AlterColumnLinkedUserRegulationSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,53 +514,6 @@ namespace CompData.Migrations
                     b.ToTable("OrganizationDomain","Config");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.Comments", b =>
-                {
-                    b.Property<int>("CommentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CommentText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CommentTypeID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("ParentID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RegDetailID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CommentID");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("RegDetailID");
-
-                    b.HasIndex("RegID");
-
-                    b.HasIndex("UpdatedBy");
-
-                    b.ToTable("Comments","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>
                 {
                     b.Property<int>("Id")
@@ -855,8 +810,8 @@ namespace CompData.Migrations
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Summary")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Summary")
+                        .HasColumnType("int");
 
                     b.ToTable("SelectedRegulationProcedure","ProcedureView");
                 });
@@ -960,27 +915,6 @@ namespace CompData.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.Comments", b =>
-                {
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "AddApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("CompData.Models.Library.RegulationDetail", "RegulationSource")
-                        .WithMany()
-                        .HasForeignKey("RegDetailID");
-
-                    b.HasOne("CompData.Models.Library.Regulation", "Regulation")
-                        .WithMany()
-                        .HasForeignKey("RegID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRMData.Models.Identity.ApplicationUser", "EditApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("CompData.Models.Library.LinkUserRegTypeSubscription", b =>

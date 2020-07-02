@@ -17,5 +17,8 @@ namespace CompData.ViewModels.Procedure.Library
         public int? ParentId { get; set; }
         public int Sequence { get; set; }
         public string RegDescription { get; set; }
+        public string RegTypeName { get; set; }
+        public int RegTypeId { get; set; }
+        public string Summary { get; set; }
     }
 }

@@ -21,5 +21,6 @@ namespace CompData.Dao.Regulation
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId);
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds);
         public Task<Result> SaveRegulation(SaveRegulationViewModel viewModel);
+        public List<SelectedRegulationRequirement> GetSelectedRegRequirement(int regulationId);
     }
 }

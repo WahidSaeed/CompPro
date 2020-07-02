@@ -14,7 +14,7 @@ namespace CompData.Models.Library
         public int Id { get; set; }
         public Guid UserId { get; set; }
         public int SourceId { get; set; }
-
+        public int IsDefault { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser ApplicationUser { get; set; }
         [ForeignKey("SourceId")]

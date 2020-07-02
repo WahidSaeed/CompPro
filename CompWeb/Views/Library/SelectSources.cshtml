@@ -2,7 +2,7 @@
 @inject CRMData.Configurations.Extensions.Utility utility
 @{
     Layout = null;
-    ViewData["Title"] = "Select 3 Regulation Sources";
+    ViewData["Title"] = "Almost done! Please tell us your preferences. So we can customize the experience for you.";
 }
 
 <html lang="en">
@@ -28,11 +28,9 @@
     <link href="~/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
     <link href="~/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME GLOBAL STYLES -->
-
-
-
     <link rel="shortcut icon" href="favicon.ico" />
 </head>
+
 
 <body class=" login">
     <div class="logo">
@@ -44,7 +42,7 @@
         <!-- BEGIN REGISTRATION FORM -->
         <div asp-validation-summary="All" class="text-danger"></div>
         <form class="create-account" method="post">
-            <h3>@ViewData["Title"]</h3>
+            <h5>@ViewData["Title"]</h5>
             <input type="hidden" id="SourceIds" />
             <div class="form-group">
                 <select id="seletedsource" class="form-control select2-multiple select2-hidden-accessible" multiple="" name="SourceIds" tabindex="-1" aria-hidden="true">
@@ -71,8 +69,14 @@
     <script src="~/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.select2-search__field').attr("placeholder", "Select up to 3 regulators");
+        });
+
         $(function () {
             $('form').submit(function () {
+                debugger;
                 var options = $('#seletedsource > option:selected');
                 if (options.length == 0) {
                     alert('No Value Selected');

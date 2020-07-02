@@ -27,6 +27,7 @@ namespace CompData.Models.Library
         [ForeignKey("RegTypeID")]
         public virtual RegulationType RegulationType { get; set; }
         public long Views { get; set; } = 0;
+        public string Summary { get; set; }
 
         public virtual ICollection<RegulationSection> RegulationSections { get; set; }
 
