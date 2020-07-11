@@ -30,6 +30,18 @@
             outline: none;
         }
 
+        .Suboff {
+            background-color: #fff;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #f28c11;
+            color: #f28c11;
+            outline: none;
+        }
+
         .btnclass {
             background-color: #fff;
             border-radius: 25px !important;
@@ -98,8 +110,8 @@
                         @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                         {
                             var anchor = @item.SectionTitle.Replace(" ", "_");
-                            <div class="col-8 portlet light">
-                                <h2 id="@anchor">@item.SectionTitle</h2>
+                            <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+                                <h3 id="@anchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@item.SectionTitle</h3>
                                 @{
                                     var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
                                 }
@@ -107,7 +119,7 @@
                                 {
                                     foreach (var desc in descs)
                                     {
-                                        <p>@Html.Raw(desc)</p>
+                                        <p style="padding-left: 15px;">@Html.Raw(desc)</p>
                                     }
                                 }
                                 @{
@@ -118,8 +130,8 @@
                                     @foreach (var itemChild in filterData)
                                     {
                                         var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
-                                        <div class="col-8 portlet light">
-                                            <h3 id="@childAnchor">@itemChild.SectionTitle</h3>
+                                        <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+                                            <h3 id="@childAnchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@itemChild.SectionTitle</h3>
                                             @{
                                                 var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
                                             }
@@ -127,7 +139,7 @@
                                             {
                                                 foreach (var desc in childDescs)
                                                 {
-                                                    <p>@Html.Raw(desc)</p>
+                                                    <p style="padding-left: 15px;">@Html.Raw(desc)</p>
                                                 }
                                             }
                                         </div>
@@ -348,16 +360,16 @@
             var regId = $(btnObj).attr('data-regId');
             var l = Ladda.create(btnObj);
             l.start();
-            $.post("/Library/SubscribeByUser",
+            $.post("/Library/Subscribe",
                 { regId },
                 function (response) {
                     if (response.status === 200) {
                         toastr.success(response.message);
-                        if ($(btnObj).css('btn-default') != null) {
-                            $(btnObj).removeClass('btn-default').addClass('btn-info');
+                         if (response.message != "Regulation type has been subscribed.") {
+                            $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {
-                            $(btnObj).removeClass('btn-info').addClass('btn-default');
+                            $(btnObj).removeClass('Suboff').addClass('SubOn');
                         }
                     }
                     else {
