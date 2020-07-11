@@ -78,7 +78,7 @@
                     <div class="col-md-8 portlet light ">
                         @foreach (var sourceItem in Model)
                         {
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="min-height: 400px">
                                 <div class="portlet light">
                                     <div class="portlet-title" style="border-bottom: 3px solid #bfbfbf;">
                                         <div class="caption">
@@ -203,21 +203,21 @@
 </div>
 <div id="confirmModal" class="modal fade modal-scroll in" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" style="width: 400px">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: #f0f0f0;">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">New Regulation Has Been Saved</h4>
+                <h3 class="form-title" style="color: #227937;text-align: center;font-weight: 600;">Success</h3>
             </div>
-            <div class="modal-body">
-                <p>Do you wish to continue?</p>
+            <div class="modal-body" style="padding: 0px 27px 0px 27px">
+                <p style="color: #227937;text-align: center;margin-top:-5px"> Regulation created successfully. Do you wish to populate it now? </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
-                <button type="button" onclick="redirectToRegulation()" class="btn green">Continue</button>
+            <div style="background-color: transparent;clear: both;border: 0;padding: 0 60px 27px;margin-left: -30px;margin-right: -30px;">
+                <button type="button" data-dismiss="modal" class="btn" style="background: #bf9000;color: white;width: 342px;margin-top: 10px">Later</button>
+                <button type="button" class="btn" style="background: #02502e;color: white;width: 342px;margin-top: 10px" onclick="redirectToRegulation()">Continue now</button>
             </div>
         </div>
     </div>
 </div>
+
 <!-- END PAGE CONTENT BODY -->
 
 @section Scripts {
