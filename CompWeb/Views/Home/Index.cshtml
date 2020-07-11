@@ -307,7 +307,7 @@
             var sourceId = $(btnObj).attr('data-source');
             var l = Ladda.create(btnObj);
             l.start();
-            $.post("/Library/Subscribe",
+            $.post("/Library/SubscribeByUser",
                 {
                     typeId: typeId,
                     sourceId: sourceId
@@ -315,7 +315,7 @@
                 function (response) {
                     if (response.status === 200) {
                         toastr.success(response.message);
-                        if ($(btnObj).css('SubOn') != null) {
+                        if (response.message != "Regulation type has been subscribed.") {
                             $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {

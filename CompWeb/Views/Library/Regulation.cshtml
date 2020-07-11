@@ -348,7 +348,7 @@
             var regId = $(btnObj).attr('data-regId');
             var l = Ladda.create(btnObj);
             l.start();
-            $.post("/Library/Subscribe",
+            $.post("/Library/SubscribeByUser",
                 { regId },
                 function (response) {
                     if (response.status === 200) {

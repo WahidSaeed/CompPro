@@ -105,7 +105,7 @@ namespace CompWeb.Controllers
 
         #region Subscription
         [HttpPost]
-        public async Task<JsonResult> Subscribe(int typeId, int sourceId)
+        public async Task<JsonResult> SubscribeByUser(int typeId, int sourceId)
         {
             var user = await userManager.GetUserAsync(User);
             var result = this.regulationService.SubscribeRegulationTypeByUser(user.Id, typeId, sourceId);
