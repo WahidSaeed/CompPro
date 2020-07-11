@@ -23,19 +23,43 @@ namespace CompWeb.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Source(int id)
+        #region Search Grid List
+        public async Task<IActionResult> Source(int id)
         {
-            var model = this.regulationService.GetAllRegulationFilteredBySourceID(id);
-            return View(model);
-        }
-        
-        [Route("/Library/Type/{sourceId}-{typeId}")]
-        public IActionResult Type(int sourceId, int typeId)
-        {
-            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceId, typeId);
-            return View(model);
+            
+            var detailTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.DetailTag);
+            var bussinessLineTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+
+            ViewBag.SourceId = id;
+            ViewBag.DetailTag = detailTag.Data;
+            ViewBag.BussinessLineTag = bussinessLineTag.Data;
+
+            return View();
         }
 
+        public JsonResult SourceGrid(SourceGrid sourceGrid) 
+        {
+            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid);
+            return Json(model);
+        }
+
+        [Route("/Library/Source/{sourceId}/Type/{typeId}")]
+        public async Task<IActionResult> Type(int sourceId, int typeId)
+        {
+            var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.DetailTag);
+            var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+
+            ViewBag.SourceId = sourceId;
+            ViewBag.TypeId = typeId;
+            ViewBag.DetailTag = detailTag.Data;
+            ViewBag.BussinessLineTag = bussinessLineTag.Data;
+
+            return View();
+        }
+
+        #endregion
+
+        #region View Regulation
         public IActionResult Regulation(int id)
         {
             var model = this.regulationService.GetSelectedRegulation(id);
@@ -48,7 +72,8 @@ namespace CompWeb.Controllers
             var model = this.regulationService.GetSelectedRegulation(id);
             ViewBag.RegId = id;
             return View(model);
-        }
+        } 
+        #endregion
 
         public async Task<IActionResult> SelectSources() 
         {
@@ -76,6 +101,7 @@ namespace CompWeb.Controllers
             return LocalRedirect("/");
         }
 
+        #region Subscription
         [HttpPost]
         public async Task<JsonResult> Subscribe(int typeId, int sourceId)
         {
@@ -90,8 +116,10 @@ namespace CompWeb.Controllers
             var user = await userManager.GetUserAsync(User);
             var result = this.regulationService.SubscribeRegulationByUser(user.Id, regId);
             return Json(result);
-        }
+        } 
+        #endregion
 
+        #region Save Regulations
         [HttpPost]
         public async Task<JsonResult> SaveRegulation(SaveRegulationViewModel viewModel)
         {
@@ -104,8 +132,10 @@ namespace CompWeb.Controllers
         {
             var result = await this.regulationService.SaveRegulationDetail(viewModel);
             return Json(result);
-        }
+        } 
+        #endregion
 
+        #region Link Tags
         [Route("/Library/GetTagsGroup/{tagGroupId}")]
         public async Task<JsonResult> GetTagsGroup(string tagGroupId)
         {
@@ -118,7 +148,8 @@ namespace CompWeb.Controllers
         {
             var result = await this.regulationService.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
             return Json(result);
-        }
+        } 
+        #endregion
 
     }
 }

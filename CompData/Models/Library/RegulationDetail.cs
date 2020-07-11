@@ -12,6 +12,7 @@ namespace CompData.Models.Library
         [Key]
         public int RegDetailId { get; set; }
         public string RegDescription { get; set; }
+        public string RegDescriptionClean { get; set; }
         public int RegulationId { get; set; }
         public int SectionId { get; set; }
         public int Sequence { get; set; }

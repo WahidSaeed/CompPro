@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200702194323_Add-Column-RegDescriptionClean-RegulationDetail")]
+    partial class AddColumnRegDescriptionCleanRegulationDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -776,9 +778,6 @@ namespace CompData.Migrations
                         .HasColumnType("nvarchar(250)")
                         .HasMaxLength(250);
 
-                    b.Property<int>("TagType")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DescId");
@@ -789,23 +788,7 @@ namespace CompData.Migrations
 
                     b.HasIndex("TagGroupKey");
 
-                    b.HasIndex("TagType");
-
                     b.ToTable("TagMap","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.TagMapType", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TagMapType","Library");
                 });
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.RegulationFilteredBySource", b =>
@@ -813,8 +796,8 @@ namespace CompData.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IssueDate")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("RegId")
                         .HasColumnType("int");
@@ -1121,12 +1104,6 @@ namespace CompData.Migrations
                     b.HasOne("CompData.Models.Library.RegulationSection", "RegulationSection")
                         .WithMany("TagMaps")
                         .HasForeignKey("SecId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("CompData.Models.Library.TagMapType", "TagMapType")
-                        .WithMany("TagMaps")
-                        .HasForeignKey("TagType")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });

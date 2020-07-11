@@ -46,7 +46,33 @@ public static class Extensions
         return dataTable;
     }
 
-    public static string GetJSONFromXML(this XmlNodeList xmlNodeList) 
+    public static DataTable ToDataTable(this List<int> items)
+    {
+        DataTable dataTable = new DataTable();
+
+        dataTable.Columns.Add("Value", typeof(int));
+        foreach (int item in items)
+        {   
+            dataTable.Rows.Add(item);
+        }
+        //put a breakpoint here and check datatable
+        return dataTable;
+    }
+
+    public static DataTable ToDataTable(this List<string> items)
+    {
+        DataTable dataTable = new DataTable();
+
+        dataTable.Columns.Add("Value", typeof(string));
+        foreach (string item in items)
+        {
+            dataTable.Rows.Add(item);
+        }
+        //put a breakpoint here and check datatable
+        return dataTable;
+    }
+
+    public static string GetJSONFromXML(this XmlNodeList xmlNodeList)
     {
         StringBuilder str = new StringBuilder();
         str.Append("[");
@@ -67,7 +93,7 @@ public static class Extensions
                 }
                 str.Append("}" + (xmlCount > i ? "," : ""));
                 i++;
-            } 
+            }
         }
         str.Append("]");
         return str.ToString();

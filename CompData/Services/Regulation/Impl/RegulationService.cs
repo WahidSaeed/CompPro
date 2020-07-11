@@ -1,9 +1,11 @@
-﻿using CompData.Dao.Regulation;
+﻿using CompData.Configurations.Constants.Enums;
+using CompData.Dao.Regulation;
 using CompData.Models.Library;
 using CompData.ViewModels;
 using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Configurations.Generics;
+using CRMData.ViewModels.BaseViewModel;
 using Microsoft.EntityFrameworkCore.Internal;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
@@ -21,9 +23,9 @@ namespace CompData.Services.Regulation.Impl
             this.regulationDao = regulationDao;
         }
 
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId = null)
+        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid)
         {
-            return regulationDao.GetAllRegulationFilteredBySourceID(sourceId, typeId);
+            return regulationDao.GetAllRegulationFilteredBySourceID(sourceGrid);
         }
 
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId)
@@ -104,6 +106,11 @@ namespace CompData.Services.Regulation.Impl
         public async Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId)
         {
             return await this.regulationDao.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
+        }
+
+        public async Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType)
+        {
+            return await regulationDao.GetAllTagFilters(sourceId, typeId, tagType);
         }
 
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)

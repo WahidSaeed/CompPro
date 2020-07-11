@@ -1,8 +1,10 @@
-﻿using CompData.Models.Library;
+﻿using CompData.Configurations.Constants.Enums;
+using CompData.Models.Library;
 using CompData.ViewModels;
 using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Configurations.Generics;
+using CRMData.ViewModels.BaseViewModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +16,7 @@ namespace CompData.Dao.Regulation
     {
         public List<RegulationGroupBySourceProcedure> GetAllRegulationGroupBySource(int sourceId);
         public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId);
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId);
+        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid);
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode);
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
         public List<CompData.Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId);
@@ -26,6 +28,7 @@ namespace CompData.Dao.Regulation
         public Task<Result> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel);
         public Task<Result> GetTagsGroup(string tagGroupId);
         public Task<Result> SetTagsGroup(List<string> tag, string tagGroupId, int regId, int secId, int descId);
+        public Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType);
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
     }
 }

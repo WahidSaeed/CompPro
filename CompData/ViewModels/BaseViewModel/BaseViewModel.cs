@@ -53,21 +53,12 @@ namespace CRMData.ViewModels.BaseViewModel
         public string dir { get; set; }
     }
 
-    public class JQueryDtaTableOutput
+    public class JQueryDtaTableOutput<T>
     {
         public int draw { get; set; }
         public string error { get; set; }
         public int recordsFiltered { get; set; }
         public int recordsTotal { get; set; }
-        public string data { get; set; }
-    }
-
-    public class JQueryDtaTableOutput<T> where T : class
-    {
-        public int draw { get; set; }
-        public string error { get; set; }
-        public int recordsFiltered { get; set; }
-        public int recordsTotal { get; set; }
-        public IEnumerable<T> data { get; set; }
+        public T data { get; set; }
     }
 }

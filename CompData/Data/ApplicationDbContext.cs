@@ -162,6 +162,11 @@ namespace CRMData.Data
                 .WithMany(x => x.TagMaps)
                 .HasForeignKey(x => x.DescId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+                x.HasOne<TagMapType>(e => e.TagMapType)
+                .WithMany(x => x.TagMaps)
+                .HasForeignKey(x => x.TagType)
+                .OnDelete(DeleteBehavior.NoAction);
             });
             #endregion
 

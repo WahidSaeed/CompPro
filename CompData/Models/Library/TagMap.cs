@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CompData.Configurations.Constants.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,8 +28,12 @@ namespace CompData.Models.Library
         [ForeignKey("DescId")]
         public int DescId { get; set; }
 
+        [ForeignKey("TagType")]
+        public TagType TagType { get; set; }
+
         public virtual Regulation Regulation { get; set; }
         public virtual RegulationSection RegulationSection { get; set; }
         public virtual RegulationDetail RegulationDetail { get; set; }
+        public virtual TagMapType TagMapType { get; set; }
     }
 }

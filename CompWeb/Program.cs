@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using CompData.Configurations.Initializer;
 
 namespace CRMWeb
 {
@@ -18,6 +19,7 @@ namespace CRMWeb
                 try
                 {
                     SeedData.Initialize(services);
+                    Initializer.Lucene(services);
                 }
                 catch (Exception ex)
                 {

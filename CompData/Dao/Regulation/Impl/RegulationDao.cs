@@ -1,4 +1,5 @@
-﻿using CompData.Models.Library;
+﻿using CompData.Configurations.Constants.Enums;
+using CompData.Models.Library;
 using CompData.ViewModels;
 using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
@@ -6,13 +7,26 @@ using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Generics;
 using CRMData.Data;
 using CRMData.Models.Identity;
+using CRMData.ViewModels.BaseViewModel;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.En;
+using Lucene.Net.Analysis.Snowball;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
+using Lucene.Net.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Net;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,18 +47,113 @@ namespace CompData.Dao.Regulation.Impl
             this.httpContext = httpContext;
         }
 
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId)
+        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid)
         {
-            List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
-            if (typeId == null)
+            try
             {
-                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] {sourceId}").ToList();
+
+                List<int> luceneRegIds = new List<int>();
+                if (!string.IsNullOrEmpty(sourceGrid.SearchTerm))
+                {
+                    var directory = FSDirectory.Open("c:\\temp\\directory");
+                    using (Analyzer analyzer = new EnglishAnalyzer(LuceneVersion.LUCENE_48))
+                    {
+                        using (var reader = DirectoryReader.Open(directory))
+                        {
+                            var searcher = new IndexSearcher(reader);
+                            var queryParser = new QueryParser(LuceneVersion.LUCENE_48, "title", analyzer)
+                            {
+                                AllowLeadingWildcard = true,
+                                AutoGeneratePhraseQueries = true,
+                                FuzzyMinSim = 3f
+                            };
+                            var query = queryParser.Parse(sourceGrid.SearchTerm);
+                            var collector = TopScoreDocCollector.Create(10000, true);
+                            searcher.Search(query, collector);
+
+                            var matches = collector.GetTopDocs().ScoreDocs;
+                            foreach (var item in matches)
+                            {
+                                var id = item.Doc;
+                                var doc = searcher.Doc(id);
+
+                                string regId = doc.GetField("regId").GetStringValue();
+                                luceneRegIds.Add(int.Parse(regId));
+                            }
+                        }
+                    }
+                }
+
+
+                List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                parameters.Add(new SqlParameter("@SourceId", sourceGrid.SourceId));
+                parameters.Add(new SqlParameter("@TypeId", sourceGrid.TypeId.ToString()));
+
+                System.Data.DataTable tbDetailTags = sourceGrid.DetailTags.Where(x => !string.IsNullOrEmpty(x))
+                    .ToList<string>()
+                    .ToDataTable();
+                var parameterSearchFilters = new SqlParameter("@DetailTags", SqlDbType.Structured);
+                parameterSearchFilters.Value = tbDetailTags;
+                parameterSearchFilters.TypeName = "[dbo].[StringVector]";
+                parameters.Add(parameterSearchFilters);
+
+                System.Data.DataTable tbBussinessLineTags = sourceGrid.BussinessLineTags.Where(x => !string.IsNullOrEmpty(x))
+                    .ToList<string>()
+                    .ToDataTable();
+                var parameterSearchFilters_1 = new SqlParameter("@BussinessLineTags", SqlDbType.Structured);
+                parameterSearchFilters_1.Value = tbBussinessLineTags;
+                parameterSearchFilters_1.TypeName = "[dbo].[StringVector]";
+                parameters.Add(parameterSearchFilters_1);
+
+                System.Data.DataTable tbYears = sourceGrid.Years
+                    .ToDataTable();
+                var parameterSearchFilters_2 = new SqlParameter("@Years", SqlDbType.Structured);
+                parameterSearchFilters_2.Value = tbYears;
+                parameterSearchFilters_2.TypeName = "[dbo].[IntVector]";
+                parameters.Add(parameterSearchFilters_2);
+
+                System.Data.DataTable tbluceneRegIds = luceneRegIds
+                    .ToDataTable();
+                var parameterSearchFilters_3 = new SqlParameter("@RegIds", SqlDbType.Structured);
+                parameterSearchFilters_3.Value = tbluceneRegIds;
+                parameterSearchFilters_3.TypeName = "[dbo].[IntVector]";
+                parameters.Add(parameterSearchFilters_3);
+
+                parameters.Add(new SqlParameter("@PageSize", sourceGrid.length));
+
+                parameters.Add(new SqlParameter("@SortColumn", "[A].[IssueDate]"));
+                parameters.Add(new SqlParameter("@SortDirection", "DESC"));
+
+                var PageNo = (sourceGrid.start / sourceGrid.length);
+                parameters.Add(new SqlParameter("@PageNo", PageNo));
+                var _TotalRecords = new SqlParameter("@TotalRecords", SqlDbType.Int)
+                {
+                    Direction = System.Data.ParameterDirection.Output
+                };
+                parameters.Add(_TotalRecords);
+
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] @SourceId, @TypeId, @DetailTags, @BussinessLineTags, @Years, @RegIds, @PageSize, @PageNo, @SortColumn, @SortDirection, @TotalRecords OUT", parameters.ToArray()).ToList();
+
+                int records = 0;
+                int.TryParse(_TotalRecords.Value.ToString(), out records);
+
+                return new JQueryDtaTableOutput<List<RegulationFilteredBySource>>()
+                {
+                    data = sourceProcedure,
+                    draw = sourceGrid.draw,
+                    recordsFiltered = records,
+                    recordsTotal = records
+                };
             }
-            else
+            catch (Exception ex)
             {
-                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredByTypeID] {sourceId}, {typeId}").ToList();
+                return new JQueryDtaTableOutput<List<RegulationFilteredBySource>>()
+                {
+                    error = ex.Message
+                };
             }
-            return sourceProcedure;
+
         }
 
         public List<RegulationGroupBySourceProcedure> GetAllRegulationGroupBySource(int sourceId)
@@ -340,6 +449,45 @@ namespace CompData.Dao.Regulation.Impl
                 {
                     Message = ex.Message,
                     Status = ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType)
+        {
+            try
+            {
+                string message = string.Empty;
+                List<TagMap> tags = new List<TagMap>();
+
+                if (typeId == null)
+                {
+                    tags = await (from tagM in dbContext.TagMaps
+                                  join reg in dbContext.Regulations on tagM.RegId equals reg.RegId
+                                  where reg.SourceID.Equals(sourceId) && tagM.TagType.Equals(tagType)
+                                  select tagM).ToListAsync<TagMap>();
+                }
+                else
+                {
+                    tags = await (from tagM in dbContext.TagMaps
+                                  join reg in dbContext.Regulations on tagM.RegId equals reg.RegId
+                                  where reg.SourceID.Equals(sourceId) && reg.RegTypeID.Equals(typeId) && tagM.TagType.Equals(tagType)
+                                  select tagM).ToListAsync<TagMap>();
+                }
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = tags
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = ex.Message
                 };
             }
         }
