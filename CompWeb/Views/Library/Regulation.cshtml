@@ -83,17 +83,16 @@
                         @foreach (var item in Model.SectionItems.Where(x => x.ParentId == null).OrderBy(x => x.Sequence))
                         {
                             var anchor = @item.SectionTitle.Replace(" ", "_");
-                            <div class="col-8 portlet light">
+                            <div class="col-8" style="padding:0px 15px 5px; background-color: #fff;">
                                 <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="icon-edit font-dark"></i>
-                                        <h3 id="@anchor" class="caption-subject font-dark bold uppercase">@item.SectionTitle</h3>
+                                    <div>
+                                        <h3 id="@anchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 5px;">@item.SectionTitle</h3>
                                     </div>
                                 </div>
-                                <div class="portlet-body">
+                                <div>
                                     @if (!string.IsNullOrEmpty(item.Description))
                                     {
-                                        <p>@Html.Raw(@item.Description)</p>
+                                        <p style="padding-left: 15px;">@Html.Raw(@item.Description)</p>
                                     }
                                 </div>
                                 @{
@@ -104,17 +103,16 @@
                                     @foreach (var itemChild in filterData)
                                     {
                                         var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
-                                        <div class="col-8 portlet light">
+                                        <div class="col-8" style="padding:0px 15px 5px; background-color: #fff;">
                                             <div class="portlet-title">
                                                 <div class="caption">
-                                                    <i class="icon-edit font-dark"></i>
-                                                    <h4 id="@childAnchor" class="caption-subject font-dark bold uppercase">@itemChild.SectionTitle</h4>
+                                                    <h4 id="@childAnchor" class="bold" style="color: #404040;font-size:14px;padding: 0px 15px 5px;">@itemChild.SectionTitle</h4>
                                                 </div>
                                             </div>
-                                            <div class="portlet-body">
+                                            <div>
                                                 @if (!string.IsNullOrEmpty(item.Description))
                                                 {
-                                                    <p>@Html.Raw(@itemChild.Description)</p>
+                                                    <p style="padding-left: 15px;">@Html.Raw(@itemChild.Description)</p>
                                                 }
                                             </div>
                                         </div>
@@ -145,8 +143,7 @@
                             </div>
                             <div class="portlet-body">
                                 <ul>
-                                    <li style="        list-style: disc
-">
+                                    <li style="list-style: disc">
                                         1 The Saudi Arabian Financial Entities Ethical
                                         Red Teaming Framework
                                         <ul>
