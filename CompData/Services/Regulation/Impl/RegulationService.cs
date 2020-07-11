@@ -16,7 +16,8 @@ namespace CompData.Services.Regulation.Impl
     public class RegulationService : IRegulationService
     {
         private readonly IRegulationDao regulationDao;
-        public RegulationService(IRegulationDao regulationDao) {
+        public RegulationService(IRegulationDao regulationDao)
+        {
             this.regulationDao = regulationDao;
         }
 
@@ -37,7 +38,8 @@ namespace CompData.Services.Regulation.Impl
                 viewModel.TypeId = source.TypeId;
                 viewModel.TypeTitle = source.TypeName;
                 viewModel.TotalRegulation = source.Regcount;
-                viewModel.RegulationsList = groupBySourceProcedures.Where(x => x.TypeId.Equals(source.TypeId)).Select(x => new RegulationListItem { 
+                viewModel.RegulationsList = groupBySourceProcedures.Where(x => x.TypeId.Equals(source.TypeId)).Select(x => new RegulationListItem
+                {
                     RegulationId = x.RegId,
                     RegulationTitle = x.RegTitle,
                     Views = x.Views
@@ -81,9 +83,42 @@ namespace CompData.Services.Regulation.Impl
                 regulationViewModels.RegTypeId = viewModel.RegTypeId;
                 regulationViewModels.RegTypeName = viewModel.RegTypeName;
                 regulationViewModels.Summary = viewModel.Summary;
-                regulationViewModels.SectionItems = sectionItems; 
+                regulationViewModels.SectionItems = sectionItems;
             }
-            
+
+            return regulationViewModels;
+        }
+
+        public SelectedRegulationViewModel GetSelectedRegSummary(int regulationId)
+        {
+            SelectedRegulationViewModel regulationViewModels = new SelectedRegulationViewModel();
+            if (regulationId != 0)
+            {
+                List<SelectedRegulationProcedure> selectedRegulationDetails = regulationDao.GetSelectedRegSummary(regulationId);
+                List<SectionItem> sectionItems = new List<SectionItem>();
+                foreach (var x in selectedRegulationDetails)
+                {
+                    SectionItem sectionItem = new SectionItem();
+                    sectionItem.SectionId = x.SectionId;
+                    sectionItem.SectionTitle = x.SectionTitle;
+                    sectionItem.Description = x.RegDescription;
+                    sectionItem.ParentId = x.ParentId;
+                    sectionItem.Sequence = x.Sequence;
+
+                    sectionItems.Add(sectionItem);
+                }
+
+                var viewModel = selectedRegulationDetails.FirstOrDefault();
+                regulationViewModels.RegId = viewModel.RegId;
+                regulationViewModels.RegTitle = viewModel.RegTitle;
+                regulationViewModels.SourceId = viewModel.SourceId;
+                regulationViewModels.SourceTitle = viewModel.FullName;
+                regulationViewModels.RegTypeId = viewModel.RegTypeId;
+                regulationViewModels.RegTypeName = viewModel.RegTypeName;
+                regulationViewModels.Summary = viewModel.Summary;
+                regulationViewModels.SectionItems = sectionItems;
+            }
+
             return regulationViewModels;
         }
 
@@ -93,11 +128,24 @@ namespace CompData.Services.Regulation.Impl
             if (regulationId != 0)
             {
                 List<SelectedRegulationRequirement> selectedRegRequirementDetails = regulationDao.GetSelectedRegRequirement(regulationId);
-                List<SectionItem> sectionItems = new List<SectionItem>();
+                List<SectionItemRequirement> sectionItems = new List<SectionItemRequirement>();
 
-                var viewModel = selectedRegRequirementDetails.FirstOrDefault();
-                requirementViewModels.CommentID = viewModel.CommentID;
-                requirementViewModels.Requirement = viewModel.Requirement;
+                foreach (var x in selectedRegRequirementDetails)
+                {
+                    SectionItemRequirement sectionItem = new SectionItemRequirement();
+                    sectionItem.CommentID = x.CommentID;
+                    sectionItem.Requirement = x.Requirement;
+
+                    sectionItems.Add(sectionItem);
+                }
+
+                if (sectionItems.Count > 0)
+                {
+                    var viewModel = selectedRegRequirementDetails.FirstOrDefault();
+                    requirementViewModels.RegID = viewModel.RegID;
+                    requirementViewModels.CommentTypeID = viewModel.CommentTypeID;
+                    requirementViewModels.SectionItemRequirement = sectionItems; 
+                }
             }
 
             return requirementViewModels;
@@ -110,7 +158,7 @@ namespace CompData.Services.Regulation.Impl
 
         public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId)
         {
-            return this.regulationDao.GetSubscribedRegulationTypeByUserId(userId,sourceId);
+            return this.regulationDao.GetSubscribedRegulationTypeByUserId(userId, sourceId);
         }
 
         public List<Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId)

@@ -22,6 +22,7 @@ namespace CompData.Services.Regulation
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds);
         public Task<Result> SaveRegulation(SaveRegulationViewModel viewModel);
         public SelectedRegulationRequirementViewModel GetSelectedRegRequirement(int regulationId);
+        public SelectedRegulationViewModel GetSelectedRegSummary(int regulationId);
 
     }
 }

@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200702223239_SelectRegRequirementUpdate")]
+    partial class SelectRegRequirementUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -863,10 +865,10 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.SelectedRegulationRequirement", b =>
                 {
-                    b.Property<int?>("CommentID")
+                    b.Property<int>("CommentID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CommentTypeID")
+                    b.Property<int>("CommentTypeID")
                         .HasColumnType("int");
 
                     b.Property<int>("RegID")

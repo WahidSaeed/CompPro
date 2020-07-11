@@ -78,5 +78,11 @@ namespace CompWeb.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public IActionResult GetSummary(int id)
+        {
+            var model = this.regulationService.GetSelectedRegSummary(id);
+            return View(model);
+        }
     }
 }

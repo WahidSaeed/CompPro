@@ -18,13 +18,37 @@
         .validation {
             outline: 1px solid red !important;
         }
+
+        .SubOn {
+            background-color: #f28c11;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #f28c11;
+            color: #fff;
+            outline: none;
+        }
+
+        .Suboff {
+            background-color: #fff;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #f28c11;
+            color: #f28c11;
+            outline: none;
+        }
     </style>
 }
 
-<!-- BEGIN PAGE HEAD-->
-<div class="page-head">
+
+<!-- BEGIN PAGE CONTENT BODY -->
+<div class="page-content" style="background:#ffffff">
     <div class="container">
-        <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
 
             <ul class="page-breadcrumb breadcrumb">
@@ -35,11 +59,11 @@
                         <h3>
                             @if (source.SourceId.Equals(ViewBag.SourceSelected))
                             {
-                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData"><b>@source.FullName</b></a>
+                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData" style="color: #22793e;font-size: 15px;"><b><u>@source.FullName</u></b></a>
                             }
                             else
                             {
-                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData">@source.FullName</a>
+                                <a asp-controller="Home" asp-action="Index" asp-all-route-data="routeData" style="font-size:15px;color:#b2b1aa;font-weight:500">@source.FullName</a>
                             }
                             <small>|</small>
                         </h3>
@@ -47,13 +71,6 @@
                 }
             </ul>
         </div>
-        <!-- END PAGE TITLE -->
-    </div>
-</div>
-<!-- END PAGE HEAD-->
-<!-- BEGIN PAGE CONTENT BODY -->
-<div class="page-content">
-    <div class="container">
         <!-- BEGIN PAGE CONTENT INNER -->
         <div class="page-content-inner">
             <div class="search-page search-content-2">
@@ -63,20 +80,19 @@
                         {
                             <div class="col-md-6">
                                 <div class="portlet light">
-                                    <div class="portlet-title">
+                                    <div class="portlet-title" style="border-bottom: 3px solid #bfbfbf;">
                                         <div class="caption">
-                                            <i class="icon-edit font-dark"></i>
-                                            <span class="caption-subject font-dark bold uppercase">@sourceItem.TypeTitle</span>
+                                            <span class="bold uppercase" style="color: #22793e;font-size: 14px;">@sourceItem.TypeTitle</span>
                                         </div>
-                                        <div class="actions">
-                                            <button type="button" class="btn btn-default mt-ladda-btn ladda-button btn-circle" data-type="@sourceItem.TypeId" data-source="@ViewBag.DefaultSourceId" data-regulation-modal data data-style="slide-down" data-spinner-color="#333">
+                                        <div style="float: right; display: inline-block;">
+                                            <button type="button" data-type="@sourceItem.TypeId" data-source="@ViewBag.DefaultSourceId" data-regulation-modal data data-style="slide-down" data-spinner-color="#333" style="background-color: #fff;border-radius: 25px!important;padding: 3px 9px;font-size: 13px;line-height: 1.5;box-shadow: none!important;border: 1px solid #f28c11;color: #f28c11;outline: none;">
                                                 <span class="ladda-label">
                                                     <i class="fa fa-plus-circle"></i>
                                                 </span>
                                                 <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
                                             </button>
                                             @{
-                                                var cssSubsStyle = subscribedRegType.Contains(sourceItem.TypeId) ? "btn btn-info mt-ladda-btn ladda-button btn-circle" : "btn btn-default mt-ladda-btn ladda-button btn-circle";
+                                                var cssSubsStyle = subscribedRegType.Contains(sourceItem.TypeId) ? "SubOn" : "Suboff";
                                             }
                                             <button type="button" class="@cssSubsStyle" data-style="slide-down" data-spinner-color="#333" data-type="@sourceItem.TypeId" data-source="@ViewBag.DefaultSourceId" data-subs>
                                                 <span class="ladda-label">
@@ -91,11 +107,11 @@
                                             @foreach (var Regulation in sourceItem.RegulationsList.OrderByDescending(x => x.Views))
                                             {
                                                 <li>
-                                                    <a href="Library/Regulation/@Regulation.RegulationId">@Regulation.RegulationTitle</a>
+                                                    <a href="Library/Regulation/@Regulation.RegulationId" style="font-size:12px;color:#404040">@Regulation.RegulationTitle</a>
                                                 </li>
                                             }
                                         </ul>
-                                        <small><a href="Library/Type/@ViewBag.DefaultSourceId-@sourceItem.TypeId">See all @sourceItem.TotalRegulation documents</a></small>
+                                        <small><a href="Library/Type/@ViewBag.DefaultSourceId-@sourceItem.TypeId" style="font-size:12px;color:#a9a5bf">See all @sourceItem.TotalRegulation documents</a></small>
                                     </div>
                                 </div>
                             </div>
@@ -103,11 +119,10 @@
                     </div>
                     <div class="col-md-4">
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
+                        <div class="portlet light " style="background: #f0f0f0;">
+                            <div class="portlet-title" style="border-bottom: 3px solid #bfbfbf;">
                                 <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Recently Updated</span>
+                                    <span class="bold uppercase" style="color: #22793e;font-size: 14px;">Recently Updated</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -115,7 +130,7 @@
                                     @foreach (var Regulation in updatedRegulation)
                                     {
                                         <li>
-                                            <a href="Library/Regulation/@Regulation.RegId">@Regulation.RegulationTitle</a>
+                                            <a href="Library/Regulation/@Regulation.RegId" style="font-size:12px;color:#404040">@Regulation.RegulationTitle</a>
                                         </li>
                                     }
                                 </ul>
@@ -131,25 +146,25 @@
 </div>
 <div id="modalSaveRegulation" class="modal fade modal-scroll in" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" style="width: 400px">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: #f0f0f0;">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Create Regulation</h4>
+                <h3 class="form-title" style="color: #227937;text-align: center;font-weight: 600;">Create Regulation</h3>
+                <p style="color: #227937;text-align: center;margin-top:-5px"> Enter Regulation Description </p>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0px 27px 0px 27px">
                 <form role="form">
                     <input type="hidden" id="input-type" />
                     <input type="hidden" id="input-source" />
                     <div class="form-body">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Reference Number" id="input-reference">
+                            <input type="text" class="form-control" placeholder="Reference Number" id="input-reference" style="border-radius: 4px !important;">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Title" id="input-title">
+                            <input type="text" class="form-control" placeholder="Title" id="input-title" style="border-radius: 4px !important;">
                         </div>
                         <div class="form-group">
                             <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                <input type="text" class="form-control" readonly="" placeholder="Issue Date" id="input-issueDate">
+                                <input type="text" class="form-control" readonly="" placeholder="Issue Date" id="input-issueDate" style="background-color: #ffffff;border-radius: 4px !important;">
                                 <span class="input-group-btn">
                                     <button class="btn default" type="button">
                                         <i class="fa fa-calendar"></i>
@@ -159,15 +174,15 @@
                         </div>
                         <div class="form-group">
                             <div class="mt-checkbox-inline">
-                                <label class="mt-checkbox">
-                                    <input type="checkbox" id="input-isFinal"> This is final version
-                                    <span></span>
+                                <label class="mt-checkbox" style="color: #227937">
+                                    <input type="checkbox" id="input-isFinal">This is the final version
+                                    <span style="border: 1px solid #919191;"></span>
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                <input type="text" class="form-control" readonly="" placeholder="Effective Date" id="input-effectiveDate">
+                                <input type="text" class="form-control" readonly="" placeholder="Effective Date" id="input-effectiveDate" style="background-color: #ffffff;border-radius: 4px !important;">
                                 <span class="input-group-btn">
                                     <button class="btn default" type="button">
                                         <i class="fa fa-calendar"></i>
@@ -178,9 +193,10 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Close</button>
-                <button type="button" class="btn green" data-save-regulation>Save Regulation</button>
+            <div style="background-color: transparent;clear: both;border: 0;padding: 0 60px 27px;margin-left: -30px;margin-right: -30px;">
+                <button type="button" class="btn" data-save-regulation style="background: #02502e;color: white;width: 342px;margin-top: 10px">Submit</button>
+                <button type="button" data-dismiss="modal" class="btn" style="background: #bf9000;color: white;width: 342px;margin-top: 10px">Cancel</button>
+
             </div>
         </div>
     </div>
@@ -205,8 +221,8 @@
 <!-- END PAGE CONTENT BODY -->
 
 @section Scripts {
-    <script src="../assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
-    <script src="../assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
+    <script src="~/assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
     <script src="~/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
     <script src="~/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
     <script src="~/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
@@ -270,7 +286,6 @@
         });
 
         $('[data-subs]').click(function () {
-            debugger;
             var btnObj = this;
             var typeId = $(btnObj).attr('data-type');
             var sourceId = $(btnObj).attr('data-source');
@@ -283,13 +298,12 @@
                 },
                 function (response) {
                     if (response.status === 200) {
-                        debugger;
                         toastr.success(response.message);
-                        if ($(btnObj).css('btn-default') != null) {
-                            $(btnObj).removeClass('btn-default').addClass('btn-info');
+                        if ($(btnObj).css('SubOn') != null) {
+                            $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {
-                            $(btnObj).removeClass('btn-info').addClass('btn-default');
+                            $(btnObj).removeClass('Suboff').addClass('SubOn');
                         }
                     }
                     else {
@@ -298,7 +312,5 @@
                 }, "json")
                 .always(function () { l.stop(); });
         });
-
-
     </script>
 }

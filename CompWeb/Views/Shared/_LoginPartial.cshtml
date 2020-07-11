@@ -3,37 +3,39 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
 @*<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul>*@
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        </li>
+        <li class="nav-item">
+            <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+    </ul>*@
 
-    <div class="top-menu">
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <ul class="nav navbar-nav pull-right">
-                <!-- BEGIN NOTIFICATION DROPDOWN -->
-                <!-- DOC: Apply "dropdown-hoverable" class after "dropdown" and remove data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to enable hover dropdown mode -->
-                <!-- DOC: Remove "dropdown-hoverable" and add data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to the below A element with dropdown-toggle class -->
+<div class="top-menu">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a href="/Account/Login/Logout" style="color:#02502e">
+            Log Out
+        </a>
+        @*<ul class="nav navbar-nav pull-right">
+                 BEGIN NOTIFICATION DROPDOWN
+                 DOC: Apply "dropdown-hoverable" class after "dropdown" and remove data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to enable hover dropdown mode
+                 DOC: Remove "dropdown-hoverable" and add data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to the below A element with dropdown-toggle class
                 <li class="dropdown dropdown-extended dropdown-notification dropdown-dark" id="header_notification_bar">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <i class="icon-bell"></i>
@@ -143,8 +145,8 @@ else
                         </li>
                     </ul>
                 </li>
-                <!-- END NOTIFICATION DROPDOWN -->
-                <!-- BEGIN TODO DROPDOWN -->
+                 END NOTIFICATION DROPDOWN
+                 BEGIN TODO DROPDOWN
                 <li class="dropdown dropdown-extended dropdown-tasks dropdown-dark" id="header_task_bar">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <i class="icon-calendar"></i>
@@ -255,11 +257,11 @@ else
                         </li>
                     </ul>
                 </li>
-                <!-- END TODO DROPDOWN -->
+                 END TODO DROPDOWN
                 <li class="droddown dropdown-separator">
                     <span class="separator"></span>
                 </li>
-                <!-- BEGIN INBOX DROPDOWN -->
+                 BEGIN INBOX DROPDOWN
                 <li class="dropdown dropdown-extended dropdown-inbox dropdown-dark" id="header_inbox_bar">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <span class="circle">3</span>
@@ -339,8 +341,8 @@ else
                         </li>
                     </ul>
                 </li>
-                <!-- END INBOX DROPDOWN -->
-                <!-- BEGIN USER LOGIN DROPDOWN -->
+                 END INBOX DROPDOWN
+                 BEGIN USER LOGIN DROPDOWN
                 <li class="dropdown dropdown-user dropdown-dark">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <img alt="" class="img-circle" src="../assets/layouts/layout3/img/avatar9.jpg">
@@ -348,25 +350,23 @@ else
                     </a>
                     <ul class="dropdown-menu dropdown-menu-default">
                         <li>
-                            <a href="/Account/Login/Logout">
-                                <i class="icon-key"></i> Log Out
-                            </a>
+
                         </li>
                     </ul>
                 </li>
-                <!-- END USER LOGIN DROPDOWN -->
-            </ul>
-        }
-        else
-        {
-            <ul class="nav navbar-nav pull-right">
-                <li>
-                    <a asp-area="Account" asp-controller="Login" class="btn btn-default">Sign In</a>
-                </li>
-                <li>
-                    <a asp-area="Account" asp-controller="Registration" class="btn btn-primary">Sign Up</a>
-                </li>
-            </ul>
-        }
+                 END USER LOGIN DROPDOWN
+            </ul>*@
+    }
+    else
+    {
+        <ul class="nav navbar-nav pull-right">
+            <li>
+                <a asp-area="Account" asp-controller="Login" class="btn btn-default">Sign In</a>
+            </li>
+            <li>
+                <a asp-area="Account" asp-controller="Registration" class="btn btn-primary">Sign Up</a>
+            </li>
+        </ul>
+    }
 
-    </div>
+</div>

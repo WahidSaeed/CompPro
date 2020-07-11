@@ -24,7 +24,6 @@ namespace CRMWeb.Areas.Account.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IEmailService _emailService;
         private readonly ISystemAuditService _systemAuditService;
-        private readonly Utility _utility;
 
         public LoginController(SignInManager<ApplicationUser> signInManager,
             ILogger<LoginController> logger,

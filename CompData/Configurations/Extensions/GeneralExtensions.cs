@@ -183,7 +183,7 @@ public static class Extensions
         {
             return Value.ToString("n0");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return "0";
         }
@@ -241,7 +241,7 @@ public static class EnumExt
         {
             return (T)System.Enum.Parse(typeof(T), Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return (T)System.Enum.Parse(typeof(T), "None");
         }
@@ -268,7 +268,7 @@ public static class EnumExt
                 return "None";
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
             return "None";
@@ -301,7 +301,7 @@ public static class EnumExt
             return attribute == null ? value.ToString() : attribute.Description;
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }

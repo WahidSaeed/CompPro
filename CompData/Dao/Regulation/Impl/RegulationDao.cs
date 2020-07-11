@@ -69,9 +69,21 @@ namespace CompData.Dao.Regulation.Impl
             return regulationProcedures;
         }
 
+        public List<SelectedRegulationProcedure> GetSelectedRegSummary(int regulationId)
+        {
+            List<SelectedRegulationProcedure> regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulation {regulationId} ").ToList();
+
+            var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
+            regulation.Views += 1;
+            this.dbContext.Entry<CompData.Models.Library.Regulation>(regulation).State = EntityState.Modified;
+            this.dbContext.SaveChanges();
+
+            return regulationProcedures;
+        }
+
         public List<SelectedRegulationRequirement> GetSelectedRegRequirement(int regulationId)
         {
-            List<SelectedRegulationRequirement> requirementProcedures = this.dbContext.Set<SelectedRegulationRequirement>().FromSqlRaw($"EXEC Library.GetAllRegRequirement {regulationId}, '4' ").ToList();
+            List<SelectedRegulationRequirement> requirementProcedures = this.dbContext.Set<SelectedRegulationRequirement>().FromSqlRaw($"EXEC Library.GetAllRegRequirement {regulationId} ").ToList();
 
             var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
             regulation.Views += 1;
