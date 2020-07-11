@@ -2,7 +2,7 @@
 @inject CRMData.Configurations.Extensions.Utility utility
 @{
     Layout = null;
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "BIBLIOTECH";
     string termsCondition = utility.GetAppSetting(AppSettings.TermsAndCondition);
 }
 
@@ -19,56 +19,58 @@
     <link href="~/css/begin.page.level.plugins.min.css" rel="stylesheet" type="text/css" />
     <link href="~/css/begin.theme.global.style.min.css" rel="stylesheet" id="style_components" type="text/css" />
     <link href="~/assets/pages/css/login-4.min.css" rel="stylesheet" type="text/css" />
-
+    <link href="~/assets/customcss/custom.css" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="favicon.ico" />
+    <style type="text/css">
+        .login .mt-checkbox > span:after {
+            border-color: darkgrey;
+        }
+    </style>
 </head>
 
 <body class=" login">
     <div class="logo">
-        <a href="index.html">
-            @*<img src="https://www.tpllife.com/wp-content/uploads/2018/06/TPL-Life.png" width="200" alt="">*@
-        </a>
     </div>
-    <div class="content">
+    <div class="logo">
+    </div>
+    <div class="content" style="background: #f0f0f0;min-height: 400px;">
         <!-- BEGIN REGISTRATION FORM -->
         <div asp-validation-summary="All" class="text-danger"></div>
         <form class="create-account" method="post">
-            <h3>@ViewData["Title"]</h3>
-            <p> Enter your account details below: </p>
+            <h3 class="form-title" style="color: #227937;text-align: center;font-weight: 600;">@ViewData["Title"]</h3>
+            <p style="color: #227937;text-align: center;"> Get Started </p>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9" asp-for="@Model.UserName"></label>
                 <div class="input-icon">
-                    <i class="fa fa-user"></i>
-                    <input class="form-control placeholder-no-fix" asp-for="@Model.UserName" autocomplete="off" placeholder="Username" />
+                    <input class="form-control placeholder-no-fix" asp-for="@Model.UserName" autocomplete="off" placeholder="Username" style="text-align:center" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9" asp-for="@Model.Password"></label>
                 <div class="input-icon">
-                    <i class="fa fa-lock"></i>
-                    <input class="form-control placeholder-no-fix" asp-for="@Model.Password" autocomplete="off" id="register_password" placeholder="Password" />
+                    <input class="form-control placeholder-no-fix" asp-for="@Model.Password" autocomplete="off" id="register_password" placeholder="Password" style="text-align:center" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9" asp-for="@Model.ConfirmPassword">Re-type Your Password</label>
                 <div class="controls">
                     <div class="input-icon">
-                        <i class="fa fa-check"></i>
-                        <input class="form-control placeholder-no-fix" asp-for="@Model.ConfirmPassword" autocomplete="off" placeholder="Re-type Your Password" />
+                        <input class="form-control placeholder-no-fix" asp-for="@Model.ConfirmPassword" autocomplete="off" placeholder="Re-type Your Password" style="text-align:center" />
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="mt-checkbox mt-checkbox-outline">
+                <label class="mt-checkbox" style="color: #227937">
                     <input type="checkbox" required name="tnc" /> I agree to the
-                    <a data-toggle="modal" href="#basic">Terms of Service</a>
-                    <span></span>
+                    <a data-toggle="modal" href="#basic" style="color:#368549"><u>Terms & Conditions</u></a>
+                    <span style="border: 1px solid #919191;margin-top:7px"></span>
                 </label>
                 <div id="register_tnc_error"> </div>
             </div>
             <div class="form-actions">
-                <a id="register-back-btn" asp-controller="Login" class="btn red btn-outline"> Back </a>
-                <button type="submit" id="register-submit-btn" class="btn green pull-right"> Sign Up </button>
+                <button type="submit" id="register-submit-btn" class="btn" style="background: #bf9000;color: white;width: 300px;margin-top: 10px"> Sign Up </button>
+                <a id="register-back-btn" asp-controller="Login" class="btn" style="background: #872410;color: white;width: 300px;margin-top: 10px"> Back </a>
+
             </div>
         </form>
         <div class="modal fade in" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none; padding-right: 17px;">

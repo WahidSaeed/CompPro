@@ -30,5 +30,7 @@ namespace CompData.Dao.Regulation
         public Task<Result> SetTagsGroup(List<string> tag, string tagGroupId, int regId, int secId, int descId);
         public Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType);
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
+        public List<SelectedRegulationRequirement> GetSelectedRegRequirement(int regulationId);
+        public List<SelectedRegulationProcedure> GetSelectedRegSummary(int regulationId);
     }
 }

@@ -139,7 +139,7 @@ namespace CRMData.Dao.SystemAudit.Impl
 
                 return appIP.IPType == IPType.WhiteList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

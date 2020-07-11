@@ -1,8 +1,10 @@
 ﻿@using CompData.ViewModels.Procedure.Library
+@using CompData.ViewModels.Library
 @model List<SelectedRegulationProcedure>
 @{
     var defaultModel = Model.FirstOrDefault();
     ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
+    var requirments = ViewBag.Requirments as SelectedRegulationRequirementViewModel;
 }
 
 @section Styles {
@@ -16,6 +18,30 @@
             font-weight: bold;
         }
 
+        .SubOn {
+            background-color: #f28c11;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #f28c11;
+            color: #fff;
+            outline: none;
+        }
+
+        .btnclass {
+            background-color: #fff;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #b9b9b9;
+            color: #b9b9b9;
+            outline: none;
+        }
+
         .tag-highlight {
             font-weight: 400;
             background: #faebd7;
@@ -23,53 +49,52 @@
             border: 1px solid #ffcb85;
         }
     </style>
+
 }
 
 <!-- BEGIN PAGE HEAD-->
-<div class="page-head">
-    <div class="container">
-        <!-- BEGIN PAGE TITLE -->
-        <div class="page-title">
-            <ul class="page-breadcrumb breadcrumb">
-                <li>
-                    <a href="/">Home</a>
-                    <i class="fa fa-circle"></i>
-                </li>
-                <li>
-                    <a href="../Source/@defaultModel.SourceId">@defaultModel.FullName</a>
-                    <i class="fa fa-circle"></i>
-                </li>
-                <li>
-                    <span>@defaultModel.RegTitle</span>
-                </li>
-            </ul>
-            <h1>
-                @defaultModel.RegTitle
-            </h1>
-            <div class="actions">
-                @*@{
-                    var cssSubsStyle = subscribedRegType.Contains(sourceItem.TypeId) ? "btn btn-info mt-ladda-btn ladda-button btn-circle" : "btn btn-default mt-ladda-btn ladda-button btn-circle";
-                }*@
-                <button type="button" class="btn btn-info mt-ladda-btn ladda-button btn-circle" data-style="slide-down" data-spinner-color="#333" data-regId="@defaultModel.RegId" data-subs>
-                    <span class="ladda-label">
-                        <i class="fa fa-rss"></i>
-                    </span>
-                    <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
-                </button>
-            </div>
-        </div>
-        <!-- END PAGE TITLE -->
-    </div>
-</div>
-<!-- END PAGE HEAD-->
-<!-- BEGIN PAGE CONTENT BODY -->
-<div class="page-content">
+<div class="page-content" style="background:#ffffff">
     <div class="container">
         <!-- BEGIN PAGE CONTENT INNER -->
         <div class="page-content-inner">
             <div class="search-page search-content-2">
                 <div class="row">
                     <div class="col-md-8 portlet light ">
+                        <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
+                            <h3>
+                                <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>@defaultModel.RegTitle</b></a>
+                            </h3>
+                            <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                                <li>
+                                    <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <a href="../Source/@defaultModel.SourceId" style="color: #a79b9b;font-size: 13px;">@defaultModel.FullName</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <a href="../Type/@defaultModel.SourceId-@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
+                                </li>
+                            </ul>
+                            <div style="float: right;margin-top: -47px !important;">
+                                <button type="button" class="btnclass">
+                                    <a href="#RequirementMod" data-toggle="modal" style="color:#b9b9b9">
+                                        <i class="fa fa-check-square-o"></i>
+                                    </a>
+                                    <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                                </button>
+                                <button type="button" class="SubOn" data-style="slide-down" data-spinner-color="#333" data-type="1" data-source="1" data-subs="">
+                                    <span class="ladda-label">
+                                        <i class="fa fa-rss"></i>
+                                    </span>
+                                    <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                                </button>
+
+                            </div>
+                        </div>
+
+
                         @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                         {
                             var anchor = @item.SectionTitle.Replace(" ", "_");
@@ -111,19 +136,25 @@
                             </div>
                         }
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="background-color: #f0f0f0">
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Table of Content</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Search within Current Document</span>
                                 </div>
-                                @*<div class="actions">
-                                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
-                                            <i class="fa fa-rss"></i>
-                                        </a>
-                                    </div>*@
+                            </div>
+                            <div class="portlet-body">
+                                <input type="text" class="form-control" placeholder="Enter search terms here" style="border-radius: 4px !important;">
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                        <!-- BEGIN PORTLET-->
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px">
+                                    <span class="bold">Sections</span>
+                                </div>
                             </div>
                             <div class="portlet-body">
                                 <div id="tree_1" class="tree-demo jstree jstree-1 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j1_3" aria-busy="false" style="overflow: hidden;">
@@ -166,35 +197,39 @@
                         </div>
                         <!-- END PORTLET-->
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Filter by Tags</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Filter by Tags</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <button class="btn default">anti-money laundering</button>
-                                <button class="btn default">account opening</button>
-                                <button class="btn default">advertising</button>
-                                <button class="btn default">agent banking</button>
-                                <button class="btn default">agreement</button>
-                                <button class="btn default">risk management</button>
+                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">
+                                    anti-money laundering
+                                </button>
+                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">account opening</button>
+                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">advertising</button>
+                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">agent banking</button>
+                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">agreement</button>
+                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">atm</button>
+                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">audit</button>
+                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">authentication</button>
                             </div>
                         </div>
                         <!-- END PORTLET-->
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Related Regulations</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Related Regulations</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
                                 <ul>
-                                    <li style="list-style: disc;">Rules on Management of Problem Loans</li>
-                                    <li style="list-style: disc;">Account Opening Rules, 5th</li>
+                                    <li style="list-style:disc">Rules on Management of Problem Loans</li>
+                                    <li style="list-style: disc">Account Opening Rules, 5th</li>
+                                    <li style="list-style:disc">Enhancement In 18th Circular</li>
+                                    <li style="list-style: disc">Bank Holiday at 1st August</li>
                                 </ul>
                             </div>
                         </div>
@@ -203,10 +238,95 @@
                 </div>
             </div>
         </div>
+
+
         <!-- END PAGE CONTENT INNER -->
     </div>
 </div>
 <!-- END PAGE CONTENT BODY -->
+<div class="modal fade bs-modal-lg" id="SummaryMod" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div style="padding: 15px;">
+                <div class="page-title" style="margin-top: -20px;">
+                    <h3>
+                        <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>@defaultModel.RegTitle</b></a>
+                    </h3>
+                    <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                        <li>
+                            <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Source/@defaultModel.SourceId" style="color: #a79b9b;font-size: 13px;">@defaultModel.FullName</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Type/@defaultModel.SourceId-@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-body">@defaultModel.Summary </div>
+            <div style="text-align: center;">
+                <button type="button" data-dismiss="modal" class="btn" style="background: #02502e; color: white; width: 342px; margin-bottom: 20px;">Cancel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade bs-modal-lg" id="RequirementMod" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div style="padding: 15px;">
+                <div class="page-title" style="margin-top: -20px;">
+                    <h3>
+                        <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>@defaultModel.RegTitle</b></a>
+                    </h3>
+                    <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                        <li>
+                            <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Source/@defaultModel.SourceId" style="color: #a79b9b;font-size: 13px;">@defaultModel.FullName</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Type/@defaultModel.SourceId-@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-body">
+
+                @if (requirments.SectionItemRequirement != null)
+                {
+                    @foreach (var itemChild in requirments.SectionItemRequirement)
+                    {
+
+                        <span>@(itemChild.CommentID + ".   " + itemChild.Requirement)</span><hr />
+                    }
+                }
+                else
+                {
+
+                    <span>No requirement linked</span>
+
+                }
+
+            </div>
+            <div style="text-align: center;">
+                <button type="button" data-dismiss="modal" class="btn" style="background: #02502e; color: white; width: 342px; margin-bottom: 20px;">Cancel</button>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 @section Scripts {
     <!-- BEGIN PAGE LEVEL PLUGINS -->

@@ -63,6 +63,7 @@ namespace CompWeb.Controllers
         public IActionResult Regulation(int id)
         {
             var model = this.regulationService.GetSelectedRegulation(id);
+            ViewBag.Requirments = this.regulationService.GetSelectedRegRequirement(id);
             return View(model);
         }
 
@@ -74,6 +75,7 @@ namespace CompWeb.Controllers
             return View(model);
         } 
         #endregion
+
 
         public async Task<IActionResult> SelectSources() 
         {
@@ -151,5 +153,11 @@ namespace CompWeb.Controllers
         } 
         #endregion
 
+        [HttpPost]
+        public IActionResult GetSummary(int id)
+        {
+            var model = this.regulationService.GetSelectedRegSummary(id);
+            return View(model);
+        }
     }
 }

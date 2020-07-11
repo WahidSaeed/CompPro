@@ -15,13 +15,10 @@ namespace CompData.Models.Library
         public Guid UserId { get; set; }
         public int RegTypeId { get; set; }
         public int RegSourceId { get; set; }
-
         [ForeignKey("UserId")]
         public virtual ApplicationUser ApplicationUser { get; set; }
-
         [ForeignKey("RegTypeId")]
         public virtual RegulationType RegulationType { get; set; }
-
         [ForeignKey("RegSourceId")]
         public virtual RegulationSource RegulationSource { get; set; }
     }

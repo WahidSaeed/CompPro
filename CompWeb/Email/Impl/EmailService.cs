@@ -38,7 +38,7 @@ namespace CompWeb.Configurations.Email.Impl
                 string htmlBody = GetHTMLFromEndPoint("EmailConfirmationToken", code);
                 sendEmail(userEmail, subject: "Email Confirmation for The Account", body: htmlBody);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -54,7 +54,7 @@ namespace CompWeb.Configurations.Email.Impl
                 string htmlBody = GetHTMLFromEndPoint("ForgetPasswordToken", code);
                 sendEmail(userEmail, subject: "Reset Password Access Token", body: htmlBody);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -91,7 +91,7 @@ namespace CompWeb.Configurations.Email.Impl
             {
                 sendEmail(new List<string>() { emailsToSend }, subject, body);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -123,7 +123,7 @@ namespace CompWeb.Configurations.Email.Impl
                     client.Dispose();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

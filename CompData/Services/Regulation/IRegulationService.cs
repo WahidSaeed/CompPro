@@ -25,6 +25,8 @@ namespace CompData.Services.Regulation
         public Result SubscribeRegulationByUser(Guid userID, int regId);
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds);
         public Task<Result> SaveRegulation(SaveRegulationViewModel viewModel);
+        public SelectedRegulationRequirementViewModel GetSelectedRegRequirement(int regulationId);
+        public SelectedRegulationViewModel GetSelectedRegSummary(int regulationId);
         public Task<Result> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel);
         public Task<Result> GetTagsGroup(string tagGroupId);
         public Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId);
