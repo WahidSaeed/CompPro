@@ -1,7 +1,7 @@
 ﻿@using CompData.Models.Library;
 @{
-    //var data = Model.FirstOrDefault();
-    //ViewData["Title"] = "Type - " + data.FullName;
+    var data = Model.FirstOrDefault();
+    ViewData["Title"] = "Type - " + data.FullName;
 
     var detailTag = ViewBag.DetailTag as List<TagMap>;
     var bussinessLineTag = ViewBag.BussinessLineTag as List<TagMap>;
@@ -41,8 +41,7 @@
                         <!-- BEGIN PAGE TITLE -->
                         <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
                             <h3 style="color: #22793e;font-size: 14px;">
-                                @*<b>@data.TypeName</b>*@
-                                <b>ABC</b>
+                                <b>@data.TypeName</b>
                             </h3>
                             <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
                                 <li>
@@ -50,12 +49,10 @@
                                     <span>/</span>
                                 </li>
                                 <li>
-                                    @*<a href="/Library/Source/@data.SourceId" style="color: #a79b9b;font-size: 13px;">@data.FullName</a>*@
-                                    <a href="/Library/Source/" style="color: #a79b9b;font-size: 13px;">SDJS</a>
+                                    <a href="/Library/Source/@data.SourceId" style="color: #a79b9b;font-size: 13px;">@data.FullName</a>
                                     <span>/</span>
                                 </li>
                                 <li>
-                                    @*<span style="color: #a79b9b;font-size: 13px;">@data.TypeName</span>*@
                                     <span style="color: #a79b9b;font-size: 13px;">SDOIJS</span>
                                 </li>
                             </ul>
@@ -132,6 +129,9 @@
                                         </label>
                                         <label class="btn btn-default">
                                             <input type="checkbox" data-year value="2013" class="toggle"> 2013
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" data-year value="2012" class="toggle"> 2012
                                         </label>
                                         <label class="btn btn-default">
                                             <input type="checkbox" data-year value="-1" class="toggle"> Older
