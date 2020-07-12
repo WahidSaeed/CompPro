@@ -61,7 +61,6 @@ namespace CompWeb.Controllers
         {
             var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
-            var model = this.regulationService.GetSelectedRegSummary(id);
 
             ViewBag.SourceId = sourceId;
             ViewBag.TypeId = typeId;
