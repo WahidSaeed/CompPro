@@ -46,6 +46,7 @@ namespace CompWeb.Controllers
         [Route("/Library/Source/{sourceId}/Type/{typeId}")]
         public async Task<IActionResult> Type(int sourceId, int typeId)
         {
+            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceId, typeId);
             var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
 
