@@ -23,38 +23,54 @@
             border-bottom: 1px dotted;
             margin-top: 10px;
         }
+
+        .selectedbtn {
+            background: #bf9000;
+            color: white;
+            margin-bottom: 4px;
+            border-radius: 3px !important;
+            margin-right: 5px;
+        }
+
+        .unselectedbtn {
+            background: #ffffff;
+            color: #888989;
+            margin-bottom: 4px;
+            border-radius: 3px !important;
+            margin-right: 5px;
+        }
     </style>
 }
 
-<!-- BEGIN PAGE HEAD-->
-<div class="page-head">
-    <div class="container">
-        <!-- BEGIN PAGE TITLE -->
-        <div class="page-title">
-            <ul class="page-breadcrumb breadcrumb">
-                <li>
-                    <a href="/">Home</a>
-                    <i class="fa fa-circle"></i>
-                </li>
-                <li>
-                    <span></span>
-                </li>
-            </ul>
-            <h3>
-            </h3>
-        </div>
-        <!-- END PAGE TITLE -->
-    </div>
-</div>
-<!-- END PAGE HEAD-->
 <!-- BEGIN PAGE CONTENT BODY -->
-<div class="page-content">
+<div class="page-content" style="background:#ffffff">
     <div class="container">
         <!-- BEGIN PAGE CONTENT INNER -->
         <div class="page-content-inner">
             <div class="search-page search-content-2">
                 <div class="row">
                     <div class="col-md-8 portlet light ">
+                        <!-- BEGIN PAGE TITLE -->
+                        <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
+                            <h3 style="color: #22793e;font-size: 14px;">
+                                <b>Abc</b>
+                            </h3>
+                            <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                                <li>
+                                    <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <a href="/Library/Source/Abc" style="color: #a79b9b;font-size: 13px;">Abc</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <span style="color: #a79b9b;font-size: 13px;">SDOIJS</span>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <!-- END PAGE TITLE -->
                         <div class="search-container ">
                             <table id="tbType">
                                 <thead style="display: none">
@@ -77,58 +93,59 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="background-color: #f0f0f0">
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Search Within Current Section</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Search within Current Section</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Enter Search Terms Here" id="txtSearchTerms">
+                                    <input type="text" class="form-control" placeholder="Enter search terms here" style="border-radius: 4px !important;" id="txtSearchTerms">
                                 </div>
                             </div>
                         </div>
                         <!-- END PORTLET-->
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Filter by Period</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Filter by Period</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
                                 <div class="form-group">
                                     <div class="btn-group" data-period data-toggle="buttons">
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2020" class="toggle"> 2020
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2019" class="toggle"> 2019
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2018" class="toggle"> 2018
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2017" class="toggle"> 2017
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2016" class="toggle"> 2016
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2015" class="toggle"> 2015
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2014" class="toggle"> 2014
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2013" class="toggle"> 2013
                                         </label>
-                                        <label class="btn btn-default">
+                                        <label class="btn unselectedbtn">
+                                            <input type="checkbox" data-year value="2012" class="toggle"> 2012
+                                        </label>
+                                        <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="-1" class="toggle"> Older
                                         </label>
                                     </div>
@@ -137,11 +154,10 @@
                         </div>
                         <!-- END PORTLET-->
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Filter by Business Line</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Filter by Business Line</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -150,7 +166,7 @@
                                     {
                                         @foreach (var tag in bussinessLineTag.Select(x => x.Tag).Distinct())
                                         {
-                                            <label class="btn btn-default">
+                                            <label class="btn unselectedbtn">
                                                 <input type="checkbox" data-bussinessLine value="@tag" class="toggle"> @tag
                                             </label>
                                         }
@@ -164,11 +180,10 @@
                         </div>
                         <!-- END PORTLET-->
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Filter by Tags</span>
+                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                            <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                    <span class="bold">Filter by Tags</span>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -177,7 +192,7 @@
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
                                         {
-                                            <label class="btn btn-default">
+                                            <label class="btn unselectedbtn">
                                                 <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
                                             </label>
                                         }
@@ -226,7 +241,7 @@
                 "pagingType": "full_numbers",
                 "serverSide": true,
                 "processing": true,
-                "ordering": true,
+                "ordering": false,
                 "paging": true,
                 "destroy": true,
                 "autoWidth": false,
@@ -262,14 +277,14 @@
                         orderable: false,
                         targets: 0,
                         render: function (data, type, full, meta) {
-                            return '<a href="/Library/Regulation/' + full.regId + '"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
+                            return '<a href="/Library/Regulation/' + full.regId + '" style="font-size:13px;color:#404040"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
                         }
                     },
                     {
                         orderable: false,
                         targets: 1,
                         render: function (data, type, full, meta) {
-                            return '<div style="text-align:center">' + full.issueDate + '</div>';
+                            return '<div style="text-align:center;font-size:13px;color:#404040">' + full.issueDate + '</div>';
                         }
                     },
                     {
