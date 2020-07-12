@@ -567,7 +567,7 @@ namespace CompData.Dao.Regulation.Impl
             return sections;
         }
 
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId)
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceIDDetail(int sourceId, int? typeId)
         {
             List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
             if (typeId == null)

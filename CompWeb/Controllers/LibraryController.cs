@@ -39,7 +39,7 @@ namespace CompWeb.Controllers
 
         public JsonResult SourceGrid(SourceGrid sourceGrid) 
         {
-            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid);
+            var model = this.regulationService.GetAllRegulationFilteredBySourceIDDetail(sourceGrid);
             return Json(model);
         }
 
