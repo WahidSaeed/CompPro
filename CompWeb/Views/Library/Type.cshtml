@@ -24,22 +24,6 @@
             margin-top: 10px;
         }
 
-        .selectedbtn {
-            background: #bf9000;
-            color: white;
-            margin-bottom: 4px;
-            border-radius: 3px !important;
-            margin-right: 5px;
-        }
-
-        .unselectedbtn {
-            background: #ffffff;
-            color: #888989;
-            margin-bottom: 4px;
-            border-radius: 3px !important;
-            margin-right: 5px;
-        }
-
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0px 0px !important;
         }
@@ -63,6 +47,7 @@
             border: 1px solid #ddd;
             margin-left: -1px;
         }
+
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
             border: 1px solid lightgrey !important;
         }
@@ -145,7 +130,7 @@
                             </div>
                             <div class="portlet-body">
                                 <div class="form-group">
-                                    <div class="btn-group" data-period data-toggle="buttons">
+                                    <div data-period data-toggle="buttons">
                                         <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2020" class="toggle"> 2020
                                         </label>
@@ -189,7 +174,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (bussinessLineTag.Count() > 0)
                                     {
                                         @foreach (var tag in bussinessLineTag.Select(x => x.Tag).Distinct())
@@ -215,7 +200,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (detailTag.Count() > 0)
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
@@ -240,55 +225,12 @@
         <!-- END PAGE CONTENT INNER -->
     </div>
 </div>
-@*<div class="modal fade bs-modal-lg" id="SummaryMod" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Summary</h4>
-                </div>
-                <div class="modal-body">s </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn dark btn-outline" data-dismiss="modal"><a href="/Library/Regulation/5">Go to Regulation</a></button>
-                </div>
-            </div>
-             /.modal-content
-        </div>
-         /.modal-dialog
-    </div>*@
-
 <div class="modal fade bs-modal-lg" id="SummaryMod" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div style="padding: 15px;">
-                <div class="page-title" style="margin-top: -20px;">
-                    <h3>
-                        <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>RegTitle</b></a>
-                    </h3>
-                    <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
-                        <li>
-                            <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
-                            <span>/</span>
-                        </li>
-                        <li>
-                            <a href="../Source/" style="color: #a79b9b;font-size: 13px;">SourceTotle</a>
-                            <span>/</span>
-                        </li>
-                        <li>
-                            <a href="../Type" style="color: #a79b9b;font-size: 13px;">RegTypeName</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="modal-body">Summary </div>
-            <div style="text-align: center;">
-
-                <a href="/Library/Regulation/5" class="btn" style="background: #02502e; color: white; width: 342px; margin-bottom: 20px;">Go to Regulation</a>
-            </div>
+        <div class="modal-content" id="SummaryDetails">
         </div>
         @*/.modal-content*@
     </div>
-    @*/.modal-dialog*@
 </div>
 <!-- END PAGE CONTENT BODY -->
 
@@ -354,7 +296,7 @@
                         orderable: false,
                         targets: 0,
                         render: function (data, type, full, meta) {
-                            return '<a href="/Library/Regulation/' + full.regId + '" style="font-size:13px;color:#404040"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
+                            return '<a onclick="showSummary(' + full.regId + ')" style="font-size:13px;color:#404040"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
                         }
                     },
                     {
@@ -367,12 +309,14 @@
                     {
                         targets: 2,
                         visible: false
-                    }
+                                }
                 ]
-            });
+            })           ;
 
         }
 
+    </script>
+    <script>
         $('[data-detail]').change(function () {
             initDatatable();
         });
@@ -390,10 +334,22 @@
         });
 
 
-        function showSummary(RegID) {
+        function showSummary(id) {
+            $.get("/Library/GetSummary",
+                {
+                    id: id
+                },
+                function (response) {
+                    $("#SummaryDetails").html(response);
+                }, "html")
+                .always(function () {
+
+                });
             $("#SummaryMod").modal("show");
-
-
         }
+
+
+
+
     </script>
 }

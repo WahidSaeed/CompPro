@@ -24,22 +24,6 @@
             margin-top: 10px;
         }
 
-        .selectedbtn {
-            background: #bf9000;
-            color: white;
-            margin-bottom: 4px;
-            border-radius: 3px !important;
-            margin-right: 5px;
-        }
-
-        .unselectedbtn {
-            background: #ffffff;
-            color: #888989;
-            margin-bottom: 4px;
-            border-radius: 3px !important;
-            margin-right: 5px;
-        }
-
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0px 0px !important;
         }
@@ -141,7 +125,7 @@
                             </div>
                             <div class="portlet-body">
                                 <div class="form-group">
-                                    <div class="btn-group" data-period data-toggle="buttons">
+                                    <div data-period data-toggle="buttons">
                                         <label class="btn unselectedbtn">
                                             <input type="checkbox" data-year value="2020" class="toggle"> 2020
                                         </label>
@@ -185,7 +169,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (bussinessLineTag.Count() > 0)
                                     {
                                         @foreach (var tag in bussinessLineTag.Select(x => x.Tag).Distinct())
@@ -211,7 +195,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (detailTag.Count() > 0)
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
@@ -235,6 +219,13 @@
     </div>
     <!-- END PAGE CONTENT INNER -->
 </div>
+</div>
+<div class="modal fade bs-modal-lg" id="SummaryMod" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="SummaryDetails">
+        </div>
+        @*/.modal-content*@
+    </div>
 </div>
 <!-- END PAGE CONTENT BODY -->
 
@@ -300,7 +291,7 @@
                         orderable: false,
                         targets: 0,
                         render: function (data, type, full, meta) {
-                            return '<a href="/Library/Regulation/' + full.regId + '" style="font-size:13px;color:#404040"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
+                            return '<a onclick="showSummary(' + full.regId + ')" style="font-size:13px;color:#404040"><div class="regulation-title">' + full.regulationTitle + '</div><div class="ln"></div></a>';
                         }
                     },
                     {
@@ -334,6 +325,20 @@
         $('#txtSearchTerms').change(function () {
             initDatatable();
         });
+
+        function showSummary(id) {
+            $.get("/Library/GetSummary",
+                {
+                    id: id
+                },
+                function (response) {
+                    $("#SummaryDetails").html(response);
+                }, "html")
+                .always(function () {
+
+                });
+            $("#SummaryMod").modal("show");
+        }
 
     </script>
 }

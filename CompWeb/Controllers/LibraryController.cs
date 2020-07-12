@@ -17,7 +17,7 @@ namespace CompWeb.Controllers
     {
         private readonly IRegulationService regulationService;
         private readonly UserManager<ApplicationUser> userManager;
-        public LibraryController(IRegulationService regulationService, UserManager<ApplicationUser> userManager) 
+        public LibraryController(IRegulationService regulationService, UserManager<ApplicationUser> userManager)
         {
             this.regulationService = regulationService;
             this.userManager = userManager;
@@ -28,7 +28,7 @@ namespace CompWeb.Controllers
         {
             var detailTag = await regulationService.GetAllTagFilters(null, null, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(null, null, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
-            
+
             ViewBag.DetailTag = detailTag.Data;
             ViewBag.BussinessLineTag = bussinessLineTag.Data;
             ViewBag.Query = query;
@@ -38,7 +38,7 @@ namespace CompWeb.Controllers
 
         public async Task<IActionResult> Source(int id)
         {
-            
+
             var detailTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
 
@@ -49,7 +49,7 @@ namespace CompWeb.Controllers
             return View();
         }
 
-        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid) 
+        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid)
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid, user.Id);
@@ -61,6 +61,7 @@ namespace CompWeb.Controllers
         {
             var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+            var model = this.regulationService.GetSelectedRegSummary(id);
 
             ViewBag.SourceId = sourceId;
             ViewBag.TypeId = typeId;
@@ -86,11 +87,11 @@ namespace CompWeb.Controllers
             var model = this.regulationService.GetSelectedRegulation(id);
             ViewBag.RegId = id;
             return View(model);
-        } 
+        }
         #endregion
 
 
-        public async Task<IActionResult> SelectSources() 
+        public async Task<IActionResult> SelectSources()
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetRegulationSourcesByCountryCode(user.CountryCode);
@@ -139,7 +140,7 @@ namespace CompWeb.Controllers
             var user = await userManager.GetUserAsync(User);
             var result = this.regulationService.SubscribeRegulationByUser(user.Id, regId);
             return Json(result);
-        } 
+        }
         #endregion
 
         #region Save Regulations
@@ -155,7 +156,7 @@ namespace CompWeb.Controllers
         {
             var result = await this.regulationService.SaveRegulationDetail(viewModel);
             return Json(result);
-        } 
+        }
         #endregion
 
         #region Link Tags
@@ -171,14 +172,13 @@ namespace CompWeb.Controllers
         {
             var result = await this.regulationService.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
             return Json(result);
-        } 
+        }
         #endregion
 
-        [HttpPost]
-        public IActionResult GetSummary(int id)
+        public PartialViewResult GetSummary(int id)
         {
             var model = this.regulationService.GetSelectedRegSummary(id);
-            return View(model);
+            return PartialView("_GetSummary", model);
         }
     }
 }
