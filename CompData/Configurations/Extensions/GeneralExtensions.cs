@@ -19,6 +19,13 @@ public static class Extensions
     private static Random random = new Random();
 
 
+    public static string StripHTML(this string htmlString)
+    {
+        string pattern = @"<(.|\n)*?>";
+
+        return Regex.Replace(htmlString, pattern, string.Empty);
+    }
+
     public static DataTable ToDataTable<T>(this List<T> items)
     {
         DataTable dataTable = new DataTable(typeof(T).Name);

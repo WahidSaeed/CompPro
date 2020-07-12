@@ -47,7 +47,7 @@ namespace CompData.Dao.Regulation.Impl
             this.httpContext = httpContext;
         }
 
-        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid)
+        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid, Guid userId)
         {
             try
             {
@@ -87,8 +87,9 @@ namespace CompData.Dao.Regulation.Impl
 
                 List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
                 List<SqlParameter> parameters = new List<SqlParameter>();
-                parameters.Add(new SqlParameter("@SourceId", sourceGrid.SourceId));
+                parameters.Add(new SqlParameter("@SourceId", sourceGrid.SourceId.ToString()));
                 parameters.Add(new SqlParameter("@TypeId", sourceGrid.TypeId.ToString()));
+                parameters.Add(new SqlParameter("@UserId", userId));
 
                 System.Data.DataTable tbDetailTags = sourceGrid.DetailTags.Where(x => !string.IsNullOrEmpty(x))
                     .ToList<string>()
@@ -133,7 +134,7 @@ namespace CompData.Dao.Regulation.Impl
                 };
                 parameters.Add(_TotalRecords);
 
-                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] @SourceId, @TypeId, @DetailTags, @BussinessLineTags, @Years, @RegIds, @PageSize, @PageNo, @SortColumn, @SortDirection, @TotalRecords OUT", parameters.ToArray()).ToList();
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] @SourceId, @TypeId, @UserId, @DetailTags, @BussinessLineTags, @Years, @RegIds, @PageSize, @PageNo, @SortColumn, @SortDirection, @TotalRecords OUT", parameters.ToArray()).ToList();
 
                 int records = 0;
                 int.TryParse(_TotalRecords.Value.ToString(), out records);
@@ -215,7 +216,7 @@ namespace CompData.Dao.Regulation.Impl
             List<int> regulationTypes = this.dbContext.LinkUserRegTypeSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegSourceId.Equals(sourceId)).Select(x => x.RegTypeId).ToList();
             return regulationTypes;
         }
-        
+
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
         {
             try
@@ -307,6 +308,82 @@ namespace CompData.Dao.Regulation.Impl
         {
             var updatedRegulations = this.dbContext.Regulations.Where(x => x.SourceID.Equals(sourceId)).Take(10).OrderByDescending(x => x.UpdatedBy).ToList();
             return updatedRegulations;
+        }
+
+        public async Task<List<Models.Library.Regulation>> GetMostViewedRegulationsByUserSource(Guid userId)
+        {
+            try
+            {
+                List<Models.Library.Regulation> mostViewedRegulations = await (from r in dbContext.Regulations
+                                                                     join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
+                                                                     where ur.UserId.Equals(userId)
+                                                                     orderby r.Views descending
+                                                                     select r).Take(5).ToListAsync();
+                return mostViewedRegulations;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm)
+        {
+            try
+            {
+                List<int> luceneRegIds = new List<int>();
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    var directory = FSDirectory.Open("c:\\temp\\directory");
+                    using (Analyzer analyzer = new EnglishAnalyzer(LuceneVersion.LUCENE_48))
+                    {
+                        using (var reader = DirectoryReader.Open(directory))
+                        {
+                            var searcher = new IndexSearcher(reader);
+                            var queryParser = new QueryParser(LuceneVersion.LUCENE_48, "title", analyzer)
+                            {
+                                AllowLeadingWildcard = true,
+                                AutoGeneratePhraseQueries = true,
+                                FuzzyMinSim = 3f
+                            };
+                            var query = queryParser.Parse(searchTerm);
+                            var collector = TopScoreDocCollector.Create(10000, true);
+                            searcher.Search(query, collector);
+
+                            var matches = collector.GetTopDocs().ScoreDocs;
+                            foreach (var item in matches)
+                            {
+                                var id = item.Doc;
+                                var doc = searcher.Doc(id);
+
+                                string regId = doc.GetField("regId").GetStringValue();
+                                luceneRegIds.Add(int.Parse(regId));
+                            }
+                        }
+                    }
+                }
+
+                List<Models.Library.Regulation> suggestedRegulations = await (from r in dbContext.Regulations
+                                                                               join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
+                                                                               where ur.UserId.Equals(userId) && luceneRegIds.Contains(r.RegId)
+                                                                               orderby r.Views descending
+                                                                               select r).Take(5).ToListAsync();
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Data = suggestedRegulations
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result
+                {
+                    Status = ResultStatus.Error,
+                    Message = ex.Message
+                };
+            }
         }
 
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds)
@@ -477,14 +554,21 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
-        public async Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType)
+        public async Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType)
         {
             try
             {
                 string message = string.Empty;
                 List<TagMap> tags = new List<TagMap>();
 
-                if (typeId == null)
+                if (typeId == null && sourceId == null)
+                {
+                    tags = await (from tagM in dbContext.TagMaps
+                                  join reg in dbContext.Regulations on tagM.RegId equals reg.RegId
+                                  where tagM.TagType.Equals(tagType)
+                                  select tagM).ToListAsync<TagMap>();
+                }
+                else if (typeId == null)
                 {
                     tags = await (from tagM in dbContext.TagMaps
                                   join reg in dbContext.Regulations on tagM.RegId equals reg.RegId
@@ -545,7 +629,6 @@ namespace CompData.Dao.Regulation.Impl
                 };
             }
         }
-
 
         private List<RegulationSection> SetSaveRegulationSectionsModel(List<SectionDetailViewModel> sectionDetailViewModels, int regId)
         {

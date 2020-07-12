@@ -24,9 +24,9 @@ namespace CompData.Services.Regulation.Impl
             this.regulationDao = regulationDao;
         }
 
-        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid)
+        public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid, Guid userId)
         {
-            return regulationDao.GetAllRegulationFilteredBySourceID(sourceGrid);
+            return regulationDao.GetAllRegulationFilteredBySourceID(sourceGrid, userId);
         }
 
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId)
@@ -171,6 +171,18 @@ namespace CompData.Services.Regulation.Impl
             return updatedRegulations;
         }
 
+        public async Task<List<Models.Library.Regulation>> GetMostViewedRegulationsByUserSource(Guid userId)
+        {
+            var mostViewedRegulations = await this.regulationDao.GetMostViewedRegulationsByUserSource(userId);
+            return mostViewedRegulations;
+        }
+
+        public async Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm) 
+        {
+            var suggestedRegulations = await this.regulationDao.GetSuggestedRegulationsByUserSource(userId, searchTerm);
+            return suggestedRegulations;
+        }
+
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds)
         {
             return this.regulationDao.LinkUserByRegulationSource(userID, SourceIds);
@@ -196,7 +208,7 @@ namespace CompData.Services.Regulation.Impl
             return await this.regulationDao.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
         }
 
-        public async Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType)
+        public async Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType)
         {
             return await regulationDao.GetAllTagFilters(sourceId, typeId, tagType);
         }

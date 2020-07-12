@@ -7,7 +7,7 @@ namespace CompData.ViewModels.Library
 {
     public class SourceGrid: jQueryDataTableInput
     {
-        public int SourceId { get; set; }
+        public int? SourceId { get; set; }
         public int? TypeId { get; set; }
         public string SearchTerm { get; set; }
         public List<int> Years { get; set; } = new List<int>();

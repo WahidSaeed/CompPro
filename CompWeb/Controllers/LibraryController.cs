@@ -24,6 +24,18 @@ namespace CompWeb.Controllers
         }
 
         #region Search Grid List
+        public async Task<IActionResult> Index(string query)
+        {
+            var detailTag = await regulationService.GetAllTagFilters(null, null, CompData.Configurations.Constants.Enums.TagType.DetailTag);
+            var bussinessLineTag = await regulationService.GetAllTagFilters(null, null, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+            
+            ViewBag.DetailTag = detailTag.Data;
+            ViewBag.BussinessLineTag = bussinessLineTag.Data;
+            ViewBag.Query = query;
+
+            return View();
+        }
+
         public async Task<IActionResult> Source(int id)
         {
             
@@ -37,9 +49,10 @@ namespace CompWeb.Controllers
             return View();
         }
 
-        public JsonResult SourceGrid(SourceGrid sourceGrid) 
+        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid) 
         {
-            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid);
+            var user = await userManager.GetUserAsync(User);
+            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid, user.Id);
             return Json(model);
         }
 
@@ -88,6 +101,14 @@ namespace CompWeb.Controllers
         {
             var result = await this.regulationService.GetAllRegulations(ajaxDropDown);
             return Json(result.Data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SuggestRegulations(string searchTerm)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var result = await this.regulationService.GetSuggestedRegulationsByUserSource(user.Id, searchTerm);
+            return Json(result);
         }
 
         [HttpPost]

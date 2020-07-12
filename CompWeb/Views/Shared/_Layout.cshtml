@@ -1,6 +1,10 @@
-﻿@{
+﻿@inject CompData.Services.Regulation.IRegulationService regulationService 
+@inject Microsoft.AspNetCore.Identity.UserManager<CRMData.Models.Identity.ApplicationUser> userManager
+@{
     //ViewBag.UserAccessibleClaims = httpContext.HttpContext.Session.Get<List<UserAccessibleClaims>>(configuration.Get<SessionKeys>().UserAccessibleClaims);
     //ViewBag.SelectedMenuItems = utility.GetSelectedMenuItems();
+    var userId = await userManager.GetUserAsync(User);
+    List<CompData.Models.Library.Regulation> mostViewedRegulations = await regulationService.GetMostViewedRegulationsByUserSource(userId.Id);
 }
 
 <!DOCTYPE html>
@@ -84,9 +88,45 @@
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div style="float: right;width: 500px;">
-                                            <input type="text" class="form-control" placeholder="Enter search terms here" style="border-radius: 4px !important;">
+                                            <form action="/Library/">
+                                                <input type="text" class="form-control" data-searchbox name="query" placeholder="Enter search terms here" style="border-radius: 4px !important;">
+                                                <button type="submit" style="display: none">Submit</button>
+                                            </form>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END CONTENT BODY -->
+                    </div>
+                    <div class="page-content-wrapper container" data-search style="min-height: 120px; padding: 25px; display: none">
+                        <!-- BEGIN CONTENT BODY -->
+                        <div class="search-page">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div style="margin-bottom: 10px;">
+                                        <div class="caption">
+                                            <span class="bold uppercase" style="color: #22793e;font-size: 14px;">Suggestion</span>
+                                        </div>
+                                    </div>
+                                    <div id="dvSuggestion">
+                                        <p>No Suggestions</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div style="margin-bottom: 10px;">
+                                        <div class="caption">
+                                            <span class="bold uppercase" style="color: #22793e;font-size: 14px;">Most Searched</span>
+                                        </div>
+                                    </div>
+                                    <ul>
+                                        @foreach (var regulation in mostViewedRegulations)
+                                        {
+                                            <li>
+                                                <a href="Library/Regulation/@regulation.RegId" style="font-size:12px;color:#404040">@regulation.RegulationTitle</a>
+                                            </li>
+                                        }
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -207,11 +247,41 @@
     <!-- END THEME LAYOUT SCRIPTS -->
     @RenderSection("Scripts", required: false);
     <script>
-        $(document).ready(function () {
-            $('#clickmewow').click(function () {
-                $('#radio1003').attr('checked', 'checked');
-            });
+        
+        $('[data-searchbox]').focusin(function () {
+            $('[data-search]').slideDown();
         });
+
+        $('[data-searchbox]').focusout(function () {
+            $('[data-search]').slideUp();
+        });
+
+        $('[data-searchbox]').on('input propertychange paste', function () {
+            var searchTerm = $(this).val();
+            $.post("/Library/SuggestRegulations",
+                {
+                    SearchTerm: searchTerm
+                },
+                function (response) {
+                    if (response.status === 200) {
+                        var suggestedRegulations = response.data;
+                        var html = '';
+                        if (response.data.length > 0) {
+                            html += '<ul>';
+                            $(response.data).each(function (a, data) {
+                                html += '<li><a href = "Library/Regulation/' + data.regId + '" style = "font-size:12px;color:#404040">' + data.regulationTitle + '</a></li>';
+                            });
+                            html += '</ul>';
+                        }
+                        else {
+                            html += '<p>No Suggestions</p>'
+                        }
+
+                        $('#dvSuggestion').html(html);
+                    }
+                }, "json");
+        });
+
     </script>
 </body>
 
