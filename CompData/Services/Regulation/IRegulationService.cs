@@ -32,7 +32,6 @@ namespace CompData.Services.Regulation
         public Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId);
         public Task<Result> GetAllTagFilters(int sourceId, int? typeId, TagType tagType);
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId = null);
 
     }
 }

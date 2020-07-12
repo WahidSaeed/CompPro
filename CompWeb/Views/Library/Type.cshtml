@@ -1,10 +1,5 @@
 ﻿@using CompData.Models.Library;
-@using CompData.ViewModels.Procedure.Library
-@model List<RegulationFilteredBySource>
 @{
-    var data = Model.FirstOrDefault();
-    ViewData["Title"] = "Type - " + data.FullName;
-
     var detailTag = ViewBag.DetailTag as List<TagMap>;
     var bussinessLineTag = ViewBag.BussinessLineTag as List<TagMap>;
 }
@@ -43,7 +38,7 @@
                         <!-- BEGIN PAGE TITLE -->
                         <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
                             <h3 style="color: #22793e;font-size: 14px;">
-                                <b>@data.TypeName</b>
+                                <b>Abc</b>
                             </h3>
                             <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
                                 <li>
@@ -51,7 +46,7 @@
                                     <span>/</span>
                                 </li>
                                 <li>
-                                    <a href="/Library/Source/@data.SourceId" style="color: #a79b9b;font-size: 13px;">@data.FullName</a>
+                                    <a href="/Library/Source/Abc" style="color: #a79b9b;font-size: 13px;">Abc</a>
                                     <span>/</span>
                                 </li>
                                 <li>

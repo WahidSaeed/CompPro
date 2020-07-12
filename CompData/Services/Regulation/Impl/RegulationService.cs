@@ -53,12 +53,6 @@ namespace CompData.Services.Regulation.Impl
 
             return groupBySourceViewModels;
         }
-
-        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceIDDetail(int sourceId, int? typeId = null)
-        {
-            return regulationDao.GetAllRegulationFilteredBySourceIDDetail(sourceId, typeId);
-        }
-
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode)
         {
             return this.regulationDao.GetRegulationSourcesByCountryCode(countryCode);
