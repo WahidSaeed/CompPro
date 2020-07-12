@@ -567,6 +567,20 @@ namespace CompData.Dao.Regulation.Impl
             return sections;
         }
 
+        public List<RegulationFilteredBySource> GetAllRegulationFilteredBySourceID(int sourceId, int? typeId)
+        {
+            List<RegulationFilteredBySource> sourceProcedure = new List<RegulationFilteredBySource>();
+            if (typeId == null)
+            {
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredBySourceID] {sourceId}").ToList();
+            }
+            else
+            {
+                sourceProcedure = this.dbContext.Set<RegulationFilteredBySource>().FromSqlRaw($"EXEC [Library].[GetAllRegulationFilteredByTypeID] {sourceId}, {typeId}").ToList();
+            }
+            return sourceProcedure;
+        }
+
         private void SetUpdateRegulationSectionsModel(List<SectionDetailViewModel> sectionDetailViewModels, int regId, ref List<RegulationSection> regulationSections)
         {
             #region Existing Regulation
