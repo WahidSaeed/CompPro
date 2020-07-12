@@ -14,9 +14,6 @@
     <link href="~/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
     <style>
-        h2, h3 {
-            font-weight: bold;
-        }
 
         .tag-highlight {
             font-weight: 400;
@@ -29,61 +26,53 @@
             width: 100% !important;
         }
 
+        .btnclass {
+            background-color: #fff;
+            border-radius: 25px !important;
+            padding: 3px 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: none !important;
+            border: 1px solid #b9b9b9;
+            color: #b9b9b9;
+            outline: none;
+        }
     </style>
 }
 
-<!-- BEGIN PAGE HEAD-->
-<div class="page-head">
-    <div class="container">
-        <!-- BEGIN PAGE TITLE -->
-        <div class="page-title">
-            <ul class="page-breadcrumb breadcrumb">
-                <li>
-                    <a href="/">Home</a>
-                    <i class="fa fa-circle"></i>
-                </li>
-                <li>
-                    <a href="../Source/@defaultModel.SourceId">@defaultModel.FullName</a>
-                    <i class="fa fa-circle"></i>
-                </li>
-                <li>
-                    <span>@defaultModel.RegTitle</span>
-                </li>
-            </ul>
-            <h1>
-                @ViewData["Title"]
-            </h1>
-        </div>
-        <!-- END PAGE TITLE -->
-    </div>
-</div>
-<!-- END PAGE HEAD-->
 <!-- BEGIN PAGE CONTENT BODY -->
 <div style="display: none">
     <textarea id="nestable_list_1_output" class="form-control col-md-12 margin-bottom-10"></textarea>
 </div>
-<div class="page-content">
+<div class="page-content" style="background:#ffffff">
     <div class="container">
         <!-- BEGIN PAGE CONTENT INNER -->
         <div class="page-content-inner">
             <div class="search-page search-content-2">
                 <div class="row">
-                    <div class="col-md-8 portlet light " style="min-height: 400px">
-                        <div class="portlet-title">
-                            <div class="actions">
-                                <div class="btn-group btn-group-devided">
-                                    <button class="btn btn-transparent grey-salsa btn-circle btn-sm active" id="btn-new-section">Add New Section Below</button>
-                                </div>
-                                <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                    <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
-                                        <input type="radio" name="options" class="toggle" id="btn-publish">Publish
-                                    </label>
-                                </div>
-                                <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                    <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
-                                        <input type="radio" name="options" class="toggle" id="btn-draft">Draft
-                                    </label>
-                                </div>
+                    <div class="col-md-12 portlet light " style="min-height: 400px">
+                        <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
+                            <h1 style="font-size: 15px;">
+                                <a data-toggle="modal" href="#SummaryMod" style="color: #22793e"><b>  @ViewData["Title"]</b></a>
+                            </h1>
+                            <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                                <li>
+                                    <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <a href="../Source/@defaultModel.SourceId" style="color: #a79b9b;font-size: 13px;">@defaultModel.FullName</a>
+                                    <span>/</span>
+                                </li>
+                                <li>
+                                    <a href="../Source/@defaultModel.SourceId/Type/@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
+                                </li>
+                            </ul>
+                            <div style="float: right;margin-top: -47px !important;">
+                                <button class="btn btnclass" id="btn-new-section" title="Add New Section"><i class="fa fa-paragraph"></i></button>
+                                <button class="btn btnclass" id="btn-publish" title="Publish" onclick="publish()"><i class="fa fa-send-o"></i></button>
+                                <button class="btn btnclass" id="btn-draft" title="Draft"><i class="fa fa-save"></i></button>
+
                             </div>
                         </div>
                         <div class="dd" id="nestable_list_1">
@@ -94,7 +83,7 @@
                                         <div class="dd-handle dd3-handle"></div>
                                         <div class="dd3-content">
                                             <div class="editable" style="outline: none">
-                                                <h2>@Html.Raw(item.SectionTitle)</h2>
+                                                <h2 class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@Html.Raw(item.SectionTitle)</h2>
                                                 @{
                                                     var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
                                                 }
@@ -102,7 +91,7 @@
                                                 {
                                                     foreach (var desc in descs)
                                                     {
-                                                        <p data-item-desc="@desc.RegDescId">@Html.Raw(desc.RegDescription)</p>
+                                                        <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
                                                     }
                                                 }
                                             </div>
@@ -119,7 +108,7 @@
                                                         <div class="dd-handle dd3-handle"></div>
                                                         <div class="dd3-content">
                                                             <div class="editable" style="outline: none">
-                                                                <h3>@Html.Raw(itemChild.SectionTitle)</h3>
+                                                                <h3 class="bold" style="color: #404040;font-size: 13px;padding: 0px 15px 0px;">@Html.Raw(itemChild.SectionTitle)</h3>
                                                                 @{
                                                                     var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
                                                                 }
@@ -127,7 +116,7 @@
                                                                 {
                                                                     foreach (var desc in childDescs)
                                                                     {
-                                                                        <p data-item-desc="@desc.RegDescId">@Html.Raw(desc.RegDescription)</p>
+                                                                        <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
                                                                     }
                                                                 }
                                                             </div>
@@ -142,58 +131,7 @@
                             </ol>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Table of Content</span>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div id="tree_1" class="tree-demo jstree jstree-1 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j1_3" aria-busy="false" style="overflow: hidden;">
-                                    <ul class="jstree-container-ul jstree-children" role="group">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END PORTLET-->
-                        <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Filter by Tags</span>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <button class="btn default">anti-money laundering</button>
-                                <button class="btn default">account opening</button>
-                                <button class="btn default">advertising</button>
-                                <button class="btn default">agent banking</button>
-                                <button class="btn default">agreement</button>
-                                <button class="btn default">risk management</button>
-                            </div>
-                        </div>
-                        <!-- END PORTLET-->
-                        <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="icon-edit font-dark"></i>
-                                    <span class="caption-subject font-dark bold uppercase">Related Regulations</span>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <ul>
-                                    <li style="list-style: disc;">Rules on Management of Problem Loans</li>
-                                    <li style="list-style: disc;">Account Opening Rules, 5th</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- END PORTLET-->
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -355,7 +293,7 @@
             });
         }
 
-        
+
         $('#btn-new-section').click(function () {
             var sectionList = $('.dd-list:nth(0)');
             var sectionListItems = sectionList.find('.dd-item');

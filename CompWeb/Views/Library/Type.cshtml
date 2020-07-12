@@ -39,6 +39,33 @@
             border-radius: 3px !important;
             margin-right: 5px;
         }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0px 0px !important;
+        }
+
+        .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+            z-index: 3 !important;
+            color: #fff !important;
+            background-color: #02502e !important;
+            border-color: #02502e !important;
+            cursor: default !important;
+        }
+
+        .pagination > li > a, .pagination > li > span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            line-height: 1.42857;
+            text-decoration: none;
+            color: #666 !important;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-left: -1px;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            border: 1px solid lightgrey !important;
+        }
     </style>
 }
 
@@ -194,7 +221,7 @@
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
                                         {
                                             <label class="btn unselectedbtn">
-                                                <input type="checkbox"  data-detail value="@tag" class="toggle"> @tag
+                                                <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
                                             </label>
                                         }
                                     }
