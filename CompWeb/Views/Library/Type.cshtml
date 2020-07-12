@@ -1,4 +1,6 @@
 ﻿@using CompData.Models.Library;
+@using CompData.ViewModels.Procedure.Library
+@model List<RegulationFilteredBySource>
 @{
     var data = Model.FirstOrDefault();
     ViewData["Title"] = "Type - " + data.FullName;
