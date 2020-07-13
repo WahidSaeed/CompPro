@@ -220,16 +220,14 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">
-                                    anti-money laundering
-                                </button>
-                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">account opening</button>
-                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">advertising</button>
-                                <button class="btn" style="background: #ffffff; color: #888989; margin-bottom: 4px; border-radius: 3px !important;">agent banking</button>
-                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">agreement</button>
-                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">atm</button>
-                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">audit</button>
-                                <button class="btn" style="background: #ffffff;color: #888989;margin-bottom: 4px;border-radius: 3px !important;">authentication</button>
+                                <button class="btn unselectedbtn">anti-money laundering</button>
+                                <button class="btn unselectedbtn">account opening</button>
+                                <button class="btn unselectedbtn">advertising</button>
+                                <button class="btn unselectedbtn">agent banking</button>
+                                <button class="btn unselectedbtn">agreement</button>
+                                <button class="btn unselectedbtn">atm</button>
+                                <button class="btn unselectedbtn">audit</button>
+                                <button class="btn unselectedbtn">authentication</button>
                             </div>
                         </div>
                         <!-- END PORTLET-->
@@ -369,7 +367,7 @@
                 function (response) {
                     if (response.status === 200) {
                         toastr.success(response.message);
-                         if (response.message != "Regulation type has been subscribed.") {
+                        if (response.message != "Regulation type has been subscribed.") {
                             $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {
