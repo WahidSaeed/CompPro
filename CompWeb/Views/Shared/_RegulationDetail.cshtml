@@ -1,0 +1,45 @@
+﻿@using CompData.ViewModels.Procedure.Library
+@using CompData.ViewModels.Library
+@using CompData.Models.Library
+@model List<SelectedRegulationProcedure>
+
+@foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
+{
+    var anchor = @item.SectionTitle.Replace(" ", "_");
+    <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+        <h3 id="@anchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@item.SectionTitle</h3>
+        @{
+            var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
+        }
+        @if (descs.Count() > 0)
+        {
+            foreach (var desc in descs)
+            {
+                <p style="padding-left: 15px;">@Html.Raw(desc)</p>
+            }
+        }
+        @{
+            var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
+        }
+        @if (filterData.Count() > 0)
+        {
+            @foreach (var itemChild in filterData)
+            {
+                var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
+                <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+                    <h3 id="@childAnchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@itemChild.SectionTitle</h3>
+                    @{
+                        var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
+                    }
+                    @if (childDescs.Count() > 0)
+                    {
+                        foreach (var desc in childDescs)
+                        {
+                            <p style="padding-left: 15px;">@Html.Raw(desc)</p>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+}

@@ -15,7 +15,7 @@ namespace CompData.Services.Regulation
     public interface IRegulationService
     {
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId);
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId);
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTag = null);
         public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid, Guid userId);
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode);
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
@@ -33,6 +33,7 @@ namespace CompData.Services.Regulation
         public Task<Result> GetTagsGroup(string tagGroupId);
         public Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId);
         public Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType);
+        public Task<Result> GetAllTagFiltersByRegId(int regId, TagType tagType);
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
 
     }
