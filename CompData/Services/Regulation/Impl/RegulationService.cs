@@ -58,35 +58,12 @@ namespace CompData.Services.Regulation.Impl
             return this.regulationDao.GetRegulationSourcesByCountryCode(countryCode);
         }
 
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId)
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTag)
         {
             List<SelectedRegulationProcedure> selectedRegulationDetails = new List<SelectedRegulationProcedure>();
             if (regulationId != 0)
             {
-
-                selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId);
-                //List<SectionItem> sectionItems = new List<SectionItem>();
-                //foreach (var x in selectedRegulationDetails)
-                //{
-                //    SectionItem sectionItem = new SectionItem();
-                //    sectionItem.SectionId = x.SectionId;
-                //    sectionItem.SectionTitle = x.SectionTitle;
-                //    sectionItem.Description = x.RegDescription;
-                //    sectionItem.ParentId = x.ParentId;
-                //    sectionItem.Sequence = x.Sequence;
-                //
-                //    sectionItems.Add(sectionItem);
-                //}
-                //
-                //var viewModel = selectedRegulationDetails.FirstOrDefault();
-                //regulationViewModels.RegId = viewModel.RegId;
-                //regulationViewModels.RegTitle = viewModel.RegTitle;
-                //regulationViewModels.SourceId = viewModel.SourceId;
-                //regulationViewModels.SourceTitle = viewModel.FullName;
-                //regulationViewModels.RegTypeId = viewModel.RegTypeId;
-                //regulationViewModels.RegTypeName = viewModel.RegTypeName;
-                //regulationViewModels.Summary = viewModel.Summary;
-                //regulationViewModels.SectionItems = sectionItems;
+                selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId, searchTerm, detailTag);
             }
 
             return selectedRegulationDetails;
@@ -210,6 +187,10 @@ namespace CompData.Services.Regulation.Impl
         public async Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType)
         {
             return await regulationDao.GetAllTagFilters(sourceId, typeId, tagType);
+        }
+        public async Task<Result> GetAllTagFiltersByRegId(int regId, TagType tagType) 
+        {
+            return await regulationDao.GetAllTagFiltersByRegId(regId, tagType);
         }
 
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)

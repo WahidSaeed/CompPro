@@ -1,10 +1,12 @@
 ﻿@using CompData.ViewModels.Procedure.Library
 @using CompData.ViewModels.Library
+@using CompData.Models.Library
 @model List<SelectedRegulationProcedure>
 @{
     var defaultModel = Model.FirstOrDefault();
     ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
     var requirments = ViewBag.Requirments as SelectedRegulationRequirementViewModel;
+    var detailTag = ViewBag.DetailTag as List<TagMap>;
 }
 
 @section Styles {
@@ -109,48 +111,11 @@
 
                             </div>
                         </div>
+                        <div id="dvDetail">
 
+                        </div>
+                        <partial name="_RegulationDetail" model="Model" />
 
-                        @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
-                        {
-                            var anchor = @item.SectionTitle.Replace(" ", "_");
-                            <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
-                                <h2 id="@anchor" class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@item.SectionTitle</h2>
-                                @{
-                                    var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
-                                }
-                                @if (descs.Count() > 0)
-                                {
-                                    foreach (var desc in descs)
-                                    {
-                                        <p style="padding-left: 15px;">@Html.Raw(desc)</p>
-                                    }
-                                }
-                                @{
-                                    var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
-                                }
-                                @if (filterData.Count() > 0)
-                                {
-                                    @foreach (var itemChild in filterData)
-                                    {
-                                        var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
-                                        <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
-                                            <h3 id="@childAnchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@itemChild.SectionTitle</h3>
-                                            @{
-                                                var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
-                                            }
-                                            @if (childDescs.Count() > 0)
-                                            {
-                                                foreach (var desc in childDescs)
-                                                {
-                                                    <p style="padding-left: 15px;">@Html.Raw(desc)</p>
-                                                }
-                                            }
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        }
                     </div>
                     <div class="col-md-4" style="background-color: #f0f0f0">
                         <!-- BEGIN PORTLET-->
@@ -161,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <input type="text" class="form-control" placeholder="Enter search terms here" style="border-radius: 4px !important;">
+                                <input type="text" class="form-control" placeholder="Enter search terms here" style="border-radius: 4px !important;" id="txtSearchTerms">
                             </div>
                         </div>
                         <!-- END PORTLET-->
@@ -220,14 +185,22 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <button class="btn unselectedbtn">anti-money laundering</button>
-                                <button class="btn unselectedbtn">account opening</button>
-                                <button class="btn unselectedbtn">advertising</button>
-                                <button class="btn unselectedbtn">agent banking</button>
-                                <button class="btn unselectedbtn">agreement</button>
-                                <button class="btn unselectedbtn">atm</button>
-                                <button class="btn unselectedbtn">audit</button>
-                                <button class="btn unselectedbtn">authentication</button>
+                                <div class="btn-group" data-period data-toggle="buttons">
+                                    @if (detailTag.Count() > 0)
+                                    {
+                                        @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
+                                        {
+                                            //background: #ffffff; color: #888989;
+                                            <label class="btn btn-default" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
+                                                <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
+                                            </label>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>No Tag Linked</p>
+                                    }
+                                </div>
                             </div>
                         </div>
                         <!-- END PORTLET-->
@@ -380,5 +353,25 @@
                 }, "json")
                 .always(function () { l.stop(); });
         });
+
+
+        function getFilteredDetails() {
+            var searchTerm = $('#txtSearchTerms').val();
+            var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
+            $.get("/Library/_GetFilteredDetails",
+                { id: @ViewBag.RegId, searchTerm: searchTerm, detailTag: detailTag },
+                function (response) {
+                        $('#dvDetail').html(response);
+                }, "html");
+        }
+
+        $('[data-detail]').change(function () {
+            getFilteredDetails();
+        });
+
+        $('#txtSearchTerms').change(function () {
+            getFilteredDetails();
+        });
+
     </script>
 }

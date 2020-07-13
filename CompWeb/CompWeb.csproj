@@ -46,9 +46,4 @@
     <ProjectReference Include="..\CompData\CompData.csproj" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="Views\Shared\Library\" />
-  </ItemGroup>
-
 </Project>

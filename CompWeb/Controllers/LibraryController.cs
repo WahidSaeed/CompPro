@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CompData.Configurations.Constants.Enums;
 using CompData.Services.Regulation;
 using CompData.ViewModels;
 using CompData.ViewModels.Library;
@@ -49,18 +50,11 @@ namespace CompWeb.Controllers
             return View();
         }
 
-        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid)
-        {
-            var user = await userManager.GetUserAsync(User);
-            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid, user.Id);
-            return Json(model);
-        }
-
         [Route("/Library/Source/{sourceId}/Type/{typeId}")]
         public async Task<IActionResult> Type(int sourceId, int typeId)
         {
-            var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.DetailTag);
-            var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+            var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, TagType.DetailTag);
+            var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, TagType.BussinessLineTag);
 
             ViewBag.SourceId = sourceId;
             ViewBag.TypeId = typeId;
@@ -70,14 +64,32 @@ namespace CompWeb.Controllers
             return View();
         }
 
+        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid) 
+        {
+            var user = await userManager.GetUserAsync(User);
+            var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid, user.Id);
+            return Json(model);
+        }
+
         #endregion
 
         #region View Regulation
-        public IActionResult Regulation(int id)
+        public async Task<IActionResult> Regulation(int id)
         {
             var model = this.regulationService.GetSelectedRegulation(id);
+            var detailTag = await regulationService.GetAllTagFiltersByRegId(id, TagType.DetailTag);
+
             ViewBag.Requirments = this.regulationService.GetSelectedRegRequirement(id);
+            ViewBag.DetailTag = detailTag.Data;
+            ViewBag.RegId = id;
+
             return View(model);
+        }
+
+        public PartialViewResult _GetFilteredDetails(int id, string searchTerm, List<string> detailTag)
+        {
+            var model = this.regulationService.GetSelectedRegulation(id, searchTerm, detailTag);
+            return PartialView("_RegulationDetail", model);
         }
 
         [Route("/Library/Regulation/{id}/Edit")]
@@ -89,8 +101,7 @@ namespace CompWeb.Controllers
         }
         #endregion
 
-
-        public async Task<IActionResult> SelectSources()
+        public async Task<IActionResult> SelectSources() 
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetRegulationSourcesByCountryCode(user.CountryCode);
