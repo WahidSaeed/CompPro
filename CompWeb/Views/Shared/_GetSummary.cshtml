@@ -1,0 +1,29 @@
+﻿@using CompData.ViewModels.Library
+@model SelectedRegulationViewModel
+
+
+<div style="padding: 15px;">
+    <div class="page-title" style="margin-top: -20px;">
+        <h3>
+            <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>@Model.RegTitle</b></a>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+            <li>
+                <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                <span>/</span>
+            </li>
+            <li>
+                <a href="/Library/Source/@Model.SourceId" style="color: #a79b9b;font-size: 13px;">@Model.SourceTitle</a>
+                <span>/</span>
+            </li>
+            <li>
+                <a href="/Library/Source/@Model.SourceId/Type/@Model.RegTypeId" style="color: #a79b9b;font-size: 13px;">@Model.RegTypeName</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="modal-body">@Model.Summary </div>
+<div style="text-align: center;">
+
+    <a href="/Library/Regulation/@Model.RegTypeId" class="btn" style="background: #02502e; color: white; width: 342px; margin-bottom: 20px;">Go to Regulation</a>
+</div>
