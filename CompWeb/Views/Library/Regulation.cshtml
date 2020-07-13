@@ -185,13 +185,13 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (detailTag.Count() > 0)
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
                                         {
                                             //background: #ffffff; color: #888989;
-                                            <label class="btn btn-default" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
+                                            <label class="btn unselectedbtn" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
                                                 <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
                                             </label>
                                         }
