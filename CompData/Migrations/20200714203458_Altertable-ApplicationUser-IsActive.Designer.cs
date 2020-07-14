@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200714203458_Altertable-ApplicationUser-IsActive")]
+    partial class AltertableApplicationUserIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,6 +259,9 @@ namespace CompData.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsAllowRemoteLogin")
@@ -918,19 +923,10 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.SelectedRegulationProcedure", b =>
                 {
-                    b.Property<string>("CustomURL")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("DescSequence")
                         .HasColumnType("int");
 
                     b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTag")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ParentId")

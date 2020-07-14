@@ -207,5 +207,9 @@ namespace CompData.Services.Regulation.Impl
         {
             return await this.regulationDao.GetAllRegulations(ajaxDropDown);
         }
+        public async Task<Result> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel)
+        {
+            return await this.regulationDao.UpdateMetaDetails(viewModel);
+        }
     }
 }

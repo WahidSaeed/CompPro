@@ -8,7 +8,7 @@ using System.Text;
 namespace CompData.Models.Library
 {
     [Table("Regulation", Schema = "Library")]
-    public class Regulation: DefaultBaseModel
+    public class Regulation : DefaultBaseModel
     {
         [Key]
         public int RegId { get; set; }
@@ -27,10 +27,12 @@ namespace CompData.Models.Library
         [ForeignKey("RegTypeID")]
         public virtual RegulationType RegulationType { get; set; }
         public long Views { get; set; } = 0;
-        public string Summary { get; set; }
 
+        public string Summary { get; set; }
         [MaxLength(500)]
         public string CustomURL { get; set; }
+        public string MetaTag { get; set; }
+        public string MetaDescription { get; set; }
 
         public virtual ICollection<RegulationSection> RegulationSections { get; set; }
         public virtual ICollection<TagMap> TagMaps { get; set; }

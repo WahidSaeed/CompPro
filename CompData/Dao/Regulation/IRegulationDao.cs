@@ -35,5 +35,6 @@ namespace CompData.Dao.Regulation
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
         public List<SelectedRegulationRequirement> GetSelectedRegRequirement(int regulationId);
         public List<SelectedRegulationProcedure> GetSelectedRegSummary(int regulationId);
+        public Task<Result> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel);
     }
 }
