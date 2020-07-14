@@ -34,6 +34,8 @@ namespace CompData.Models.Library
 
         public virtual ICollection<RegulationSection> RegulationSections { get; set; }
         public virtual ICollection<TagMap> TagMaps { get; set; }
+        public virtual ICollection<LinkedRelatedRegulation> LinkedRegulations { get; set; }
+        public virtual ICollection<LinkedRelatedRegulation> RelatedRegulations { get; set; }
 
     }
 }

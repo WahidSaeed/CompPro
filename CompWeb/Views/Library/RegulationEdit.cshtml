@@ -406,12 +406,11 @@
                     descId
                 },
                 function (response) {
-                    console.log(response);
 
                     $('#tagModal').modal('hide');
-
                     $(selectedStatement).insertAfter($('[selected-medium]'));
                     $('[selected-medium]').remove();
+                    $('[data-item-tag="' + tagGroupId + '"]').attr('title', 'Tags: ' + tags.join());
 
                 }, "json")
                 .always(function () {
@@ -432,11 +431,23 @@
         $('[data-link-regulation]').click(function () {
             var selectedRegulation = $('#seletedregulation').val();
             if (selectedRegulation) {
-                selectedRegulation = selectedRegulation[0];
-                var linkHTML = '<a href="/Library/Regulation/' + selectedRegulation + '" data-item-regulation="' + selectedRegulation + '">' + selectedStatement +'</a>';
-                $(linkHTML).insertAfter($('[selected-medium]'));
-                $('[selected-medium]').remove();
-                $('#linkRegModal').modal('hide');
+                $.post("/Library/SetLinkedRelatedRegulation",
+                    {
+                        regId: regId,
+                        relatedRegId: selectedRegulation[0]
+                    },
+                    function (response) {
+
+                        selectedRegulation = selectedRegulation[0];
+                        var linkHTML = '<span title="' + response.data + '"><a href="/Library/Regulation/' + selectedRegulation + '" data-item-regulation="' + selectedRegulation + '">' + selectedStatement + '</a></span>';
+                        $(linkHTML).insertAfter($('[selected-medium]'));
+                        $('[selected-medium]').remove();
+                        $('#linkRegModal').modal('hide');
+
+                    }, "json")
+                    .always(function () {
+
+                    });   
             }
         });
 

@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
@@ -608,6 +609,98 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
+        public async Task<Result> GetRegulationIdByCustomURL(string customURL) 
+        {
+            try
+            {
+                var regulation = await this.dbContext.Regulations.Where(x => x.CustomURL.Equals(customURL)).FirstOrDefaultAsync();
+                if (regulation != null)
+                {
+                    return new Result
+                    {
+                        Status = ResultStatus.Success,
+                        Data = regulation.RegId
+                    };
+                }
+                else
+                {
+                    return new Result
+                    {
+                        Status = ResultStatus.Error,
+                        Message = "Invalid Customer URL"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Result { 
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<Result> GetRelatedRegulation(int regId)
+        {
+            try
+            {
+                string message = string.Empty;
+
+                var linkedRelatedRegulations = await dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId)).Select(x => x.RelatedRegulation).ToListAsync();
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = linkedRelatedRegulations
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<Result> SetLinkedRelatedRegulation(int regId, int relatedRegId)
+        {
+            try
+            {
+                string message = string.Empty;
+                LinkedRelatedRegulation linkedRelatedRegulation = new LinkedRelatedRegulation { 
+                    RegId = regId,
+                    RelatedRegId = relatedRegId
+                };
+                this.dbContext.LinkedRelatedRegulations.Add(linkedRelatedRegulation);
+                int result = await this.dbContext.SaveChangesAsync();
+
+                var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(relatedRegId)).Select(x => x.RegulationSource.ShortName + " | " + x.RegulationTitle + " | " + x.IssueDate.ToShortDateString()).FirstOrDefault();
+                
+                if (result == 0) throw new Exception("Something went wrong please try again");
+                message = "Related Regulation linked.";
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = regulation
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
         public async Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType)
         {
             try
@@ -653,6 +746,7 @@ namespace CompData.Dao.Regulation.Impl
                 };
             }
         }
+
         public async Task<Result> GetAllTagFiltersByRegId(int regId, TagType tagType)
         {
             try
@@ -795,6 +889,5 @@ namespace CompData.Dao.Regulation.Impl
             }
             #endregion
         }
-
     }
 }

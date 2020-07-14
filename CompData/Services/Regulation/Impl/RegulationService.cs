@@ -6,6 +6,7 @@ using CompData.ViewModels.Library;
 using CompData.ViewModels.Procedure.Library;
 using CRMData.Configurations.Generics;
 using CRMData.ViewModels.BaseViewModel;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Internal;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
@@ -184,10 +185,55 @@ namespace CompData.Services.Regulation.Impl
             return await this.regulationDao.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
         }
 
+        public async Task<Result> GetRegulationIdByCustomURL(string customURL) 
+        {
+            try
+            {
+                int regId = 0;
+                int.TryParse(customURL, out regId);
+                if (regId == 0)
+                {
+                    var response = await regulationDao.GetRegulationIdByCustomURL(customURL);
+                    if (response.Status == CRMData.Configurations.Constants.Enums.ResultStatus.Success)
+                    {
+                        return new Result
+                        {
+                            Status = CRMData.Configurations.Constants.Enums.ResultStatus.Success,
+                            Data = response.Data
+                        };
+                    }
+                }
+
+                return new Result
+                {
+                    Status = CRMData.Configurations.Constants.Enums.ResultStatus.Success,
+                    Data = regId
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result { 
+                    Message = ex.Message,
+                    Status = CRMData.Configurations.Constants.Enums.ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<Result> GetRelatedRegulation(int regId)
+        {
+            return await regulationDao.GetRelatedRegulation(regId);
+        }
+
+        public async Task<Result> SetLinkedRelatedRegulation(int regId, int relatedRegId)
+        {
+            return await this.regulationDao.SetLinkedRelatedRegulation(regId, relatedRegId);
+        }
+
         public async Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType)
         {
             return await regulationDao.GetAllTagFilters(sourceId, typeId, tagType);
         }
+
         public async Task<Result> GetAllTagFiltersByRegId(int regId, TagType tagType) 
         {
             return await regulationDao.GetAllTagFiltersByRegId(regId, tagType);
@@ -207,5 +253,6 @@ namespace CompData.Services.Regulation.Impl
         {
             return await this.regulationDao.GetAllRegulations(ajaxDropDown);
         }
+
     }
 }

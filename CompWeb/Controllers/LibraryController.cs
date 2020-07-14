@@ -74,16 +74,28 @@ namespace CompWeb.Controllers
         #endregion
 
         #region View Regulation
-        public async Task<IActionResult> Regulation(int id)
+        public async Task<IActionResult> Regulation(string id)
         {
-            var model = this.regulationService.GetSelectedRegulation(id);
-            var detailTag = await regulationService.GetAllTagFiltersByRegId(id, TagType.DetailTag);
+            var response = await this.regulationService.GetRegulationIdByCustomURL(id);
+            int regId = response.Data;
+            if (response.Status == ResultStatus.Success)
+            {
+                var model = this.regulationService.GetSelectedRegulation(regId);
+                var detailTag = await regulationService.GetAllTagFiltersByRegId(regId, TagType.DetailTag);
+                var requirement = this.regulationService.GetSelectedRegRequirement(regId);
+                var relatedRegulation = await regulationService.GetRelatedRegulation(regId);
 
-            ViewBag.Requirments = this.regulationService.GetSelectedRegRequirement(id);
-            ViewBag.DetailTag = detailTag.Data;
-            ViewBag.RegId = id;
+                ViewBag.RelatedRegulation = relatedRegulation.Data;
+                ViewBag.Requirments = requirement;
+                ViewBag.DetailTag = detailTag.Data;
+                ViewBag.RegId = regId;
 
-            return View(model);
+                return View(model); 
+            }
+            else
+            {
+                return Redirect("/");
+            }
         }
 
         public PartialViewResult _GetFilteredDetails(int id, string searchTerm, List<string> detailTag)
@@ -181,6 +193,13 @@ namespace CompWeb.Controllers
         public async Task<JsonResult> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId)
         {
             var result = await this.regulationService.SetTagsGroup(tags, tagGroupId, regId, secId, descId);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SetLinkedRelatedRegulation(int regId, int relatedRegId) 
+        {
+            var result = await this.regulationService.SetLinkedRelatedRegulation(regId, relatedRegId);
             return Json(result);
         }
         #endregion

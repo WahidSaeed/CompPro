@@ -247,7 +247,15 @@
     <!-- END THEME LAYOUT SCRIPTS -->
     @RenderSection("Scripts", required: false);
     <script>
-        
+
+        $(document).ready(function () {
+            $('[data-item-tag]').tooltip({
+                content: function () {
+                    return $(this).attr('title-tooltip')
+                }
+            });
+        });
+
         $('[data-searchbox]').focusin(function () {
             $('[data-search]').slideDown();
         });

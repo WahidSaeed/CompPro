@@ -138,6 +138,12 @@
     <Compile Remove="Migrations\20200626163150_Add-LinkedUserRegulationSubscription.Designer.cs" />
     <Compile Remove="Migrations\20200706183141_Added-TagMapType.cs" />
     <Compile Remove="Migrations\20200706183141_Added-TagMapType.Designer.cs" />
+    <Compile Remove="Migrations\20200713215456_Added-LinkedRelatedRegulation.cs" />
+    <Compile Remove="Migrations\20200713215456_Added-LinkedRelatedRegulation.Designer.cs" />
+    <Compile Remove="Migrations\20200713221650_Added-LinkedRelatedRegulation.cs" />
+    <Compile Remove="Migrations\20200713221650_Added-LinkedRelatedRegulation.Designer.cs" />
+    <Compile Remove="Migrations\20200713221918_Added-LinkedRelatedRegulation.cs" />
+    <Compile Remove="Migrations\20200713221918_Added-LinkedRelatedRegulation.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
