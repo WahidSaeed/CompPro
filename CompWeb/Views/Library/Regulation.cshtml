@@ -73,7 +73,7 @@
                 <div class="row">
                     <div class="col-md-8 portlet light ">
                         <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
-                            <h1 style="font-size: 15px;">
+                            <h1 style="font-size: 15px;width: 600px;">
                                 <a data-toggle="modal" href="#SummaryMod" style="color: #22793e"><b>@defaultModel.RegTitle</b></a>
                             </h1>
                             <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
@@ -89,7 +89,7 @@
                                     <a href="../Source/@defaultModel.SourceId/Type/@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
                                 </li>
                             </ul>
-                            <div style="float: right;margin-top: -47px !important;">
+                            <div style="float: right;margin-top: -50px !important;">
                                 <button type="button" class="btnclass">
                                     <a href="@defaultModel.RegId/edit" data-toggle="modal" style="color:#b9b9b9">
                                         <i class="fa fa-edit"></i>
@@ -185,13 +185,13 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <div class="btn-group" data-period data-toggle="buttons">
+                                <div data-period data-toggle="buttons">
                                     @if (detailTag.Count() > 0)
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
                                         {
-                                            //background: #ffffff; color: #888989;
-                                            <label class="btn btn-default" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
+                                            
+                                            <label class="btn unselectedbtn" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
                                                 <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
                                             </label>
                                         }
@@ -364,6 +364,7 @@
         });
 
 
+
         function getFilteredDetails() {
             var searchTerm = $('#txtSearchTerms').val();
             var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
@@ -374,6 +375,8 @@
                 }, "html");
         }
 
+    </script>
+    <script>
         $('[data-detail]').change(function () {
             getFilteredDetails();
         });

@@ -51,6 +51,11 @@ namespace CRMWeb.Areas.Account.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(loginViewModel.UserName);
+                //if (user.IsActive)
+                //{
+                //    ModelState.AddModelError(string.Empty, "YOUR ACCOUNT IS TEMPORARY DISABLED");
+                //    return View();
+                //}
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "INVALID LOGIN ATTEMPT.");

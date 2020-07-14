@@ -172,7 +172,7 @@ namespace CompData.Dao.Regulation.Impl
 
         public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTags = null)
         {
-            
+
             if (detailTags == null)
             {
                 detailTags = new List<string>();
@@ -824,6 +824,48 @@ namespace CompData.Dao.Regulation.Impl
             }
             #endregion
             return sections;
+        }
+
+
+        public async Task<Result> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel)
+        {
+            try
+            {
+                string message = string.Empty;
+                var httpUser = httpContext.HttpContext.User;
+                var user = await userManager.GetUserAsync(httpUser);
+                int result = 0;
+
+                var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(viewModel.RegId)).FirstOrDefault();
+                if (regulation != null)
+                {
+                    regulation.CustomURL = viewModel.CustomURL;
+                    regulation.MetaTag = viewModel.MetaTag;
+                    regulation.MetaDescription = viewModel.MetaDescription;
+
+                    this.dbContext.Entry<Models.Library.Regulation>(regulation).State = EntityState.Modified;
+                    result = await this.dbContext.SaveChangesAsync();
+                }
+
+
+                if (result == 0) throw new Exception("Something went wrong please try again");
+                message = "Update Regulation Meta Detail has been saved.";
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
         }
 
         private void SetUpdateRegulationSectionsModel(List<SectionDetailViewModel> sectionDetailViewModels, int regId, ref List<RegulationSection> regulationSections)

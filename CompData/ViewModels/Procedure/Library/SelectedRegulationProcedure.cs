@@ -22,5 +22,8 @@ namespace CompData.ViewModels.Procedure.Library
         public string RegTypeName { get; set; }
         public int RegTypeId { get; set; }
         public string Summary { get; set; }
+        public string CustomURL { get; set; }
+        public string MetaTag { get; set; }
+        public string MetaDescription { get; set; }
     }
 }

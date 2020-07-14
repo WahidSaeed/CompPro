@@ -13,6 +13,7 @@
     <link href="~/assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
     <style>
 
         .tag-highlight {
@@ -52,7 +53,7 @@
                 <div class="row">
                     <div class="col-md-12 portlet light " style="min-height: 400px">
                         <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
-                            <h1 style="font-size: 15px;">
+                            <h1 style="font-size: 15px;width: 1000px;">
                                 <a data-toggle="modal" href="#SummaryMod" style="color: #22793e"><b>  @ViewData["Title"]</b></a>
                             </h1>
                             <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
@@ -68,7 +69,8 @@
                                     <a href="../Source/@defaultModel.SourceId/Type/@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
                                 </li>
                             </ul>
-                            <div style="float: right;margin-top: -47px !important;">
+                            <div style="float: right;margin-top: -60px !important;">
+                                <button type="button" class="btnclass"><a data-toggle="modal" href="#MetaData" style="color:#b9b9b9"><i class="fa fa-plus-circle"></i></a><span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div></button>
                                 <button class="btn btnclass" id="btn-new-section" title="Add New Section"><i class="fa fa-paragraph"></i></button>
                                 <button class="btn btnclass" id="btn-publish" title="Publish" onclick="publish()"><i class="fa fa-send-o"></i></button>
                                 <button class="btn btnclass" id="btn-draft" title="Draft"><i class="fa fa-save"></i></button>
@@ -181,6 +183,53 @@
         </div>
     </div>
 </div>
+<div class="modal fade bs-modal-lg" id="MetaData" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="width:700px;background-color: #f0f0f0">
+            <div style="padding: 15px;">
+                <div class="page-title" style="margin-top: -20px;">
+                    <h3>
+                        <a data-toggle="modal" href="#SummaryMod" style="color: #22793e;font-size: 14px;"><b>@defaultModel.RegTitle</b></a>
+                    </h3>
+                    <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
+                        <li>
+                            <a href="/" style="color: #a79b9b;font-size: 13px;">Home</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Source/@defaultModel.SourceId" style="color: #a79b9b;font-size: 13px;">@defaultModel.FullName</a>
+                            <span>/</span>
+                        </li>
+                        <li>
+                            <a href="../Type/@defaultModel.SourceId-@defaultModel.RegTypeId" style="color: #a79b9b;font-size: 13px;">@defaultModel.RegTypeName</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Custom URL" id="input-customurl" style="border-radius: 4px !important;" value="@defaultModel.CustomURL">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Meta Tag" id="input-metatag" style="border-radius: 4px !important;" value="@defaultModel.MetaTag">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control autosizeme" rows="4" placeholder="Meta Description" data-autosize-on="true" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 90px;border-radius: 4px !important;" id="input-metadescription">@defaultModel.MetaDescription</textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div style="background-color: transparent;clear: both;border: 0;padding: 0 60px 27px;margin-left: 90px;margin-right: -30px;">
+                <button type="button" class="btn" style="background: #02502e;color: white;width: 342px;margin-top: 10px" data-update-tags>Submit</button>
+                <button type="button" data-dismiss="modal" class="btn" style="background: #bf9000;color: white;width: 342px;margin-top: 10px">Cancel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 
 @section Scripts {
@@ -197,6 +246,7 @@
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
     <script src="~/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+    <script src="~/assets/pages/scripts/ui-toastr.min.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
     @*<script src="~/assets/pages/scripts/components-bootstrap-tagsinput.min.js" type="text/javascript"></script>*@
 
@@ -416,7 +466,7 @@
                 .always(function () {
 
                 });
-        }
+                   }
 
         $('[data-link-tag-group]').click(function () {
             var tagGroupId = $(this).attr('data-link-tag-group');
@@ -449,7 +499,40 @@
 
                     });   
             }
-        });
+        })              ;
+    </script>
+    <script>
+
+    var meta = {
+    regid: '',
+    customurl: '',
+    metatag: '',
+    metadescription: ''
+    };
+
+
+    $('[data-update-tags]').click(function () {
+    var metatag = $('#input-metatag');
+    var metadescription = $('#input-metadescription');
+    var customurl = $('#input-customurl');
+
+    meta.regid = @defaultModel.RegId;
+    meta.customurl = customurl.val();
+    meta.metatag = metatag.val();
+    meta.metadescription = metadescription.val();
+
+    $.post("/Library/UpdateMetaDetails", meta,
+    function (response) {
+    if (response.status === 200) {
+    $('#MetaData').modal('hide');
+    toastr.success(response.message);
+    }
+    else {
+    toastr.error(response.message);
+    }
+    }, "json");
+    })        ;
+
 
 
     </script>

@@ -204,6 +204,15 @@ namespace CompWeb.Controllers
         }
         #endregion
 
+        #region Meta Tags
+        [HttpPost]
+        public async Task<JsonResult> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel)
+        {
+            var result = await this.regulationService.UpdateMetaDetails(viewModel);
+            return Json(result);
+        }
+        #endregion
+
         public PartialViewResult GetSummary(int id)
         {
             var model = this.regulationService.GetSelectedRegSummary(id);
