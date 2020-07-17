@@ -164,6 +164,11 @@ namespace CompData.Services.Regulation.Impl
             return this.regulationDao.GetSubscribedRegulationTypeByUserId(userId, sourceId);
         }
 
+        public List<int> GetSubscribedRegulationByUserId(Guid userId, int regId)
+        {
+            return this.regulationDao.GetSubscribedRegulationByUserId(userId, regId);
+        }
+
         public List<Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId)
         {
             var updatedRegulations = this.regulationDao.GetUpdatedRegulationsBySource(sourceId);

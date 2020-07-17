@@ -5,6 +5,7 @@
     var defaultModel = Model.FirstOrDefault();
     ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
     var requirments = ViewBag.Requirments as SelectedRegulationRequirementViewModel;
+    var subscribedregulation = ViewBag.SubscribedRegulation as List<int>;
 }
 
 @section Styles {
@@ -99,7 +100,11 @@
                                     </a>
                                     <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
                                 </button>
-                                <button type="button" class="SubOn" data-style="slide-down" data-spinner-color="#333" data-type="1" data-source="1" data-subs="">
+
+                                @{
+                                    var cssSubsStyle = subscribedregulation.Contains(defaultModel.RegId) ? "SubOn" : "Suboff";
+                                }
+                                <button type="button" class="@cssSubsStyle" data-style="slide-down" data-spinner-color="#333" data-type="1" data-source="1" data-subs="" data-regId="@defaultModel.RegId">
                                     <span class="ladda-label">
                                         <i class="fa fa-rss"></i>
                                     </span>
@@ -113,43 +118,52 @@
 
                         @foreach (var item in Model.Where(x => x.ParentId == null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                         {
-                            var anchor = @item.SectionTitle.Replace(" ", "_");
-                            <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
-                                <h2 id="@anchor" class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@item.SectionTitle</h2>
-                                @{
-                                    var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
-                                }
-                                @if (descs.Count() > 0)
+                            var anchor = "";
+                            @if (@item.SectionTitle != null)
+                            {
+                                anchor = @item.SectionTitle.Replace(" ", "_");
+                            }
+
+                    <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+                        <h2 id="@anchor" class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@item.SectionTitle</h2>
+                        @{
+                            var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).Select(x => x.RegDescription);
+                        }
+                        @if (descs.Count() > 0)
+                        {
+                            foreach (var desc in descs)
+                            {
+                                <p style="padding-left: 15px;">@Html.Raw(desc)</p>
+                            }
+                        }
+                        @{
+                            var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
+                        }
+                        @if (filterData.Count() > 0)
+                        {
+                            @foreach (var itemChild in filterData)
+                            {
+                                var childAnchor = "";
+                                @if (@itemChild.SectionTitle != null)
                                 {
-                                    foreach (var desc in descs)
-                                    {
-                                        <p style="padding-left: 15px;">@Html.Raw(desc)</p>
+                                    childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
+                                }
+                                <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
+                                    <h3 id="@childAnchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@itemChild.SectionTitle</h3>
+                                    @{
+                                        var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
                                     }
-                                }
-                                @{
-                                    var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
-                                }
-                                @if (filterData.Count() > 0)
-                                {
-                                    @foreach (var itemChild in filterData)
+                                    @if (childDescs.Count() > 0)
                                     {
-                                        var childAnchor = @itemChild.SectionTitle.Replace(" ", "_");
-                                        <div class="col-8" style="padding:0px 15px 0px; background-color: #fff;">
-                                            <h3 id="@childAnchor" class="bold" style="color: #404040;font-size: 15px;padding: 0px 15px 0px;">@itemChild.SectionTitle</h3>
-                                            @{
-                                                var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).Select(x => x.RegDescription);
-                                            }
-                                            @if (childDescs.Count() > 0)
-                                            {
-                                                foreach (var desc in childDescs)
-                                                {
-                                                    <p style="padding-left: 15px;">@Html.Raw(desc)</p>
-                                                }
-                                            }
-                                        </div>
+                                        foreach (var desc in childDescs)
+                                        {
+                                            <p style="padding-left: 15px;">@Html.Raw(desc)</p>
+                                        }
                                     }
-                                }
-                            </div>
+                                </div>
+                            }
+                        }
+                    </div>
                         }
                     </div>
                     <div class="col-md-4" style="background-color: #f0f0f0">
@@ -179,7 +193,13 @@
                                         {
                                             var id = "j1_" + item.SectionId;
                                             var anchor = id + "_anchor";
-                                            var anchorLink = "#" + @item.SectionTitle.Replace(" ", "_");
+
+                                            var anchorLink = "";
+                                            @if (@item.SectionTitle != null)
+                                            {
+                                                anchorLink = "#" + @item.SectionTitle.Replace(" ", "_");
+                                            }
+
                                             <li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="@anchor" aria-expanded="true" id="@id" class="jstree-node  jstree-open" title="@item.SectionTitle">
                                                 <i class="jstree-icon jstree-ocl" role="presentation"></i>
                                                 <a class="jstree-anchor" href="@anchorLink" tabindex="-1" id="@anchor">
@@ -190,20 +210,27 @@
                                                 }
                                                 @if (filterData.Count() > 0)
                                                 {
-                                                    <ul role="group" class="jstree-children">
-                                                        @foreach (var itemChild in filterData)
-                                                        {
-                                                            var childId = "j1_" + itemChild.SectionId;
-                                                            var childAnchor = childId + "_anchor";
-                                                            var childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
-                                                            <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
-                                                                <i class="jstree-icon jstree-ocl" role="presentation"></i>
-                                                                <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
-                                                                    <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
-                                                                </a>
-                                                            </li>
-                                                        }
-                                                    </ul>
+                                            <ul role="group" class="jstree-children">
+                                                @foreach (var itemChild in filterData)
+                                                {
+
+                                                    var childId = "j1_" + itemChild.SectionId;
+                                                    var childAnchor = childId + "_anchor";
+
+                                                    var childAnchorLink = "";
+                                                    @if (@itemChild.SectionTitle != null)
+                                                    {
+                                                        childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
+                                                    }
+
+                                                    <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
+                                                        <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                                        <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
+                                                            <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
                                                 }
                                             </li>
                                         }
@@ -369,7 +396,7 @@
                 function (response) {
                     if (response.status === 200) {
                         toastr.success(response.message);
-                         if (response.message != "Regulation type has been subscribed.") {
+                        if (response.message != "Regulation has been subscribed.") {
                             $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {

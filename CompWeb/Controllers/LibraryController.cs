@@ -73,10 +73,12 @@ namespace CompWeb.Controllers
         #endregion
 
         #region View Regulation
-        public IActionResult Regulation(int id)
+        public async Task<IActionResult> Regulation(int id)
         {
+            var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetSelectedRegulation(id);
             ViewBag.Requirments = this.regulationService.GetSelectedRegRequirement(id);
+            ViewBag.SubscribedRegulation = this.regulationService.GetSubscribedRegulationByUserId(user.Id, id);
             return View(model);
         }
 

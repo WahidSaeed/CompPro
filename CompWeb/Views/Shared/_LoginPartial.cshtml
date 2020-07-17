@@ -29,8 +29,12 @@
 <div class="top-menu">
     @if (SignInManager.IsSignedIn(User))
     {
+        <a href="/Account/Login/ChangePassword" style="color:#02502e">
+            Change your password
+        </a>
+        <span>|</span>
         <a href="/Account/Login/Logout" style="color:#02502e">
-            Log Out
+            LogOut
         </a>
         @*<ul class="nav navbar-nav pull-right">
                  BEGIN NOTIFICATION DROPDOWN

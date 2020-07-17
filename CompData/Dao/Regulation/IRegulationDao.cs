@@ -23,6 +23,7 @@ namespace CompData.Dao.Regulation
         public Task<List<Models.Library.Regulation>> GetMostViewedRegulationsByUserSource(Guid userId);
         public Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm);
         public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId);
+        public List<int> GetSubscribedRegulationByUserId(Guid userId, int regId);
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId);
         public Result SubscribeRegulationByUser(Guid userID, int regId);
         public Result LinkUserByRegulationSource(Guid userID, List<int> SourceIds);

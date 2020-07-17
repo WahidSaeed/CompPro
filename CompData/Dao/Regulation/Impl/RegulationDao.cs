@@ -217,6 +217,12 @@ namespace CompData.Dao.Regulation.Impl
             return regulationTypes;
         }
 
+        public List<int> GetSubscribedRegulationByUserId(Guid userId, int RegId)
+        {
+            List<int> regulationTypes = this.dbContext.LinkUserRegulationSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegId.Equals(RegId)).Select(x => x.RegId).ToList();
+            return regulationTypes;
+        }
+
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId)
         {
             try
@@ -285,7 +291,7 @@ namespace CompData.Dao.Regulation.Impl
                     this.dbContext.Entry<LinkUserRegulationSubscription>(linkUser).State = EntityState.Deleted;
                     int result = this.dbContext.SaveChanges();
                     if (result == 0) throw new Exception("Something went wrong please try again");
-                    message = "Regulation type has been unsubscribed.";
+                    message = "Regulation has been unsubscribed.";
                 }
 
                 return new Result
