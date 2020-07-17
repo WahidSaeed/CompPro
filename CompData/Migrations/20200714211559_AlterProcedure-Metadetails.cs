@@ -6,11 +6,6 @@ namespace CompData.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsActive",
-                schema: "Security",
-                table: "ApplicationUser");
-
             migrationBuilder.AddColumn<string>(
                 name: "CustomURL",
                 schema: "ProcedureView",

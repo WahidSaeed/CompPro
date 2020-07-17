@@ -99,6 +99,19 @@ namespace CRMData.Configurations.Extensions
             return appSetting.Value;
         }
 
+        //public T GetAppSetting<T>(string key)
+        //{
+        //    try
+        //    {
+        //        var appSetting = _context.AppSettings.Where(x => x.Key.ToLower().Equals(key.ToLower())).FirstOrDefault();
+        //        return (T) appSetting.Value;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
 
         public async Task<T> PostRequestAsync<T>(string requestURI, dynamic content = null)
         {

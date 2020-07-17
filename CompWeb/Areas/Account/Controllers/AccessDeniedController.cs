@@ -11,5 +11,10 @@ namespace CRMWeb.Areas.Account.Controllers
         {
             return View();
         }
+
+        public IActionResult ApplicationDown() 
+        {
+            return View();
+        }
     }
 }

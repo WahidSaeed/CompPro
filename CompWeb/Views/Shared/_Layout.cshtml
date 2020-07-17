@@ -277,7 +277,7 @@
                         if (response.data.length > 0) {
                             html += '<ul>';
                             $(response.data).each(function (a, data) {
-                                html += '<li><a href = "Library/Regulation/' + data.regId + '" style = "font-size:12px;color:#404040">' + data.regulationTitle + '</a></li>';
+                                html += '<li><a href = "Library/Regulation/' + data.regId + '" style = "font-size:12px;color:#404040">' + data.referenceNumber + ' - ' + data.regulationTitle + '</a></li>';
                             });
                             html += '</ul>';
                         }

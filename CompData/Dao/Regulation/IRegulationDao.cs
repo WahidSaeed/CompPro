@@ -21,7 +21,7 @@ namespace CompData.Dao.Regulation
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
         public List<CompData.Models.Library.Regulation> GetUpdatedRegulationsBySource(int sourceId);
         public Task<List<Models.Library.Regulation>> GetMostViewedRegulationsByUserSource(Guid userId);
-        public Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm);
+        public Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm, string column = "title", List<string> tags = null);
         public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId);
         public Result SubscribeRegulationTypeByUser(Guid userID, int typeId, int sourceId);
         public Result SubscribeRegulationByUser(Guid userID, int regId);

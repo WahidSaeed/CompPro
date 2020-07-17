@@ -383,7 +383,7 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
-        public async Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm)
+        public async Task<Result> GetSuggestedRegulationsByUserSource(Guid userId, string searchTerm, string column = "title", List<string> tags = null)
         {
             try
             {
@@ -396,7 +396,7 @@ namespace CompData.Dao.Regulation.Impl
                         using (var reader = DirectoryReader.Open(directory))
                         {
                             var searcher = new IndexSearcher(reader);
-                            var queryParser = new QueryParser(LuceneVersion.LUCENE_48, "title", analyzer)
+                            var queryParser = new QueryParser(LuceneVersion.LUCENE_48, column, analyzer)
                             {
                                 AllowLeadingWildcard = true,
                                 AutoGeneratePhraseQueries = true,
@@ -419,11 +419,25 @@ namespace CompData.Dao.Regulation.Impl
                     }
                 }
 
-                List<Models.Library.Regulation> suggestedRegulations = await (from r in dbContext.Regulations
-                                                                              join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
-                                                                              where ur.UserId.Equals(userId) && luceneRegIds.Contains(r.RegId)
-                                                                              orderby r.Views descending
-                                                                              select r).Take(5).ToListAsync();
+                List<Models.Library.Regulation> suggestedRegulations = new List<Models.Library.Regulation>();
+
+                if (tags == null)
+                {
+                    suggestedRegulations = await (from r in dbContext.Regulations
+                                                  join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
+                                                  where ur.UserId.Equals(userId) && luceneRegIds.Contains(r.RegId)
+                                                  orderby r.Views descending
+                                                  select r).Take(5).ToListAsync(); 
+                }
+                else
+                {
+                    suggestedRegulations = await (from r in dbContext.Regulations
+                                                  join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
+                                                  join rTag in dbContext.TagMaps on r.RegId equals rTag.RegId
+                                                  where ur.UserId.Equals(userId) && luceneRegIds.Contains(r.RegId) && tags.Contains(rTag.Tag)
+                                                  orderby r.Views descending
+                                                  select r).Take(5).ToListAsync();
+                }
 
                 return new Result
                 {
@@ -584,7 +598,8 @@ namespace CompData.Dao.Regulation.Impl
                     TagGroupKey = tagGroupId,
                     RegId = regId,
                     SecId = secId,
-                    DescId = descId
+                    DescId = descId,
+                    TagType = TagType.DetailTag
                 }).ToList();
                 this.dbContext.TagMaps.AddRange(_tags);
                 int result = await this.dbContext.SaveChangesAsync();

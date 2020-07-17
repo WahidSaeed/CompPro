@@ -37,7 +37,7 @@ namespace CompData.Configurations.Initializer
                                 var doc = new Document();
                                 doc.Add(new Field("regId", item.RegId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
                                 doc.Add(new Field("ref", item.ReferenceNumber, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                                doc.Add(new Field("title", item.RegulationTitle, Field.Store.YES, Field.Index.ANALYZED));
+                                doc.Add(new Field("title", item.ReferenceNumber + " " +item.RegulationTitle, Field.Store.YES, Field.Index.ANALYZED));
                                 doc.Add(new Field("regDetailId", item.RegDetailId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
                                 doc.Add(new Field("desc", item.RegDescriptionClean.StripHTML(), Field.Store.YES, Field.Index.ANALYZED));
 
