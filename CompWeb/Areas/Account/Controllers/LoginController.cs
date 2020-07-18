@@ -52,7 +52,7 @@ namespace CRMWeb.Areas.Account.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(loginViewModel.UserName);
 
-                if (user.IsActive)
+                if (!user.IsActive)
                 {
                     ModelState.AddModelError(string.Empty, "YOUR ARE NOT ALLOWED TO LOGIN. PLEASE CONTACT THE ADMINISTRATOR.");
                     return View();
