@@ -4,13 +4,9 @@ using CRMData.Configurations.GlobalConfigurationVariables;
 using CRMData.Configurations.Middlewares.Authorizations;
 using CRMData.Configurations.Attributes.Filters;
 using CRMData.Dao;
-using CRMData.Dao.Account.ProfileClaimConfiguration;
-using CRMData.Dao.Account.ProfileClaimConfiguration.Implementation;
 using CRMData.Data;
 using CRMData.Models.Identity;
 using CRMData.Services;
-using CRMData.Services.Account.ProfileClaimConfiguration;
-using CRMData.Services.Account.ProfileClaimConfiguration.Implementation;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
 //using Microsoft.IdentityModel.Tokens;
 using CRMData.ViewModels;
@@ -41,6 +37,10 @@ using CRMData.Dao.SystemAudit;
 using CRMData.Dao.SystemAudit.Impl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using CompData.Services.Account.Impl;
+using CompData.Services.Account;
+using CompData.Dao.Account.Impl;
+using CompData.Dao.Account;
 
 namespace CRMWeb
 {
@@ -109,9 +109,9 @@ namespace CRMWeb
 
             services.AddScoped<IMiddlewareAuthorization, MiddlewareAuthorization>();
 
-            #region Configuration Services
-            services.AddTransient<IProfileClaimConfiguration, ProfileClaimConfiguration>();
-            services.AddTransient<IProfileClaimConfigurationDao, ProfileClaimConfigurationDao>();
+            #region Account
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountDao, AccountDao>();
             #endregion
 
             #region Library

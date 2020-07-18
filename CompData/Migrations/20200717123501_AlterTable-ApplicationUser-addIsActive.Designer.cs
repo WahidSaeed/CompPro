@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200717123501_AlterTable-ApplicationUser-addIsActive")]
+    partial class AlterTableApplicationUseraddIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,9 +221,6 @@ namespace CompData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("About")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
@@ -246,10 +245,6 @@ namespace CompData.Migrations
                         .HasColumnType("nvarchar(3)")
                         .HasMaxLength(3);
 
-                    b.Property<string>("Designation")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
-
                     b.Property<Guid>("EditBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -265,10 +260,6 @@ namespace CompData.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -311,10 +302,6 @@ namespace CompData.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
-
-                    b.Property<string>("WebsiteURL")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
 
                     b.HasKey("Id");
 
@@ -626,28 +613,6 @@ namespace CompData.Migrations
                     b.ToTable("LinkUserRegulationSubscription","Library");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkedRelatedRegulation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RegId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RelatedRegId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RegId");
-
-                    b.HasIndex("RelatedRegId");
-
-                    b.ToTable("LinkedRelatedRegulation","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
                 {
                     b.Property<int>("Id")
@@ -695,12 +660,6 @@ namespace CompData.Migrations
 
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTag")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReferenceNumber")
                         .HasColumnType("nvarchar(50)")
@@ -958,19 +917,10 @@ namespace CompData.Migrations
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.SelectedRegulationProcedure", b =>
                 {
-                    b.Property<string>("CustomURL")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("DescSequence")
                         .HasColumnType("int");
 
                     b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTag")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ParentId")
@@ -1184,21 +1134,6 @@ namespace CompData.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.LinkedRelatedRegulation", b =>
-                {
-                    b.HasOne("CompData.Models.Library.Regulation", "Regulation")
-                        .WithMany("LinkedRegulations")
-                        .HasForeignKey("RegId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CompData.Models.Library.Regulation", "RelatedRegulation")
-                        .WithMany("RelatedRegulations")
-                        .HasForeignKey("RelatedRegId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

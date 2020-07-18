@@ -4,7 +4,6 @@ using CRMData.Configurations.Attributes.Identity;
 using CRMData.Configurations.Constants.Enums;
 using CRMData.Configurations.Generics;
 using CRMData.Models.Identity;
-using CRMData.Services.Account.ProfileClaimConfiguration;
 using CRMData.ViewModels;
 using CRMWeb.Models;
 using Microsoft.AspNetCore.Authorization;

@@ -8,6 +8,7 @@
     var requirments = ViewBag.Requirments as SelectedRegulationRequirementViewModel;
     var detailTag = ViewBag.DetailTag as List<TagMap>;
     var relatedRegulation = ViewBag.RelatedRegulation as List<Regulation>;
+    var subscribedregulation = ViewBag.SubscribedRegulation as List<int>;
 }
 
 @section Styles {
@@ -102,7 +103,11 @@
                                     </a>
                                     <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
                                 </button>
-                                <button type="button" class="SubOn" data-style="slide-down" data-spinner-color="#333" data-type="1" data-source="1" data-subs="">
+
+                                @{
+                                    var cssSubsStyle = subscribedregulation.Contains(defaultModel.RegId) ? "SubOn" : "Suboff";
+                                }
+                                <button type="button" class="@cssSubsStyle" data-style="slide-down" data-spinner-color="#333" data-type="1" data-source="1" data-subs="" data-regId="@defaultModel.RegId">
                                     <span class="ladda-label">
                                         <i class="fa fa-rss"></i>
                                     </span>
@@ -144,7 +149,13 @@
                                         {
                                             var id = "j1_" + item.SectionId;
                                             var anchor = id + "_anchor";
-                                            var anchorLink = "#" + @item.SectionTitle.Replace(" ", "_");
+
+                                            var anchorLink = "";
+                                            @if (@item.SectionTitle != null)
+                                            {
+                                                anchorLink = "#" + @item.SectionTitle.Replace(" ", "_");
+                                            }
+
                                             <li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="@anchor" aria-expanded="true" id="@id" class="jstree-node  jstree-open" title="@item.SectionTitle">
                                                 <i class="jstree-icon jstree-ocl" role="presentation"></i>
                                                 <a class="jstree-anchor" href="@anchorLink" tabindex="-1" id="@anchor">
@@ -155,20 +166,27 @@
                                                 }
                                                 @if (filterData.Count() > 0)
                                                 {
-                                                    <ul role="group" class="jstree-children">
-                                                        @foreach (var itemChild in filterData)
-                                                        {
-                                                            var childId = "j1_" + itemChild.SectionId;
-                                                            var childAnchor = childId + "_anchor";
-                                                            var childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
-                                                            <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
-                                                                <i class="jstree-icon jstree-ocl" role="presentation"></i>
-                                                                <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
-                                                                    <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
-                                                                </a>
-                                                            </li>
-                                                        }
-                                                    </ul>
+                                            <ul role="group" class="jstree-children">
+                                                @foreach (var itemChild in filterData)
+                                                {
+
+                                                    var childId = "j1_" + itemChild.SectionId;
+                                                    var childAnchor = childId + "_anchor";
+
+                                                    var childAnchorLink = "";
+                                                    @if (@itemChild.SectionTitle != null)
+                                                    {
+                                                        childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
+                                                    }
+
+                                                    <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
+                                                        <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                                        <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
+                                                            <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
                                                 }
                                             </li>
                                         }
@@ -349,7 +367,7 @@
                 function (response) {
                     if (response.status === 200) {
                         toastr.success(response.message);
-                        if (response.message != "Regulation type has been subscribed.") {
+                        if (response.message != "Regulation has been subscribed.") {
                             $(btnObj).removeClass('SubOn').addClass('Suboff');
                         }
                         else {
@@ -367,7 +385,7 @@
 
         function getFilteredDetails() {
             var searchTerm = $('#txtSearchTerms').val();
-            var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
+            var detailTag = Array.from($('[data-detail]:checked').map(function () { return $(this).val() })); //(@detailTag.Count() > 0 ?  : []);
             $.get("/Library/_GetFilteredDetails",
                 { id: @ViewBag.RegId, searchTerm: searchTerm, detailTag: detailTag },
                 function (response) {

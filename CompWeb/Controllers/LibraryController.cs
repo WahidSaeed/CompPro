@@ -76,6 +76,7 @@ namespace CompWeb.Controllers
         #region View Regulation
         public async Task<IActionResult> Regulation(string id)
         {
+            var user = await userManager.GetUserAsync(User);
             var response = await this.regulationService.GetRegulationIdByCustomURL(id);
             int regId = response.Data;
             if (response.Status == ResultStatus.Success)
@@ -85,6 +86,7 @@ namespace CompWeb.Controllers
                 var requirement = this.regulationService.GetSelectedRegRequirement(regId);
                 var relatedRegulation = await regulationService.GetRelatedRegulation(regId);
 
+                ViewBag.SubscribedRegulation = this.regulationService.GetSubscribedRegulationByUserId(user.Id, regId);
                 ViewBag.RelatedRegulation = relatedRegulation.Data;
                 ViewBag.Requirments = requirement;
                 ViewBag.DetailTag = detailTag.Data;
@@ -120,6 +122,19 @@ namespace CompWeb.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SelectSources(List<int> SourceIds)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var result = this.regulationService.LinkUserByRegulationSource(user.Id, SourceIds);
+            if (result.Status == ResultStatus.Error)
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+                return View();
+            }
+            return LocalRedirect("/");
+        }
+
         public async Task<JsonResult> GetAllRegulations(AjaxDropDown ajaxDropDown)
         {
             var result = await this.regulationService.GetAllRegulations(ajaxDropDown);
@@ -132,19 +147,6 @@ namespace CompWeb.Controllers
             var user = await userManager.GetUserAsync(User);
             var result = await this.regulationService.GetSuggestedRegulationsByUserSource(user.Id, searchTerm);
             return Json(result);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SelectSources(List<int> SourceIds)
-        {
-            var user = await userManager.GetUserAsync(User);
-            var result = this.regulationService.LinkUserByRegulationSource(user.Id, SourceIds);
-            if (result.Status == ResultStatus.Error)
-            {
-                ModelState.AddModelError(string.Empty, result.Message);
-                return View();
-            }
-            return LocalRedirect("/");
         }
 
         #region Subscription

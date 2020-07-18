@@ -172,67 +172,75 @@ namespace CompData.Dao.Regulation.Impl
 
         public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTags = null)
         {
+            List<SelectedRegulationProcedure> regulationProcedures = new List<SelectedRegulationProcedure>();
+            try
+            {
 
-            if (detailTags == null)
-            {
-                detailTags = new List<string>();
-            }
-            List<int> luceneRegDetailIds = new List<int>();
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                var directory = FSDirectory.Open("c:\\temp\\directory");
-                using (Analyzer analyzer = new EnglishAnalyzer(LuceneVersion.LUCENE_48))
+                if (detailTags == null)
                 {
-                    using (var reader = DirectoryReader.Open(directory))
+                    detailTags = new List<string>();
+                }
+                List<int> luceneRegDetailIds = new List<int>();
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    var directory = FSDirectory.Open("c:\\temp\\directory");
+                    using (Analyzer analyzer = new EnglishAnalyzer(LuceneVersion.LUCENE_48))
                     {
-                        var searcher = new IndexSearcher(reader);
-                        var queryParser = new QueryParser(LuceneVersion.LUCENE_48, "desc", analyzer)
+                        using (var reader = DirectoryReader.Open(directory))
                         {
-                            AllowLeadingWildcard = true,
-                            AutoGeneratePhraseQueries = true,
-                            FuzzyMinSim = 3f
-                        };
-                        var query = queryParser.Parse(searchTerm);
-                        var collector = TopScoreDocCollector.Create(10000, true);
-                        searcher.Search(query, collector);
+                            var searcher = new IndexSearcher(reader);
+                            var queryParser = new QueryParser(LuceneVersion.LUCENE_48, "desc", analyzer)
+                            {
+                                AllowLeadingWildcard = true,
+                                AutoGeneratePhraseQueries = true,
+                                FuzzyMinSim = 3f
+                            };
+                            var query = queryParser.Parse(searchTerm);
+                            var collector = TopScoreDocCollector.Create(10000, true);
+                            searcher.Search(query, collector);
 
-                        var matches = collector.GetTopDocs().ScoreDocs;
-                        foreach (var item in matches)
-                        {
-                            var id = item.Doc;
-                            var doc = searcher.Doc(id);
+                            var matches = collector.GetTopDocs().ScoreDocs;
+                            foreach (var item in matches)
+                            {
+                                var id = item.Doc;
+                                var doc = searcher.Doc(id);
 
-                            string regId = doc.GetField("regDetailId").GetStringValue();
-                            luceneRegDetailIds.Add(int.Parse(regId));
+                                string regId = doc.GetField("regDetailId").GetStringValue();
+                                luceneRegDetailIds.Add(int.Parse(regId));
+                            }
                         }
                     }
                 }
-            }
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@RegID", regulationId.ToString()));
-            System.Data.DataTable tbDetailTags = detailTags.Where(x => !string.IsNullOrEmpty(x))
-                .ToList<string>()
-                .ToDataTable();
-            var parameterSearchFilters = new SqlParameter("@DetailTags", SqlDbType.Structured);
-            parameterSearchFilters.Value = tbDetailTags;
-            parameterSearchFilters.TypeName = "[dbo].[StringVector]";
-            parameters.Add(parameterSearchFilters);
-
-            System.Data.DataTable tbluceneRegIds = luceneRegDetailIds
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                parameters.Add(new SqlParameter("@RegID", regulationId.ToString()));
+                System.Data.DataTable tbDetailTags = detailTags.Where(x => !string.IsNullOrEmpty(x))
+                    .ToList<string>()
                     .ToDataTable();
-            var parameterSearchFilters_3 = new SqlParameter("@RegDetailIds", SqlDbType.Structured);
-            parameterSearchFilters_3.Value = tbluceneRegIds;
-            parameterSearchFilters_3.TypeName = "[dbo].[IntVector]";
-            parameters.Add(parameterSearchFilters_3);
+                var parameterSearchFilters = new SqlParameter("@DetailTags", SqlDbType.Structured);
+                parameterSearchFilters.Value = tbDetailTags;
+                parameterSearchFilters.TypeName = "[dbo].[StringVector]";
+                parameters.Add(parameterSearchFilters);
 
-            List<SelectedRegulationProcedure> regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulation @RegID, @DetailTags, @RegDetailIds ", parameters.ToArray()).ToList();
+                System.Data.DataTable tbluceneRegIds = luceneRegDetailIds
+                        .ToDataTable();
+                var parameterSearchFilters_3 = new SqlParameter("@RegDetailIds", SqlDbType.Structured);
+                parameterSearchFilters_3.Value = tbluceneRegIds;
+                parameterSearchFilters_3.TypeName = "[dbo].[IntVector]";
+                parameters.Add(parameterSearchFilters_3);
 
-            var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
-            regulation.Views += 1;
-            this.dbContext.Entry<CompData.Models.Library.Regulation>(regulation).State = EntityState.Modified;
-            this.dbContext.SaveChanges();
+                regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulation @RegID, @DetailTags, @RegDetailIds ", parameters.ToArray()).ToList();
 
+                var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
+                regulation.Views += 1;
+                this.dbContext.Entry<CompData.Models.Library.Regulation>(regulation).State = EntityState.Modified;
+                this.dbContext.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+
+            }
             return regulationProcedures;
         }
 
@@ -269,6 +277,12 @@ namespace CompData.Dao.Regulation.Impl
         public List<int> GetSubscribedRegulationTypeByUserId(Guid userId, int sourceId)
         {
             List<int> regulationTypes = this.dbContext.LinkUserRegTypeSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegSourceId.Equals(sourceId)).Select(x => x.RegTypeId).ToList();
+            return regulationTypes;
+        }
+
+        public List<int> GetSubscribedRegulationByUserId(Guid userId, int RegId)
+        {
+            List<int> regulationTypes = this.dbContext.LinkUserRegulationSubscriptions.Where(x => x.UserId.Equals(userId) && x.RegId.Equals(RegId)).Select(x => x.RegId).ToList();
             return regulationTypes;
         }
 
@@ -340,7 +354,7 @@ namespace CompData.Dao.Regulation.Impl
                     this.dbContext.Entry<LinkUserRegulationSubscription>(linkUser).State = EntityState.Deleted;
                     int result = this.dbContext.SaveChanges();
                     if (result == 0) throw new Exception("Something went wrong please try again");
-                    message = "Regulation type has been unsubscribed.";
+                    message = "Regulation has been unsubscribed.";
                 }
 
                 return new Result

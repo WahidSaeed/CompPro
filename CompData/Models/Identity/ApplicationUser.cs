@@ -23,7 +23,14 @@ namespace CRMData.Models.Identity
         public string CountryCode { get; set; }
         public string Region { get; set; }
         public bool IsAllowRemoteLogin { get; set; } = true;
-        //  public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;
+        [MaxLength(200)]
+        public string Designation { get; set; }
+        public string About { get; set; }
+        [MaxLength(200)]
+        public string WebsiteURL { get; set; }
+        [MaxLength(200)]
+        public string FullName { get; set; }
 
         [ForeignKey("CountryCode")]
         public virtual Country Country { get; set; }
