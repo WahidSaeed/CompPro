@@ -45,19 +45,28 @@ namespace CompWeb.Areas.Account.Controllers
             return View(user);
         }
 
+
+
         [HttpPost]
-        public async Task<JsonResult> UpdateUserProfileData(string userEmail, string fullName, string phone, string designation, string about, string websiteURL, bool isActive) {
+        public async Task<JsonResult> UpdateUserProfileData(string userEmail, string fullName, string phone, string designation, string about, string websiteURL, bool isActive)
+        {
             var result = await this._accountService.UpdateUserProfileData(userEmail, fullName, phone, designation, about, websiteURL, isActive);
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdateSelectedSource(string userEmail, List<int> SourceIds) 
+        public async Task<JsonResult> UpdateSelectedSource(string userEmail, List<int> SourceIds)
         {
             var user = await this._userManager.FindByEmailAsync(userEmail);
             var result = this._regulationService.LinkUserByRegulationSource(user.Id, SourceIds);
             return Json(result);
         }
 
+        public async Task<IActionResult> UserListing(string userId)
+        {
+            var user = await this._userManager.FindByEmailAsync(userId);
+            ViewBag.UserId = userId;
+            return View(user);
+        }
     }
 }
