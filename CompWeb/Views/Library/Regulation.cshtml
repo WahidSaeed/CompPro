@@ -4,11 +4,14 @@
 @model List<SelectedRegulationProcedure>
 @{
     var defaultModel = Model.FirstOrDefault();
-    ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
     var requirments = ViewBag.Requirments as SelectedRegulationRequirementViewModel;
     var detailTag = ViewBag.DetailTag as List<TagMap>;
     var relatedRegulation = ViewBag.RelatedRegulation as List<Regulation>;
     var subscribedregulation = ViewBag.SubscribedRegulation as List<int>;
+
+    ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
+    ViewData["Description"] = defaultModel.MetaDescription;
+    ViewData["Tags"] = defaultModel.MetaTag + string.Join(", ", detailTag.Select(x => x.Tag).ToList());
 }
 
 @section Styles {
@@ -56,10 +59,11 @@
         }
 
         .tag-highlight {
-            font-weight: 400;
+            background: #faebd7;
+            /*font-weight: 400;
             background: #faebd7;
             padding: 2px;
-            border: 1px solid #ffcb85;
+            border: 1px solid #ffcb85;*/
         }
     </style>
 
@@ -385,11 +389,16 @@
 
         function getFilteredDetails() {
             var searchTerm = $('#txtSearchTerms').val();
-            var detailTag = Array.from($('[data-detail]:checked').map(function () { return $(this).val() })); //(@detailTag.Count() > 0 ?  : []);
+            var detailTags = Array.from($('[data-detail]:checked').map(function () { return $(this).val() })); //(@detailTag.Count() > 0 ?  : []);
             $.get("/Library/_GetFilteredDetails",
-                { id: @ViewBag.RegId, searchTerm: searchTerm, detailTag: detailTag },
+                { id: @ViewBag.RegId, detailTags: detailTags, searchTerm: searchTerm },
                 function (response) {
-                        $('#dvDetail').html(response);
+                    $('#dvDetail').html(response);
+                    $('[data-item-tag]').tooltip({
+                        content: function () {
+                            return $(this).attr('title-tooltip')
+                        }
+                    });
                 }, "html");
         }
 

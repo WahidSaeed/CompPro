@@ -170,7 +170,7 @@ namespace CompData.Dao.Regulation.Impl
             return regulationSources;
         }
 
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTags = null)
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTags)
         {
             List<SelectedRegulationProcedure> regulationProcedures = new List<SelectedRegulationProcedure>();
             try
