@@ -9,7 +9,6 @@ namespace CompData.ViewModels.Procedure.Library
     public class SelectedRegulationRequirement
     {
         public int RegID { get; set; }
-        public int? CommentTypeID { get; set; }
         public Int64? CommentID { get; set; }
         public string Requirement { get; set; }
     }

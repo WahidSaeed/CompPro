@@ -170,27 +170,27 @@
                                                 }
                                                 @if (filterData.Count() > 0)
                                                 {
-                                            <ul role="group" class="jstree-children">
-                                                @foreach (var itemChild in filterData)
-                                                {
+                                                    <ul role="group" class="jstree-children">
+                                                        @foreach (var itemChild in filterData)
+                                                        {
 
-                                                    var childId = "j1_" + itemChild.SectionId;
-                                                    var childAnchor = childId + "_anchor";
+                                                            var childId = "j1_" + itemChild.SectionId;
+                                                            var childAnchor = childId + "_anchor";
 
-                                                    var childAnchorLink = "";
-                                                    @if (@itemChild.SectionTitle != null)
-                                                    {
-                                                        childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
-                                                    }
+                                                            var childAnchorLink = "";
+                                                            @if (@itemChild.SectionTitle != null)
+                                                            {
+                                                                childAnchorLink = "#" + @itemChild.SectionTitle.Replace(" ", "_");
+                                                            }
 
-                                                    <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
-                                                        <i class="jstree-icon jstree-ocl" role="presentation"></i>
-                                                        <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
-                                                            <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
-                                                        </a>
-                                                    </li>
-                                                }
-                                            </ul>
+                                                            <li role="treeitem" data-jstree='{ "type" : "file" }' aria-selected="true" aria-level="2" aria-labelledby="@childAnchor" id="@childId" class="jstree-node  jstree-leaf" title="@itemChild.SectionTitle">
+                                                                <i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                                                <a class="jstree-anchor" href="@childAnchorLink" tabindex="-1" id="@childAnchor">
+                                                                    <i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i> @itemChild.SectionTitle
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
                                                 }
                                             </li>
                                         }
@@ -212,8 +212,7 @@
                                     {
                                         @foreach (var tag in detailTag.Select(x => x.Tag).Distinct())
                                         {
-                                            
-                                            <label class="btn unselectedbtn" style="margin: 0px 4px 4px 0px; border-radius: 3px !important;">
+                                            <label class="btn unselectedbtn">
                                                 <input type="checkbox" data-detail value="@tag" class="toggle"> @tag
                                             </label>
                                         }
@@ -316,14 +315,14 @@
                     </ul>
                 </div>
             </div>
-            <div class="modal-body">
+            <div style="padding: 0px 0px 0px 10px;">
 
                 @if (requirments.SectionItemRequirement != null)
                 {
                     @foreach (var itemChild in requirments.SectionItemRequirement)
                     {
 
-                        <span>@(itemChild.CommentID + ".   " + itemChild.Requirement)</span><hr />
+                        <span>@(itemChild.CommentID + ".   " + itemChild.Requirement)</span><hr style="margin-top: 3px;margin-bottom: 3px;" />
                     }
                 }
                 else
@@ -388,8 +387,9 @@
 
 
         function getFilteredDetails() {
+            debugger;
             var searchTerm = $('#txtSearchTerms').val();
-            var detailTags = Array.from($('[data-detail]:checked').map(function () { return $(this).val() })); //(@detailTag.Count() > 0 ?  : []);
+            var detailTags = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
             $.get("/Library/_GetFilteredDetails",
                 { id: @ViewBag.RegId, detailTags: detailTags, searchTerm: searchTerm },
                 function (response) {

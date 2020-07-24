@@ -48,6 +48,7 @@ namespace CRMData.Data
         public virtual DbSet<LinkedRelatedRegulation> LinkedRelatedRegulations { get; set; }
         public virtual DbSet<TagMap> TagMaps { get; set; }
         public virtual DbSet<Comments> Comments { get; set; }
+        public virtual DbSet<Requirements> Requirements { get; set; }
         #endregion
 
         #region Config

@@ -7,7 +7,6 @@ namespace CompData.ViewModels.Library
     public class SelectedRegulationRequirementViewModel
     {
         public int RegID { get; set; }
-        public int? CommentTypeID { get; set; }
         public List<SectionItemRequirement> SectionItemRequirement { get; set; }
 
     }

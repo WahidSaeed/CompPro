@@ -124,7 +124,6 @@ namespace CompData.Services.Regulation.Impl
                 {
                     var viewModel = selectedRegRequirementDetails.FirstOrDefault();
                     requirementViewModels.RegID = viewModel.RegID;
-                    requirementViewModels.CommentTypeID = viewModel.CommentTypeID;
                     requirementViewModels.SectionItemRequirement = sectionItems; 
                 }
             }

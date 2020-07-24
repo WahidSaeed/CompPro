@@ -226,7 +226,7 @@
     <script src="~/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
     <script src="~/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
     <script src="~/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
-    <script src="~/assets/pages/scripts/ui-extended-modals.min.js" type="text/javascript"></script>
+    @*<script src="~/assets/pages/scripts/ui-extended-modals.min.js" type="text/javascript"></script>*@
     <script src="~/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -242,11 +242,10 @@
             typeId: ''
         };
 
-        function redirectToRegulation()
-        {
+        function redirectToRegulation() {
             window.location.href = "/Library/Regulation/" + regulation.id + "/Edit";
-        }
 
+        }
         $('[data-regulation-modal]').click(function () {
             var btnObj = this;
             var sourceId = $(btnObj).attr('data-source');
@@ -257,7 +256,6 @@
         });
 
         $('[data-save-regulation]').click(function () {
-
             var referenceNumber = $('#input-reference');
             var title = $('#input-title');
             var issueDate = $('#input-issueDate');
@@ -278,7 +276,6 @@
             regulation.effectiveDate = effectiveDate.val();
             regulation.sourceId = sourceId.val();
             regulation.typeId = typeId.val();
-
             $.post("/Library/SaveRegulation", regulation,
                 function (response) {
                     if (response.status === 200) {
@@ -302,6 +299,7 @@
         });
 
         $('[data-subs]').click(function () {
+            debugger;
             var btnObj = this;
             var typeId = $(btnObj).attr('data-type');
             var sourceId = $(btnObj).attr('data-source');
