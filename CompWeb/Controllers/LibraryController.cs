@@ -64,7 +64,7 @@ namespace CompWeb.Controllers
             return View();
         }
 
-        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid) 
+        public async Task<JsonResult> SourceGrid(SourceGrid sourceGrid)
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetAllRegulationFilteredBySourceID(sourceGrid, user.Id);
@@ -92,7 +92,7 @@ namespace CompWeb.Controllers
                 ViewBag.DetailTag = detailTag.Data;
                 ViewBag.RegId = regId;
 
-                return View(model); 
+                return View(model);
             }
             else
             {
@@ -100,7 +100,7 @@ namespace CompWeb.Controllers
             }
         }
 
-        public PartialViewResult _GetFilteredDetails(int id, string searchTerm, List<string> detailTag)
+        public PartialViewResult _GetFilteredDetails(int id, List<string> detailTag, string searchTerm)
         {
             var model = this.regulationService.GetSelectedRegulation(id, searchTerm, detailTag);
             return PartialView("_RegulationDetail", model);
@@ -115,7 +115,7 @@ namespace CompWeb.Controllers
         }
         #endregion
 
-        public async Task<IActionResult> SelectSources() 
+        public async Task<IActionResult> SelectSources()
         {
             var user = await userManager.GetUserAsync(User);
             var model = this.regulationService.GetRegulationSourcesByCountryCode(user.CountryCode);
@@ -199,7 +199,7 @@ namespace CompWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SetLinkedRelatedRegulation(int regId, int relatedRegId) 
+        public async Task<JsonResult> SetLinkedRelatedRegulation(int regId, int relatedRegId)
         {
             var result = await this.regulationService.SetLinkedRelatedRegulation(regId, relatedRegId);
             return Json(result);

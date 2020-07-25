@@ -252,6 +252,11 @@
             var typeId = $(btnObj).attr('data-type');
             $('#input-source').val(sourceId);
             $('#input-type').val(typeId);
+            $('#input-reference').val('');
+            $('#input-title').val("");
+            $('#input-issueDate').val("");
+            $('#input-isFinal').prop('checked', false);
+            $('#input-effectiveDate').val("");
             $('#modalSaveRegulation').modal('show');
         });
 
@@ -295,11 +300,11 @@
             var btnObj = this;
             var typeId = $(btnObj).attr('data-type');
             var sourceId = $(btnObj).attr('data-source');
+
             $('#modalSaveRegulation').modal('show');
         });
 
         $('[data-subs]').click(function () {
-            debugger;
             var btnObj = this;
             var typeId = $(btnObj).attr('data-type');
             var sourceId = $(btnObj).attr('data-source');

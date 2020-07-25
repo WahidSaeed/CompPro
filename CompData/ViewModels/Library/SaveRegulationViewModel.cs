@@ -6,7 +6,6 @@ namespace CompData.ViewModels.Library
 {
     public class SaveRegulationViewModel
     {
-        public int Id { get; set; }
         public string ReferenceNumber { get; set; }
         public string Title { get; set; }
         public DateTime IssueDate { get; set; }

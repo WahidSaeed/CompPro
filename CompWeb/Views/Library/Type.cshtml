@@ -245,6 +245,7 @@
         });
         //$('[data-detail]:checked')
         function initDatatable() {
+            debugger;
             var searchTerm = $('#txtSearchTerms').val();
             var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
             var bussinessLineTag = (@bussinessLineTag.Count() > 0 ? Array.from($('[data-bussinessLine]:checked').map(function () { return $(this).val() })) : []);

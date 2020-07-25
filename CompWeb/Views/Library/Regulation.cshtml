@@ -389,9 +389,9 @@
         function getFilteredDetails() {
             debugger;
             var searchTerm = $('#txtSearchTerms').val();
-            var detailTags = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
+            var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
             $.get("/Library/_GetFilteredDetails",
-                { id: @ViewBag.RegId, detailTags: detailTags, searchTerm: searchTerm },
+                { id: @ViewBag.RegId, DetailTags: detailTag, SearchTerm: searchTerm },
                 function (response) {
                     $('#dvDetail').html(response);
                     $('[data-item-tag]').tooltip({
