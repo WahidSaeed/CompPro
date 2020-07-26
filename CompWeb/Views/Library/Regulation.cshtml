@@ -387,7 +387,7 @@
 
 
         function getFilteredDetails() {
-            debugger;
+
             var searchTerm = $('#txtSearchTerms').val();
             var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
             $.get("/Library/_GetFilteredDetails",
