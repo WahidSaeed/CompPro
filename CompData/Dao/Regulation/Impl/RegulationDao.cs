@@ -1,4 +1,5 @@
 ﻿using CompData.Configurations.Constants.Enums;
+using CompData.Configurations.CustomExceptions;
 using CompData.Models.Library;
 using CompData.ViewModels;
 using CompData.ViewModels.Library;
@@ -170,7 +171,7 @@ namespace CompData.Dao.Regulation.Impl
             return regulationSources;
         }
 
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTags)
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTags, Int64 version = 0)
         {
             List<SelectedRegulationProcedure> regulationProcedures = new List<SelectedRegulationProcedure>();
             try
@@ -229,7 +230,15 @@ namespace CompData.Dao.Regulation.Impl
                 parameterSearchFilters_3.TypeName = "[dbo].[IntVector]";
                 parameters.Add(parameterSearchFilters_3);
 
-                regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulation @RegID, @DetailTags, @RegDetailIds ", parameters.ToArray()).ToList();
+                if (version == 0)
+                {
+                    regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulation @RegID, @DetailTags, @RegDetailIds ", parameters.ToArray()).ToList(); 
+                }
+                else
+                {
+                    parameters.Add(new SqlParameter("@Version", version));
+                    regulationProcedures = this.dbContext.Set<SelectedRegulationProcedure>().FromSqlRaw($"EXEC Library.GetSelectedRegulationVersion @RegID, @Version, @DetailTags, @RegDetailIds ", parameters.ToArray()).ToList();
+                }
 
                 var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(regulationId)).FirstOrDefault();
                 regulation.Views += 1;
@@ -441,7 +450,7 @@ namespace CompData.Dao.Regulation.Impl
                                                   join ur in dbContext.LinkedUserRegulationSources on r.SourceID equals ur.SourceId
                                                   where ur.UserId.Equals(userId) && luceneRegIds.Contains(r.RegId)
                                                   orderby r.Views descending
-                                                  select r).Take(5).ToListAsync(); 
+                                                  select r).Take(5).ToListAsync();
                 }
                 else
                 {
@@ -540,29 +549,181 @@ namespace CompData.Dao.Regulation.Impl
 
         public async Task<Result> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel)
         {
+            var transaction = this.dbContext.Database.BeginTransaction();
             try
             {
                 string message = string.Empty;
                 var httpUser = httpContext.HttpContext.User;
                 var user = await userManager.GetUserAsync(httpUser);
 
-                List<RegulationSection> existingRegulationSections = await dbContext.RegulationSections.Where(x => x.RegulationId.Equals(viewModel.RegId)).Include(x => x.RegulationDetails).ToListAsync();
+                List<ExistingTagGroupViewModel> existingTagGroups = viewModel.ExistingTagGroups;
+                List<ExistingRelatedLink> existingRelatedLinks = viewModel.ExistingRelatedLinks?.Distinct().ToList();
+                List<RegulationSection> existingRegulationSections = await dbContext.RegulationSections.AsNoTracking().Where(x => x.RegulationId.Equals(viewModel.RegId)).Include(x => x.RegulationDetails).ToListAsync();
+                List<RegulationDetail> existingRegulationDetails = await dbContext.RegulationDetails.AsNoTracking().Where(x => x.RegulationId.Equals(viewModel.RegId)).ToListAsync();
+                List<TagMap> existingRegulationTagMaps = await dbContext.TagMaps.AsNoTracking().Where(x => x.RegId.Equals(viewModel.RegId)).ToListAsync();
+                List<LinkedRelatedRegulation> existingRegulationLinks = await dbContext.LinkedRelatedRegulations.AsNoTracking().Where(x => x.RegId.Equals(viewModel.RegId)).ToListAsync();
+                List<int> existingSectionId = new List<int>();
 
-                SetUpdateRegulationSectionsModel(viewModel.Sections, viewModel.RegId, ref existingRegulationSections);
+                #region For New Versioning
+                if (viewModel.IsVersion)
+                {
+                    string versionId = DateTime.Now.Ticks.ToString();
+
+                    #region Setting New Section Versioning
+                    List<RegulationSectionVersion> regulationSectionVersions = existingRegulationSections.Select(x => new RegulationSectionVersion
+                    {
+                        ParentId = x.ParentId,
+                        RegulationId = x.RegulationId,
+                        SectionId = x.SectionId,
+                        SectionTitle = x.SectionTitle,
+                        Sequence = x.Sequence,
+                        VersionDate = DateTime.Now,
+                        Version = versionId
+                    }).ToList();
+                    #endregion
+
+                    #region Setting New Detail Versioning
+                    List<RegulationDetailVersion> regulationDetailVersions = existingRegulationDetails.Select(x => new RegulationDetailVersion
+                    {
+                        RegDescription = x.RegDescription,
+                        RegDescriptionClean = x.RegDescriptionClean,
+                        RegDetailId = x.RegDetailId,
+                        RegulationId = x.RegulationId,
+                        SectionId = x.SectionId,
+                        Sequence = x.Sequence,
+                        VersionDate = DateTime.Now,
+                        Version = versionId
+                    }).ToList();
+                    #endregion
+
+                    #region Setting New Link Versioning
+                    List<LinkedRelatedRegulationVersion> linkedRelatedRegulationVersions = existingRegulationLinks.Select(x => new LinkedRelatedRegulationVersion
+                    {
+                        LinkId = x.Id,
+                        RegId = x.RegId,
+                        RelatedRegId = x.RelatedRegId,
+                        Version = versionId
+                    }).ToList();
+                    #endregion
+
+                    #region Setting New Tag Versioning
+                    List<TagMapVersion> tagMapVersions = existingRegulationTagMaps.Select(x => new TagMapVersion
+                    {
+                        TagId = x.Id,
+                        DescId = x.DescId,
+                        RegId = x.RegId,
+                        SecId = x.SecId,
+                        Tag = x.Tag,
+                        TagGroupKey = x.TagGroupKey,
+                        Version = versionId
+                    }).ToList();
+                    #endregion
+
+                    #region Adding New Version
+                    await this.dbContext.RegulationSectionVersions.AddRangeAsync(regulationSectionVersions);
+                    await this.dbContext.RegulationDetailVersions.AddRangeAsync(regulationDetailVersions);
+                    await this.dbContext.LinkedRelatedRegulationVersions.AddRangeAsync(linkedRelatedRegulationVersions);
+                    await this.dbContext.TagMapVersions.AddRangeAsync(tagMapVersions);
+                    #endregion
+                } 
+                #endregion
+
+                #region Update Links
+                if (existingRelatedLinks?.Count > 0)
+                {
+                    List<LinkedRelatedRegulation> newLinks = existingRelatedLinks.Where(x => x.OperationType.Equals(ExistingRelatedLink.RegLinkOperationType.New)).Select(x => new LinkedRelatedRegulation()
+                    {
+                        RegId = viewModel.RegId,
+                        RelatedRegId = x.LinkedRegId
+                    }).ToList();
+
+                    List<LinkedRelatedRegulation> deletedLinks = existingRelatedLinks.Where(x => x.OperationType.Equals(ExistingRelatedLink.RegLinkOperationType.Deleted)).Select(x => new LinkedRelatedRegulation()
+                    {
+                        Id = x.Id,
+                        RegId = viewModel.RegId,
+                        RelatedRegId = x.LinkedRegId
+                    }).ToList();
+
+                    if (newLinks.Count > 0)
+                        this.dbContext.LinkedRelatedRegulations.AddRange(newLinks);
+
+                    if (deletedLinks.Count > 0)
+                        this.dbContext.LinkedRelatedRegulations.RemoveRange(deletedLinks);
+                }
+                #endregion
+
+                #region Update Tags
+                if (existingTagGroups?.Count > 0)
+                {
+                    List<TagMap> newTags = existingTagGroups.Where(x => x.OperationType.Equals(ExistingTagGroupViewModel.TagOperationType.New)).Select(x => new TagMap()
+                    {
+                        TagGroupKey = x.TagGroupKey,
+                        Tag = x.Tag,
+                        RegId = x.RegId,
+                        SecId = x.SecId,
+                        DescId = x.DescId,
+                        TagType = x.TagType
+                    }).ToList();
+
+                    List<TagMap> deletedTags = existingTagGroups.Where(x => x.OperationType.Equals(ExistingTagGroupViewModel.TagOperationType.Deleted)).Select(x => new TagMap()
+                    {
+                        Id = x.Id,
+                        TagGroupKey = x.TagGroupKey,
+                        Tag = x.Tag,
+                        RegId = x.RegId,
+                        SecId = x.SecId,
+                        DescId = x.DescId,
+                        TagType = x.TagType
+                    }).ToList();
+
+                    if (newTags.Count > 0)
+                        this.dbContext.TagMaps.AddRange(newTags);
+
+                    if (deletedTags.Count > 0)
+                        this.dbContext.TagMaps.RemoveRange(deletedTags);
+
+                } 
+                #endregion
+
+                #region Update Regulation
+                SetUpdateRegulationSectionsModel(viewModel.Sections, viewModel.RegId, ref existingRegulationSections, ref existingSectionId);
+
                 this.dbContext.RegulationSections.UpdateRange(existingRegulationSections);
+                #endregion
+
+                #region Remove Non-Existing Sections & Details
+                if (existingSectionId.Count > 0)
+                {
+                    var deletedSections = existingRegulationSections.Where(x => !existingSectionId.Contains(x.SectionId) && x.SectionId != 0);
+                    this.dbContext.RegulationSections.RemoveRange(deletedSections);
+                } 
+                #endregion
 
                 int result = this.dbContext.SaveChanges();
+
+                transaction.Commit();
+
                 if (result == 0) throw new Exception("Something went wrong please try again");
+
                 message = "New Regulation Detail has been saved.";
+
+                var allTags = GetAllTagsGroup(string.Empty);
+                var allLinkedRegs = await GetRelatedRegulationForEdit(viewModel.RegId);
 
                 return new Result
                 {
                     Status = ResultStatus.Success,
-                    Message = message
+                    Message = message,
+                    Data = new
+                    {
+                        AllTags = Newtonsoft.Json.JsonConvert.SerializeObject(allTags.Data),
+                        AllLinkedRegs = Newtonsoft.Json.JsonConvert.SerializeObject(allLinkedRegs.Data)
+                    }
                 };
             }
-            catch (Exception ex)
+            catch (NullRegulationSectionHeadingException ex)
             {
+                transaction.Rollback();
 
                 return new Result
                 {
@@ -570,22 +731,67 @@ namespace CompData.Dao.Regulation.Impl
                     Status = ResultStatus.Error
                 };
             }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                return new Result
+                {
+                    Message = "Something went wrong please try again",
+                    Status = ResultStatus.Error
+                };
+            }
         }
 
-        public async Task<Result> GetTagsGroup(string tagGroupId)
+        public Result GetAllTagsGroup(string tagGroupId)
         {
             try
             {
                 string message = string.Empty;
 
-                var tagMaps = await dbContext.TagMaps.Where(x => x.TagGroupKey.Equals(tagGroupId)).ToListAsync();
-
-                return new Result
+                if (string.IsNullOrEmpty(tagGroupId))
                 {
-                    Status = ResultStatus.Success,
-                    Message = message,
-                    Data = tagMaps
-                };
+                    var tagMaps = dbContext.TagMaps.Select(x => new
+                    {
+                        x.Id,
+                        x.TagGroupKey,
+                        x.Tag,
+                        x.RegId,
+                        x.SecId,
+                        x.DescId,
+                        x.TagType,
+                        OperationType = ExistingTagGroupViewModel.TagOperationType.None
+                    }).ToList();
+
+                    return new Result
+                    {
+                        Status = ResultStatus.Success,
+                        Message = message,
+                        Data = tagMaps
+                    };
+                }
+                else
+                {
+                    var tagMaps = dbContext.TagMaps.Where(x => x.TagGroupKey.Equals(tagGroupId)).Select(x => new
+                    {
+                        x.Id,
+                        x.TagGroupKey,
+                        x.Tag,
+                        x.RegId,
+                        x.SecId,
+                        x.DescId,
+                        x.TagType,
+                        OperationType = ExistingTagGroupViewModel.TagOperationType.None
+                    }).ToList();
+
+                    return new Result
+                    {
+                        Status = ResultStatus.Success,
+                        Message = message,
+                        Data = tagMaps
+                    };
+                }
+
             }
             catch (Exception ex)
             {
@@ -606,6 +812,7 @@ namespace CompData.Dao.Regulation.Impl
                 var httpUser = httpContext.HttpContext.User;
                 var user = await userManager.GetUserAsync(httpUser);
 
+                List<TagMap> existingTags = await this.dbContext.TagMaps.Where(x => x.TagGroupKey.Equals(tagGroupId)).ToListAsync();
                 List<TagMap> _tags = tags.Select(x => new TagMap
                 {
                     Tag = x,
@@ -615,6 +822,11 @@ namespace CompData.Dao.Regulation.Impl
                     DescId = descId,
                     TagType = TagType.DetailTag
                 }).ToList();
+
+                if (existingTags.Count > 0)
+                {
+                    this.dbContext.TagMaps.RemoveRange(existingTags);
+                }
                 this.dbContext.TagMaps.AddRange(_tags);
                 int result = await this.dbContext.SaveChangesAsync();
 
@@ -638,7 +850,7 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
-        public async Task<Result> GetRegulationIdByCustomURL(string customURL) 
+        public async Task<Result> GetRegulationIdByCustomURL(string customURL)
         {
             try
             {
@@ -662,20 +874,56 @@ namespace CompData.Dao.Regulation.Impl
             }
             catch (Exception ex)
             {
-                return new Result { 
+                return new Result
+                {
                     Message = ex.Message,
                     Status = ResultStatus.Error
                 };
             }
         }
 
-        public async Task<Result> GetRelatedRegulation(int regId)
+        public async Task<Result> GetRelatedRegulation(int regId = 0)
         {
             try
             {
+                List<Models.Library.Regulation> linkedRelatedRegulations = new List<Models.Library.Regulation>();
                 string message = string.Empty;
 
-                var linkedRelatedRegulations = await dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId)).Select(x => x.RelatedRegulation).ToListAsync();
+                linkedRelatedRegulations = await dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId)).Select(x => x.RelatedRegulation).ToListAsync();
+                var linkedRelatedRegulationsRef = await dbContext.LinkedRelatedRegulations.Where(x => x.RelatedRegId.Equals(regId)).Select(x => x.Regulation).ToListAsync();
+
+                linkedRelatedRegulations.AddRange(linkedRelatedRegulationsRef);
+
+                return new Result
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = linkedRelatedRegulations.Distinct().ToList()
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+        public async Task<Result> GetRelatedRegulationForEdit(int regId = 0)
+        {
+            try
+            {  
+                string message = string.Empty;
+
+                var linkedRelatedRegulations = await dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId))
+                    .Select(x => new {
+                        Id = x.Id,
+                        RegTitle = x.RelatedRegulation.RegulationTitle,
+                        LinkedRegId = x.RelatedRegId,
+                        OperationType = ExistingRelatedLink.RegLinkOperationType.None 
+                    }).ToListAsync();
 
                 return new Result
                 {
@@ -700,15 +948,27 @@ namespace CompData.Dao.Regulation.Impl
             try
             {
                 string message = string.Empty;
-                LinkedRelatedRegulation linkedRelatedRegulation = new LinkedRelatedRegulation { 
+                LinkedRelatedRegulation linkedRelatedRegulation = new LinkedRelatedRegulation
+                {
                     RegId = regId,
                     RelatedRegId = relatedRegId
                 };
-                this.dbContext.LinkedRelatedRegulations.Add(linkedRelatedRegulation);
-                int result = await this.dbContext.SaveChangesAsync();
 
-                var regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(relatedRegId)).Select(x => x.RegulationSource.ShortName + " | " + x.RegulationTitle + " | " + x.IssueDate.ToShortDateString()).FirstOrDefault();
-                
+                //var linkedregulation = this.dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId) && x.RelatedRegId.Equals(relatedRegId)).FirstOrDefault();
+                var linkedregulation = this.dbContext.LinkedRelatedRegulations.Where(x => x.RegId.Equals(regId) && x.RelatedRegId.Equals(relatedRegId)).Include(x => x.Regulation).Include(x => x.Regulation.RegulationSource).FirstOrDefault();
+                int result = 1;
+                string regulation = string.Empty;
+                if (linkedregulation == null)
+                {
+                    this.dbContext.LinkedRelatedRegulations.Add(linkedRelatedRegulation);
+                    result = await this.dbContext.SaveChangesAsync();
+                    regulation = this.dbContext.Regulations.Where(x => x.RegId.Equals(relatedRegId)).Select(x => x.RegulationSource.ShortName + " | " + x.RegulationTitle + " | " + x.IssueDate.ToShortDateString()).FirstOrDefault();
+                }
+                else
+                {
+                    regulation = linkedregulation.Regulation.RegulationSource.ShortName + " | " + linkedregulation.Regulation.RegulationTitle + " | " + linkedregulation.Regulation.IssueDate.ToShortDateString();
+                }
+
                 if (result == 0) throw new Exception("Something went wrong please try again");
                 message = "Related Regulation linked.";
 
@@ -846,7 +1106,7 @@ namespace CompData.Dao.Regulation.Impl
                 {
                     SectionTitle = regulationSection.Title,
                     Sequence = regulationSection.Seq,
-                    RegulationDetails = regulationSection.Descriptions.Select(x => new RegulationDetail { RegDescription = x.Description, RegulationId = regId }).ToList(),
+                    RegulationDetails = regulationSection.Descriptions.Select(x => new RegulationDetail { RegDescription = x.Description, RegulationId = regId, RegDescriptionClean = x.Description.StripHTML() }).ToList(),
                     RegulationId = regId,
                     Children = regulationSection.Children == null ? null : SetSaveRegulationSectionsModel(regulationSection.Children, regId)
                 });
@@ -871,6 +1131,7 @@ namespace CompData.Dao.Regulation.Impl
                     regulation.CustomURL = viewModel.CustomURL;
                     regulation.MetaTag = viewModel.MetaTag;
                     regulation.MetaDescription = viewModel.MetaDescription;
+                    regulation.Summary = viewModel.Summary;
 
                     this.dbContext.Entry<Models.Library.Regulation>(regulation).State = EntityState.Modified;
                     result = await this.dbContext.SaveChangesAsync();
@@ -897,11 +1158,96 @@ namespace CompData.Dao.Regulation.Impl
             }
         }
 
-        private void SetUpdateRegulationSectionsModel(List<SectionDetailViewModel> sectionDetailViewModels, int regId, ref List<RegulationSection> regulationSections)
+        public async Task<ResultSingleObject<RegulationSource>> GetRegulationSourceById(int regSourceId)
+        {
+            try
+            {
+                string message = string.Empty;
+
+                var regulationType = await dbContext.RegulationSources.Where(x => x.SourceId.Equals(regSourceId)).FirstOrDefaultAsync();
+
+                return new ResultSingleObject<RegulationSource>
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = regulationType
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ResultSingleObject<RegulationSource>
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<ResultSingleObject<RegulationType>> GetRegulationTypeById(int regTypeId)
+        {
+            try
+            {
+                string message = string.Empty;
+
+                var regulationType = await dbContext.RegulationTypes.Where(x => x.TypeId.Equals(regTypeId)).FirstOrDefaultAsync();
+
+                return new ResultSingleObject<RegulationType>
+                {
+                    Status = ResultStatus.Success,
+                    Message = message,
+                    Data = regulationType
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ResultSingleObject<RegulationType>
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }
+        }
+
+        public async Task<Result<RegulationVersionViewModel>> GetRegulationVersions(int regId) 
+        {
+            try
+            {
+                var allVersions = await this.dbContext.RegulationSectionVersions.Where(x => x.RegulationId.Equals(regId))
+                    .Select(x => new RegulationVersionViewModel
+                    {
+                        VersionDate = x.VersionDate.ToShortDateString(),
+                        VersionId = x.Version
+                    }).OrderBy(x => x.VersionId).ToListAsync();
+
+                var allVersionsnew = allVersions.Distinct(new RegulationVersionComparer()).ToList();
+
+                return new Result<RegulationVersionViewModel>
+                {
+                    Status = ResultStatus.Success,
+                    Data = allVersionsnew
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new Result<RegulationVersionViewModel>
+                {
+                    Message = ex.Message,
+                    Status = ResultStatus.Error
+                };
+            }    
+        }
+
+        private void SetUpdateRegulationSectionsModel(List<SectionDetailViewModel> sectionDetailViewModels, int regId, ref List<RegulationSection> regulationSections, ref List<int> existingSectionIds)
         {
             #region Existing Regulation
             foreach (var regSection in sectionDetailViewModels)
             {
+                if (string.IsNullOrEmpty(regSection.Title))
+                    throw new NullRegulationSectionHeadingException("Section must have atleast one heading at the top of it.");
+
                 string sectionTitle = regSection.Title;
                 int sectionSeq = regSection.Seq;
                 int? parentId = regSection.parentId;
@@ -916,12 +1262,14 @@ namespace CompData.Dao.Regulation.Impl
                         Sequence = sectionSeq,
                         ParentId = parentId,
                         RegulationId = regId,
-                        RegulationDetails = descriptions.Select(x => new RegulationDetail { RegDescription = x.Description, Sequence = x.Seq, RegulationId = regId }).ToList(),
-                        Children = SetSaveRegulationSectionsModel(children, regId)
+                        RegulationDetails = descriptions.Select(x => new RegulationDetail { RegDescription = x.Description, Sequence = x.Seq, RegulationId = regId, RegDescriptionClean = x.Description.StripHTML() }).ToList()
+                        //Children = SetSaveRegulationSectionsModel(children, regId)
                     });
                 }
                 else
                 {
+                    existingSectionIds.Add(regSection.SecId ?? 0);
+
                     var existingSection = regulationSections.Where(x => x.SectionId.Equals(regSection.SecId)).FirstOrDefault();
 
                     existingSection.SectionTitle = sectionTitle;
@@ -937,7 +1285,8 @@ namespace CompData.Dao.Regulation.Impl
                                 RegDescription = desc.Description,
                                 Sequence = desc.Seq,
                                 RegulationId = regId,
-                                SectionId = existingSection.SectionId
+                                SectionId = existingSection.SectionId,
+                                RegDescriptionClean = desc.Description.StripHTML()
                             });
                         }
                         else
@@ -946,13 +1295,14 @@ namespace CompData.Dao.Regulation.Impl
 
                             existingDesc.RegDescription = desc.Description;
                             existingDesc.Sequence = desc.Seq;
+                            existingDesc.RegDescriptionClean = desc.Description.StripHTML();
                         }
                     }
                     #endregion
                     if (children.Count > 0)
                     {
                         List<RegulationSection> childrenSections = existingSection.Children;
-                        SetUpdateRegulationSectionsModel(children, regId, ref childrenSections);
+                        SetUpdateRegulationSectionsModel(children, regId, ref childrenSections, ref existingSectionIds);
                         existingSection.Children = childrenSections;
                     }
                 }
@@ -960,5 +1310,6 @@ namespace CompData.Dao.Regulation.Impl
             }
             #endregion
         }
+
     }
 }

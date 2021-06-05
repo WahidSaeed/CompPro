@@ -15,7 +15,7 @@ namespace CompData.Services.Regulation
     public interface IRegulationService
     {
         public List<GetAllRegulationGroupBySourceViewModel> GetAllRegulationGroupBySource(int sourceId);
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTag = null);
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm = null, List<string> detailTag = null, string version = null);
         public JQueryDtaTableOutput<List<RegulationFilteredBySource>> GetAllRegulationFilteredBySourceID(SourceGrid sourceGrid, Guid userId);
         public List<RegulationSource> GetRegulationSourcesByCountryCode(string countryCode);
         public List<RegulationSource> GetSelectedRegulationSourcesByUserId(Guid userId);
@@ -32,14 +32,17 @@ namespace CompData.Services.Regulation
         public SelectedRegulationViewModel GetSelectedRegSummary(int regulationId);
         public Task<Result> SaveRegulationDetail(SaveRegulationDetailViewModel viewModel);
         public Task<Result> GetRegulationIdByCustomURL(string customURL);
-        public Task<Result> GetRelatedRegulation(int regId);
-        public Task<Result> GetTagsGroup(string tagGroupId);
+        public Task<Result> GetRelatedRegulation(int regId = 0);
+        public Task<Result> GetRelatedRegulationForEdit(int regId = 0);
+        public Result GetAllTagsGroup(string tagGroupId);
         public Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId);
         public Task<Result> SetLinkedRelatedRegulation(int regId, int relatedRegId);
         public Task<Result> GetAllTagFilters(int? sourceId, int? typeId, TagType tagType);
         public Task<Result> GetAllTagFiltersByRegId(int regId, TagType tagType);
         public Task<Result> GetAllRegulations(AjaxDropDown ajaxDropDown);
         public Task<Result> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel);
-
+        public Task<ResultSingleObject<RegulationSource>> GetRegulationSourceById(int regSourceId);
+        public Task<ResultSingleObject<RegulationType>> GetRegulationTypeById(int regTypeId);
+        public Task<Result<RegulationVersionViewModel>> GetRegulationVersions(int regId);
     }
 }

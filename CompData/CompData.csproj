@@ -144,6 +144,8 @@
     <Compile Remove="Migrations\20200713221650_Added-LinkedRelatedRegulation.Designer.cs" />
     <Compile Remove="Migrations\20200713221918_Added-LinkedRelatedRegulation.cs" />
     <Compile Remove="Migrations\20200713221918_Added-LinkedRelatedRegulation.Designer.cs" />
+    <Compile Remove="Migrations\20210409112009_RegulationDetailDeleteCascade1.cs" />
+    <Compile Remove="Migrations\20210409112009_RegulationDetailDeleteCascade1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

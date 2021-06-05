@@ -37,14 +37,14 @@ jQuery(document).ready(function($){
 				updateSlide(timelineComponents, timelineTotWidth, 'prev');
 			});
 			//detect click on the a single event - show new event content
-			timelineComponents['eventsWrapper'].on('click', 'a', function(event){
-				event.preventDefault();
-				timelineComponents['timelineEvents'].removeClass('selected');
-				$(this).addClass('selected');
-				updateOlderEvents($(this));
-				updateFilling($(this), timelineComponents['fillingLine'], timelineTotWidth);
-				updateVisibleContent($(this), timelineComponents['eventsContent']);
-			});
+			//timelineComponents['eventsWrapper'].on('click', 'a', function(event){
+			//	event.preventDefault();
+			//	timelineComponents['timelineEvents'].removeClass('selected');
+			//	$(this).addClass('selected');
+			//	updateOlderEvents($(this));
+			//	updateFilling($(this), timelineComponents['fillingLine'], timelineTotWidth);
+			//	updateVisibleContent($(this), timelineComponents['eventsContent']);
+			//});
 
 			//on swipe, show next/prev event content
 			timelineComponents['eventsContent'].on('swipeleft', function(){

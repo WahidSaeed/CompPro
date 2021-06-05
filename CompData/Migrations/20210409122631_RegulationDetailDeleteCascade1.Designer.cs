@@ -4,14 +4,16 @@ using CRMData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210409122631_RegulationDetailDeleteCascade1")]
+    partial class RegulationDetailDeleteCascade1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -648,30 +650,6 @@ namespace CompData.Migrations
                     b.ToTable("LinkedRelatedRegulation","Library");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.LinkedRelatedRegulationVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("LinkId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RelatedRegId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LinkedRelatedRegulationVersion","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.LinkedUserRegulationSource", b =>
                 {
                     b.Property<int>("Id")
@@ -735,7 +713,8 @@ namespace CompData.Migrations
 
                     b.Property<string>("RegulationTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(250)")
+                        .HasMaxLength(250);
 
                     b.Property<int>("SourceID")
                         .HasColumnType("int");
@@ -796,42 +775,6 @@ namespace CompData.Migrations
                     b.ToTable("RegulationDetail","Library");
                 });
 
-            modelBuilder.Entity("CompData.Models.Library.RegulationDetailVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("RegDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RegDescriptionClean")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RegDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegulationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SectionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("VersionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RegulationDetailVersion","Library");
-                });
-
             modelBuilder.Entity("CompData.Models.Library.RegulationSection", b =>
                 {
                     b.Property<int>("SectionId")
@@ -860,41 +803,6 @@ namespace CompData.Migrations
                     b.HasIndex("RegulationId");
 
                     b.ToTable("RegulationSection","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.RegulationSectionVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegulationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SectionTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("VersionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RegulationSectionVersion","Library");
                 });
 
             modelBuilder.Entity("CompData.Models.Library.RegulationSource", b =>
@@ -1035,43 +943,6 @@ namespace CompData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TagMapType","Library");
-                });
-
-            modelBuilder.Entity("CompData.Models.Library.TagMapVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DescId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SecId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("TagGroupKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TagMapVersion","Library");
                 });
 
             modelBuilder.Entity("CompData.ViewModels.Procedure.Library.RegulationFilteredBySource", b =>

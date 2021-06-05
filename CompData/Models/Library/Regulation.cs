@@ -12,7 +12,7 @@ namespace CompData.Models.Library
     {
         [Key]
         public int RegId { get; set; }
-        [MaxLength(250), Required]
+        [MaxLength, Required]
         public string RegulationTitle { get; set; }
         public DateTime IssueDate { get; set; }
         public int SourceID { get; set; }

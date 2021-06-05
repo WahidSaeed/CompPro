@@ -59,12 +59,14 @@ namespace CompData.Services.Regulation.Impl
             return this.regulationDao.GetRegulationSourcesByCountryCode(countryCode);
         }
 
-        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTag)
+        public List<SelectedRegulationProcedure> GetSelectedRegulation(int regulationId, string searchTerm, List<string> detailTag, string version = null)
         {
             List<SelectedRegulationProcedure> selectedRegulationDetails = new List<SelectedRegulationProcedure>();
             if (regulationId != 0)
             {
-                selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId, searchTerm, detailTag);
+                Int64 versionId = 0;
+                Int64.TryParse(version, out versionId);
+                selectedRegulationDetails = regulationDao.GetSelectedRegulation(regulationId, searchTerm, detailTag, versionId);
             }
 
             return selectedRegulationDetails;
@@ -179,9 +181,9 @@ namespace CompData.Services.Regulation.Impl
             return await this.regulationDao.SaveRegulationDetail(viewModel);
         }
 
-        public async Task<Result> GetTagsGroup(string tagGroupId)
+        public Result GetAllTagsGroup(string tagGroupId)
         {
-            return await this.regulationDao.GetTagsGroup(tagGroupId);
+            return this.regulationDao.GetAllTagsGroup(tagGroupId);
         }
 
         public async Task<Result> SetTagsGroup(List<string> tags, string tagGroupId, int regId, int secId, int descId)
@@ -223,9 +225,14 @@ namespace CompData.Services.Regulation.Impl
             }
         }
 
-        public async Task<Result> GetRelatedRegulation(int regId)
+        public async Task<Result> GetRelatedRegulation(int regId = 0)
         {
             return await regulationDao.GetRelatedRegulation(regId);
+        }
+
+        public async Task<Result> GetRelatedRegulationForEdit(int regId = 0)
+        {
+            return await regulationDao.GetRelatedRegulationForEdit(regId);
         }
 
         public async Task<Result> SetLinkedRelatedRegulation(int regId, int relatedRegId)
@@ -260,6 +267,21 @@ namespace CompData.Services.Regulation.Impl
         public async Task<Result> UpdateMetaDetails(UpdateMetaDataRegulationViewModel viewModel)
         {
             return await this.regulationDao.UpdateMetaDetails(viewModel);
+        }
+
+        public async Task<ResultSingleObject<RegulationSource>> GetRegulationSourceById(int regSourceId)
+        {
+            return await regulationDao.GetRegulationSourceById(regSourceId);
+        }
+
+        public async Task<ResultSingleObject<RegulationType>> GetRegulationTypeById(int regTypeId)
+        {
+            return await regulationDao.GetRegulationTypeById(regTypeId);
+        }
+
+        public async Task<Result<RegulationVersionViewModel>> GetRegulationVersions(int regId) 
+        {
+            return await regulationDao.GetRegulationVersions(regId);
         }
     }
 }

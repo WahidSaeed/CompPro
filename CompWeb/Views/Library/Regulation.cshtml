@@ -8,6 +8,8 @@
     var detailTag = ViewBag.DetailTag as List<TagMap>;
     var relatedRegulation = ViewBag.RelatedRegulation as List<Regulation>;
     var subscribedregulation = ViewBag.SubscribedRegulation as List<int>;
+    var allVersions = ViewBag.AllVersions as List<RegulationVersionViewModel>;
+    var versionId = ViewBag.VersionId as string;
 
     ViewData["Title"] = "Regulation - " + defaultModel.RegTitle;
     ViewData["Description"] = defaultModel.MetaDescription;
@@ -76,10 +78,11 @@
         <div class="page-content-inner">
             <div class="search-page search-content-2">
                 <div class="row">
+
                     <div class="col-md-8 portlet light ">
                         <div class="page-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom:12px">
                             <h1 style="font-size: 15px;width: 600px;">
-                                <a data-toggle="modal" href="#SummaryMod" style="color: #22793e"><b>@defaultModel.RegTitle</b></a>
+                                <a data-toggle="modal" href="#SummaryMod" style="color: #22793e"><b>@defaultModel.RegTitle @(!string.IsNullOrEmpty(versionId) ? "(Version #: " + versionId + ")" : "")</b></a>
                             </h1>
                             <ul class="page-breadcrumb breadcrumb" style="margin-top: -10px; margin-bottom: -8px;">
                                 <li>
@@ -127,10 +130,112 @@
 
                     </div>
                     <div class="col-md-4" style="background-color: #f0f0f0">
+                        @if (allVersions.Count > 0)
+                        {
+                            <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                                <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
+                                    <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                        <span class="bold">Versions</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="cd-horizontal-timeline mt-timeline-horizontal loaded" data-spacing="60">
+                                        <div class="timeline">
+                                            <div class="events-wrapper">
+                                                <div class="events" style="width: 100%; transform: translateX(0px);">
+                                                    <ol>
+                                                        <li>
+                                                            <a href="?version" data-date="28/01/1990" class="border-after-red bg-after-red @(string.IsNullOrEmpty(versionId) ? "older-event selected" : "")" style="left: 0px;">Present</a>
+                                                        </li>
+                                                        @for (int i = 0; i < allVersions.Count; i++)
+                                                        {
+                                                            <li>
+                                                                <a href="?version=@allVersions[i].VersionId" data-date="@allVersions[i].VersionDate:@i" class="border-after-red bg-after-red @(allVersions[i].VersionId.Equals(versionId) ? "older-event selected" : "")" style="left: @((i + 1) * 100)px;">@allVersions[i].VersionDate:@i</a>
+                                                            </li>
+                                                        }
+                                                    </ol>
+                                                    <span class="filling-line bg-red" aria-hidden="true" style="transform: scaleX(0.0775104);"></span>
+                                                </div>
+                                                <!-- .events -->
+                                            </div>
+                                            <!-- .events-wrapper -->
+                                            <ul class="cd-timeline-navigation mt-ht-nav-icon">
+                                                <li>
+                                                    <a href="#0" class="prev btn btn-outline red md-skip inactive">
+                                                        <i class="fa fa-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#0" class="next btn btn-outline red md-skip">
+                                                        <i class="fa fa-chevron-right" style="left: -4px;"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <!-- .cd-timeline-navigation -->
+                                        </div>
+                                        <!-- .timeline -->
+                                        <div class="events-content" style="display: none">
+                                            <ol>
+                                                <li class="@(string.IsNullOrEmpty(versionId) ? "selected" : "")" data-date="28/01/1990">
+                                                </li>
+                                                @for (int i = 0; i < allVersions.Count; i++)
+                                                {
+                                                    <li class="@(allVersions[i].VersionId.Equals(versionId) ? "selected" : "")" data-date="@allVersions[i].VersionDate:@i">
+                                                        @allVersions[i].VersionDate:@i
+                                                    </li>
+                                                }
+                                            </ol>
+                                        </div>
+                                        <!-- .events-content -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!--<div class="portlet light tasks-widget ">
+                            <div class="portlet-body">
+                                <div class="task-content">
+                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 312px;">
+                                        <div class="scroller" style="height: 312px; overflow: hidden; width: auto;" data-always-visible="1" data-rail-visible1="1" data-initialized="1">-->
+                                            <!-- START TASK LIST -->
+                                            <!--<ul class="task-list">
+                                                <li>
+                                                    <div class="task-title">
+                                                        <span class="task-title-sp"> AirAsia Intranet System Project Internal Meeting </span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="task-title">
+                                                        <span class="task-title-sp"> AirAsia Intranet System Project Internal Meeting </span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="task-title">
+                                                        <span class="task-title-sp"> AirAsia Intranet System Project Internal Meeting </span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="task-title">
+                                                        <span class="task-title-sp"> AirAsia Intranet System Project Internal Meeting </span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="task-title">
+                                                        <span class="task-title-sp"> AirAsia Intranet System Project Internal Meeting </span>
+                                                    </div>
+                                                </li>
+                                            </ul>-->
+                                            <!-- END START TASK LIST -->
+                                        <!--</div><div class="slimScrollBar" style="background: rgb(187, 187, 187); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 256.168px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(234, 234, 234); opacity: 0.2; z-index: 90; right: 1px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+
                         <!-- BEGIN PORTLET-->
-                        <div style="background-color: #f0f0f0;padding: 12px 20px 0px">
+                        <div style="background-color: #f0f0f0;padding: 0px 20px 0px">
                             <div class="portlet-title" style="border-bottom: 2px solid #b2b1aa;margin-bottom: 12px;">
-                                <div style="color: #22793e;font-size: 14px;margin-top: 18px;">
+                                <div style="color: #22793e;font-size: 14px;margin-top: 0px;">
                                     <span class="bold">Search within Current Document</span>
                                 </div>
                             </div>
@@ -315,7 +420,7 @@
                     </ul>
                 </div>
             </div>
-            <div style="padding: 0px 0px 0px 10px;">
+            <div style="padding: 0px 0px 25px 10px;">
 
                 @if (requirments.SectionItemRequirement != null)
                 {
@@ -355,10 +460,17 @@
     <script src="~/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
     <script src="~/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
     <script src="~/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
-
+    <script src="~/assets/global/plugins/horizontal-timeline/horizontal-timeline.js" type="text/javascript"></script>
 
     <script type="text/javascript">
 
+        $(document).ready(function () {
+            $('[data-item-tag]').tooltip({
+                content: function () {
+                    return $(this).attr('title-tooltip')
+                }
+            });
+        });
 
         $('[data-subs]').click(function () {
             var btnObj = this;
@@ -390,8 +502,8 @@
 
             var searchTerm = $('#txtSearchTerms').val();
             var detailTag = (@detailTag.Count() > 0 ? Array.from($('[data-detail]:checked').map(function () { return $(this).val() })) : []);
-            $.get("/Library/_GetFilteredDetails",
-                { id: @ViewBag.RegId, DetailTags: detailTag, SearchTerm: searchTerm },
+            $.post("/Library/_GetFilteredDetails",
+                { id: @ViewBag.RegId, detailTag, searchTerm },
                 function (response) {
                     $('#dvDetail').html(response);
                     $('[data-item-tag]').tooltip({

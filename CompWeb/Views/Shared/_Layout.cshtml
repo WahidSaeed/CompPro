@@ -22,6 +22,8 @@
     <meta name="title" content="@ViewData["Title"]">
     <meta name="description" content="@ViewData["Description"]">
     <meta name="keywords" content="@ViewData["Tags"]">
+    <script src="~/assets/global/plugins/pace/pace.min.js" type="text/javascript"></script>
+    <link href="~/assets/global/plugins/pace/themes/pace-theme-flash.css" rel="stylesheet" type="text/css" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="~/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -248,16 +250,16 @@
     <script src="~/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
     <script src="~/assets/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
     <!-- END THEME LAYOUT SCRIPTS -->
-    @RenderSection("Scripts", required: false);
+    @RenderSection("Scripts", required: false)
     <script>
 
-        $(document).ready(function () {
-            $('[data-item-tag]').tooltip({
-                content: function () {
-                    return $(this).attr('title-tooltip')
-                }
-            });
-        });
+        //$(document).ready(function () {
+        //    $('[data-item-tag]').tooltip({
+        //        content: function () {
+        //            return $(this).attr('title-tooltip')
+        //        }
+        //    });
+        //});
 
      //   $('[data-searchbox]').focusin(function () {
       //      $('[data-search]').slideDown();

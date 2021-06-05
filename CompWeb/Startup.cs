@@ -41,6 +41,8 @@ using CompData.Services.Account.Impl;
 using CompData.Services.Account;
 using CompData.Dao.Account.Impl;
 using CompData.Dao.Account;
+using CompData.Services.Lucene;
+using CompData.Services.Lucene.Impl;
 
 namespace CRMWeb
 {
@@ -60,7 +62,7 @@ namespace CRMWeb
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"));
                 options.EnableSensitiveDataLogging(true);
-                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole() ));
+                //options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
             });
 
             services.Configure<IdentityDefaultOptions>(Configuration.GetSection("IdentityDefaultOptions"));
@@ -124,6 +126,7 @@ namespace CRMWeb
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ISystemAuditService, SystemAuditService>();
             services.AddTransient<ISystemAuditDao, SystemAuditDao>();
+            services.AddTransient<ILuceneService, LuceneService>();
             #endregion
 
             services.AddControllersWithViews(config =>

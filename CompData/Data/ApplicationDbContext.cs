@@ -49,6 +49,11 @@ namespace CRMData.Data
         public virtual DbSet<TagMap> TagMaps { get; set; }
         public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Requirements> Requirements { get; set; }
+        public virtual DbSet<RegulationDetailVersion> RegulationDetailVersions { get; set; }
+        public virtual DbSet<RegulationSectionVersion> RegulationSectionVersions { get; set; }
+        public virtual DbSet<TagMapVersion> TagMapVersions { get; set; }
+        public virtual DbSet<LinkedRelatedRegulationVersion> LinkedRelatedRegulationVersions { get; set; }
+
         #endregion
 
         #region Config
@@ -144,7 +149,7 @@ namespace CRMData.Data
                 x.HasMany<RegulationDetail>(e => e.RegulationDetails)
                 .WithOne(x => x.RegulationSection)
                 .HasForeignKey(x => x.SectionId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<LinkedRelatedRegulation>(x =>

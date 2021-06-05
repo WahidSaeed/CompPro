@@ -103,15 +103,21 @@
                                         </div>
                                     </div>
                                     <div class="portlet-body">
-                                        <ul>
-                                            @foreach (var Regulation in sourceItem.RegulationsList.OrderByDescending(x => x.Views))
-                                            {
-                                                <li>
-                                                    <a href="Library/Regulation/@Regulation.RegulationId" style="font-size:12px;color:#404040">@Regulation.RegulationTitle</a>
-                                                </li>
-                                            }
-                                        </ul>
-                                        <small><a href="Library/Source/@ViewBag.DefaultSourceId/Type/@sourceItem.TypeId" style="font-size:12px;color:#a9a5bf">See all @sourceItem.TotalRegulation documents</a></small>
+                                        @if (@sourceItem.TotalRegulation > 0)
+                                        {
+                                            <ul>
+                                                @foreach (var Regulation in sourceItem.RegulationsList.OrderByDescending(x => x.Views).Take(10))
+                                                {
+                                                    <li>
+                                                        <a href="Library/Regulation/@Regulation.RegulationId" style="font-size:12px;color:#404040">@Regulation.RegulationTitle</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                            <small><a href="Library/Source/@ViewBag.DefaultSourceId/Type/@sourceItem.TypeId" style="font-size:12px;color:#a9a5bf">See all @sourceItem.RegulationsList.Count documents</a></small>
+                                        }
+                                        else { 
+                                            <small>No Regulation Found!</small>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +169,7 @@
                             <input type="text" class="form-control" placeholder="Title" id="input-title" style="border-radius: 4px !important;">
                         </div>
                         <div class="form-group">
-                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
+                            <div class="input-group date" data-date-format="mm/dd/yyyy" data-date-end-date="+0d">
                                 <input type="text" class="form-control" readonly="" placeholder="Issue Date" id="input-issueDate" style="background-color: #ffffff; border-radius: 4px !important;">
                                 <span class="input-group-btn">
                                     <button class="btn default" type="button">
@@ -181,7 +187,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
+                            <div class="input-group date" data-date-format="mm/dd/yyyy" data-date-start-date="+0d">
                                 <input type="text" class="form-control" readonly="" placeholder="Effective Date" id="input-effectiveDate" style="background-color: #ffffff;border-radius: 4px !important;">
                                 <span class="input-group-btn">
                                     <button class="btn default" type="button">
@@ -211,7 +217,7 @@
                 <p style="color: #227937;text-align: center;margin-top:-5px"> Regulation created successfully. Do you wish to populate it now? </p>
             </div>
             <div style="background-color: transparent;clear: both;border: 0;padding: 0 60px 27px;margin-left: -30px;margin-right: -30px;">
-                <button type="button" data-dismiss="modal" class="btn" style="background: #bf9000;color: white;width: 342px;margin-top: 10px">Later</button>
+                <button type="button" data-dismiss="modal" class="btn" style="background: #bf9000;color: white;width: 342px;margin-top: 10px" onclick="location.reload();">Later</button>
                 <button type="button" class="btn" style="background: #02502e;color: white;width: 342px;margin-top: 10px" onclick="redirectToRegulation()">Continue now</button>
             </div>
         </div>
@@ -230,6 +236,15 @@
     <script src="~/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#input-issueDate').datepicker({
+                format: 'mm/dd/yyyy'
+            });
+            $('#input-effectiveDate').datepicker({
+                format: 'mm/dd/yyyy'
+            });
+        });
 
         var regulation = {
             id: '',
@@ -261,13 +276,22 @@
         });
 
         $('[data-save-regulation]').click(function () {
-            var referenceNumber = $('#input-reference');
-            var title = $('#input-title');
-            var issueDate = $('#input-issueDate');
-            var isFinal = $('#input-isFinal').is(':checked');
-            var effectiveDate = $('#input-effectiveDate');
-            var sourceId = $('#input-source');
-            var typeId = $('#input-type');
+            let referenceNumber = $('#input-reference');
+            let title = $('#input-title');
+            let issueDate = $('#input-issueDate');
+            let isFinal = $('#input-isFinal').is(':checked');
+            let effectiveDate = $('#input-effectiveDate');
+            let sourceId = $('#input-source');
+            let typeId = $('#input-type');
+
+            let issueDateObj = new Date(issueDate.val());
+            let effectiveDateObj = new Date(effectiveDate.val());
+
+            if (issueDateObj > effectiveDateObj) {
+                toastr.error('Issue date cannot be greater than effective date.');
+                return;
+            }
+
 
             if (!(referenceNumber.val() && title.val() && effectiveDate.val() && issueDate.val())) {
                 toastr.error('Fill all fields to continue.');
@@ -331,5 +355,20 @@
                 }, "json")
                 .always(function () { l.stop(); });
         });
+
+        $('#input-issueDate').change(function () {
+            let date = $(this).val();
+
+            try {
+                $('#input-effectiveDate').data('datepicker').remove();
+                $('#input-effectiveDate').datepicker({
+                    format: 'mm/dd/yyyy',
+                    startDate: new Date(date)
+                });
+            } catch (e) {
+
+            }
+        });
+
     </script>
 }

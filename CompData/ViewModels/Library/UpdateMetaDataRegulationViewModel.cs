@@ -10,5 +10,6 @@ namespace CompData.ViewModels.Library
         public string CustomURL { get; set; }
         public string MetaTag { get; set; }
         public string MetaDescription { get; set; }
+        public string Summary { get; set; }
     }
 }

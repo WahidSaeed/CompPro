@@ -3506,15 +3506,15 @@ li [class*=" icon-"], li [class^=icon-] {
         }
 
     .btn.btn-outline.green-haze {
-        border-color: #44b6ae;
-        color: #44b6ae;
-        background: 0 0
+        border-color: #02502e;
+        color: #02502e;
+        background: none;
     }
 
-        .btn.btn-outline.green-haze.active, .btn.btn-outline.green-haze:active, .btn.btn-outline.green-haze:active:focus, .btn.btn-outline.green-haze:active:hover, .btn.btn-outline.green-haze:focus, .btn.btn-outline.green-haze:hover {
-            border-color: #44b6ae;
-            color: #FFF;
-            background-color: #44b6ae
+        .btn.btn-outline.green-haze:hover, .btn.btn-outline.green-haze:active, .btn.btn-outline.green-haze:active:hover, .btn.btn-outline.green-haze:active:focus, .btn.btn-outline.green-haze:focus, .btn.btn-outline.green-haze.active {
+            border-color: #02502e;
+            color: #FFFFFF;
+            background-color: #02502e;
         }
 
     .btn.green-haze-stripe {
@@ -4339,8 +4339,8 @@ li [class*=" icon-"], li [class^=icon-] {
 
     .btn.red:not(.btn-outline) {
         color: #fff;
-        background-color: #e7505a;
-        border-color: #e7505a
+        background-color: #7b9d6f;
+        border-color: #7b9d6f
     }
 
         .btn.red:not(.btn-outline).focus, .btn.red:not(.btn-outline):focus {
@@ -4366,29 +4366,29 @@ li [class*=" icon-"], li [class^=icon-] {
         }
 
         .btn.red:not(.btn-outline).disabled.focus, .btn.red:not(.btn-outline).disabled:focus, .btn.red:not(.btn-outline).disabled:hover, .btn.red:not(.btn-outline)[disabled].focus, .btn.red:not(.btn-outline)[disabled]:focus, .btn.red:not(.btn-outline)[disabled]:hover, fieldset[disabled] .btn.red:not(.btn-outline).focus, fieldset[disabled] .btn.red:not(.btn-outline):focus, fieldset[disabled] .btn.red:not(.btn-outline):hover {
-            background-color: #e7505a;
-            border-color: #e7505a
+            background-color: #7b9d6f;
+            border-color: #7b9d6f
         }
 
         .btn.red:not(.btn-outline) .badge {
-            color: #e7505a;
+            color: #7b9d6f;
             background-color: #fff
         }
 
     .btn.btn-outline.red {
-        border-color: #e7505a;
-        color: #e7505a;
+        border-color: #bf9000;
+        color: #bf9000;
         background: 0 0
     }
 
         .btn.btn-outline.red.active, .btn.btn-outline.red:active, .btn.btn-outline.red:active:focus, .btn.btn-outline.red:active:hover, .btn.btn-outline.red:focus, .btn.btn-outline.red:hover {
-            border-color: #e7505a;
+            border-color: #bf9000;
             color: #fff;
-            background-color: #e7505a
+            background-color: #bf9000
         }
 
     .btn.red-stripe {
-        border-left: 4px solid #e7505a !important
+        border-left: 4px solid #7b9d6f !important
     }
 
     .btn.red.btn-no-border:not(.active) {
@@ -7456,7 +7456,7 @@ td > .mt-checkbox.mt-checkbox-single, td > .mt-radio.mt-radio-single, th > .mt-c
 }
 
 .form-control.red {
-    border-color: #e7505a
+    border-color: #7b9d6f
 }
 
     .form-control.red:focus {
@@ -7464,7 +7464,7 @@ td > .mt-checkbox.mt-checkbox-single, td > .mt-radio.mt-radio-single, th > .mt-c
     }
 
 .form-control.focus-red:focus {
-    border-color: #e7505a
+    border-color: #7b9d6f
 }
 
 .form-control.red-pink {
@@ -11365,7 +11365,7 @@ body[ng-controller] .modal {
     }
 
 .portlet.box.red > .portlet-title, .portlet.red, .portlet > .portlet-body.red {
-    background-color: #e7505a
+    background-color: #7b9d6f
 }
 
 .portlet.box.grey-mint > .portlet-title > .actions .btn-default > i {
@@ -13198,7 +13198,7 @@ body[ng-controller] .modal {
 }
 
 .progress-bar.red {
-    background: #e7505a !important;
+    background: #7b9d6f !important;
     color: #fff !important
 }
 
@@ -14351,7 +14351,7 @@ body[ng-controller] .modal {
     }
 
 .dashboard-stat.red {
-    background-color: #e7505a
+    background-color: #7b9d6f
 }
 
     .dashboard-stat.red.dashboard-stat-light:hover {
@@ -18228,14 +18228,14 @@ body[ng-controller] .modal {
 
             .mt-timeline-horizontal .timeline .mt-ht-nav-icon li a i {
                 position: absolute;
-                top: 50%;
+                top: 53%;
                 left: 0;
                 transform: translateX(50%) translateY(-50%);
                 width: 10px
             }
 
         .mt-timeline-horizontal .timeline .mt-ht-nav-icon li:first-child a i {
-            left: -2px
+            left: -6px
         }
 
         .mt-timeline-horizontal .timeline.mt-timeline-square .events a:after, .mt-timeline-horizontal .timeline.mt-timeline-square .mt-ht-nav-icon li a {
@@ -19114,11 +19114,11 @@ body.stop-scrolling {
     }
 
 .mt-element-step .step-default .error {
-    background-color: #E7505A !important
+    background-color: #7b9d6f !important
 }
 
     .mt-element-step .step-default .error .mt-step-number {
-        color: #E7505A !important
+        color: #7b9d6f !important
     }
 
     .mt-element-step .step-default .error .mt-step-content, .mt-element-step .step-default .error .mt-step-title {
@@ -19175,11 +19175,11 @@ body.stop-scrolling {
     }
 
 .mt-element-step .step-thin .error {
-    background-color: #E7505A !important
+    background-color: #7b9d6f !important
 }
 
     .mt-element-step .step-thin .error .mt-step-number {
-        color: #E7505A !important
+        color: #7b9d6f !important
     }
 
     .mt-element-step .step-thin .error .mt-step-content, .mt-element-step .step-thin .error .mt-step-title {
@@ -19240,7 +19240,7 @@ body.stop-scrolling {
     }
 
 .mt-element-step .step-background .error {
-    background-color: #E7505A !important
+    background-color: #7b9d6f !important
 }
 
     .mt-element-step .step-background .error .mt-step-number {
@@ -19308,7 +19308,7 @@ body.stop-scrolling {
     }
 
 .mt-element-step .step-background-thin .error {
-    background-color: #E7505A !important
+    background-color: #7b9d6f !important
 }
 
     .mt-element-step .step-background-thin .error .mt-step-number {
@@ -19362,13 +19362,13 @@ body.stop-scrolling {
 }
 
 .mt-element-step .step-no-background .error .mt-step-number {
-    color: #E7505A !important;
-    border-color: #E7505A !important;
+    color: #7b9d6f !important;
+    border-color: #7b9d6f !important;
     font-weight: 700
 }
 
 .mt-element-step .step-no-background .error .mt-step-content, .mt-element-step .step-no-background .error .mt-step-title {
-    color: #E7505A !important;
+    color: #7b9d6f !important;
     font-weight: 700
 }
 
@@ -19421,13 +19421,13 @@ body.stop-scrolling {
 }
 
 .mt-element-step .step-no-background-thin .error .mt-step-number {
-    color: #E7505A !important;
-    border-color: #E7505A !important;
+    color: #7b9d6f !important;
+    border-color: #7b9d6f !important;
     font-weight: 700
 }
 
 .mt-element-step .step-no-background-thin .error .mt-step-content, .mt-element-step .step-no-background-thin .error .mt-step-title {
-    color: #E7505A !important;
+    color: #7b9d6f !important;
     font-weight: 700
 }
 
@@ -19512,16 +19512,16 @@ body.stop-scrolling {
     }
 
 .mt-element-step .step-line .error .mt-step-number {
-    color: #E7505A !important;
-    border-color: #E7505A !important
+    color: #7b9d6f !important;
+    border-color: #7b9d6f !important
 }
 
 .mt-element-step .step-line .error .mt-step-content, .mt-element-step .step-line .error .mt-step-title {
-    color: #E7505A !important
+    color: #7b9d6f !important
 }
 
     .mt-element-step .step-line .error .mt-step-title:after, .mt-element-step .step-line .error .mt-step-title:before {
-        background-color: #E7505A
+        background-color: #7b9d6f
     }
 
 @media (max-width:991px) {
@@ -21685,7 +21685,7 @@ body.stop-scrolling {
     }
 
 .mt-element-list .list-default.mt-list-head.red {
-    background-color: #e7505a;
+    background-color: #7b9d6f;
     color: #fff
 }
 
@@ -21703,7 +21703,7 @@ body.stop-scrolling {
     }
 
 .mt-element-list .list-todo .list-count.red, .mt-element-list .list-todo.mt-list-head.red {
-    background-color: #e7505a;
+    background-color: #7b9d6f;
     color: #fff
 }
 
@@ -21712,20 +21712,20 @@ body.stop-scrolling {
     }
 
 .mt-element-list .list-todo .list-todo-line.red {
-    border-color: #e7505a
+    border-color: #7b9d6f
 }
 
 .mt-element-list .list-todo .list-todo-item.red:after {
-    border-right-color: #e7505a !important
+    border-right-color: #7b9d6f !important
 }
 
 .mt-element-list .list-todo .list-todo-item.red .list-toggle {
-    background: #e7505a;
+    background: #7b9d6f;
     color: #fff !important
 }
 
     .mt-element-list .list-todo .list-todo-item.red .list-toggle > .badge {
-        color: #e7505a;
+        color: #7b9d6f;
         background: #fff
     }
 
@@ -23156,11 +23156,11 @@ body.stop-scrolling {
 }
 
 .mt-element-list .list-todo-item.red:after {
-    border-right-color: #e7505a
+    border-right-color: #7b9d6f
 }
 
 .mt-element-list .list-todo-item.red .list-toggle {
-    background: #e7505a
+    background: #7b9d6f
 }
 
 .mt-element-list .list-todo-item.red-pink:after {
@@ -25714,27 +25714,27 @@ body.stop-scrolling {
 }
 
 .border-after-red:after, .border-before-red:before, .border-red {
-    border-color: #e7505a !important
+    border-color: #7b9d6f !important
 }
 
 .border-top-after-red:after, .border-top-before-red:before, .border-top-red {
-    border-top-color: #e7505a !important
+    border-top-color: #7b9d6f !important
 }
 
 .border-bottom-after-red:after, .border-bottom-before-red:before, .border-bottom-red {
-    border-bottom-color: #e7505a !important
+    border-bottom-color: #7b9d6f !important
 }
 
 .border-left-after-red:after, .border-left-before-red:before, .border-left-red {
-    border-left-color: #e7505a !important
+    border-left-color: #7b9d6f !important
 }
 
 .border-right-after-red:after, .border-right-before-red:before, .border-right-red {
-    border-right-color: #e7505a !important
+    border-right-color: #7b9d6f !important
 }
 
 .bg-red {
-    background: #e7505a !important
+    background: #7b9d6f !important
 }
 
 .bg-red-opacity {
@@ -25742,11 +25742,11 @@ body.stop-scrolling {
 }
 
 .bg-after-red:after, .bg-before-red:before, .bg-hover-red:hover {
-    background: #e7505a !important
+    background: #7b9d6f !important
 }
 
 .font-red {
-    color: #e7505a !important
+    color: #7b9d6f !important
 }
 
 .bg-font-red {

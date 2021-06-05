@@ -12,6 +12,7 @@ using CRMData.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CompWeb.Controllers
 {
     public class LibraryController : Controller
@@ -42,10 +43,12 @@ namespace CompWeb.Controllers
 
             var detailTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(id, null, CompData.Configurations.Constants.Enums.TagType.BussinessLineTag);
+            var regulationSource = await regulationService.GetRegulationSourceById(id);
 
             ViewBag.SourceId = id;
             ViewBag.DetailTag = detailTag.Data;
             ViewBag.BussinessLineTag = bussinessLineTag.Data;
+            ViewBag.RegulationSource = regulationSource.Data.FullName;
 
             return View();
         }
@@ -55,11 +58,15 @@ namespace CompWeb.Controllers
         {
             var detailTag = await regulationService.GetAllTagFilters(sourceId, typeId, TagType.DetailTag);
             var bussinessLineTag = await regulationService.GetAllTagFilters(sourceId, typeId, TagType.BussinessLineTag);
+            var regulationSource = await regulationService.GetRegulationSourceById(sourceId);
+            var regulationType = await regulationService.GetRegulationTypeById(typeId);
 
             ViewBag.SourceId = sourceId;
             ViewBag.TypeId = typeId;
             ViewBag.DetailTag = detailTag.Data;
             ViewBag.BussinessLineTag = bussinessLineTag.Data;
+            ViewBag.RegulationSource = regulationSource.Data.FullName;
+            ViewBag.RegulationType = regulationType.Data.TypeName;
 
             return View();
         }
@@ -74,22 +81,25 @@ namespace CompWeb.Controllers
         #endregion
 
         #region View Regulation
-        public async Task<IActionResult> Regulation(string id)
+        public async Task<IActionResult> Regulation(string id, [FromQuery(Name = "version")] string version)
         {
             var user = await userManager.GetUserAsync(User);
             var response = await this.regulationService.GetRegulationIdByCustomURL(id);
             int regId = response.Data;
             if (response.Status == ResultStatus.Success)
             {
-                var model = this.regulationService.GetSelectedRegulation(regId);
+                var model = this.regulationService.GetSelectedRegulation(regId, version: version);
                 var detailTag = await regulationService.GetAllTagFiltersByRegId(regId, TagType.DetailTag);
                 var requirement = this.regulationService.GetSelectedRegRequirement(regId);
                 var relatedRegulation = await regulationService.GetRelatedRegulation(regId);
+                var allVersions = await regulationService.GetRegulationVersions(regId);
 
                 ViewBag.SubscribedRegulation = this.regulationService.GetSubscribedRegulationByUserId(user.Id, regId);
                 ViewBag.RelatedRegulation = relatedRegulation.Data;
                 ViewBag.Requirments = requirement;
                 ViewBag.DetailTag = detailTag.Data;
+                ViewBag.AllVersions = allVersions.Data;
+                ViewBag.VersionId = version;
                 ViewBag.RegId = regId;
 
                 return View(model);
@@ -100,6 +110,7 @@ namespace CompWeb.Controllers
             }
         }
 
+        [HttpPost]
         public PartialViewResult _GetFilteredDetails(int id, List<string> detailTag, string searchTerm)
         {
             var model = this.regulationService.GetSelectedRegulation(id, searchTerm, detailTag);
@@ -110,7 +121,13 @@ namespace CompWeb.Controllers
         public IActionResult RegulationEdit(int id)
         {
             var model = this.regulationService.GetSelectedRegulation(id);
+            var allTags = this.regulationService.GetAllTagsGroup(string.Empty);
+            var allLinkedRegs = this.regulationService.GetRelatedRegulationForEdit(id).GetAwaiter().GetResult();
+
             ViewBag.RegId = id;
+            ViewBag.AllTags = Newtonsoft.Json.JsonConvert.SerializeObject(allTags.Data);
+            ViewBag.AllLinkedRegs = Newtonsoft.Json.JsonConvert.SerializeObject(allLinkedRegs.Data);
+
             return View(model);
         }
         #endregion
@@ -183,11 +200,11 @@ namespace CompWeb.Controllers
         }
         #endregion
 
-        #region Link Tags
-        [Route("/Library/GetTagsGroup/{tagGroupId}")]
-        public async Task<JsonResult> GetTagsGroup(string tagGroupId)
+        #region Link Tags & Related Regulations
+        [Route("/Library/GetAllTagsGroup/{tagGroupId}")]
+        public JsonResult GetAllTagsGroup(string tagGroupId)
         {
-            var result = await this.regulationService.GetTagsGroup(tagGroupId);
+            var result = this.regulationService.GetAllTagsGroup(tagGroupId);
             return Json(result);
         }
 

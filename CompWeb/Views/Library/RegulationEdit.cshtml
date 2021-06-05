@@ -3,6 +3,9 @@
 @{
     var defaultModel = Model.FirstOrDefault();
     ViewData["Title"] = "Regulation - " + defaultModel.RegTitle + " (Edit Mode)";
+    int regId = ViewBag.RegId;
+    string allTags = ViewBag.AllTags;
+    string allLinkedRegs = ViewBag.AllLinkedRegs;
 }
 
 @section Styles {
@@ -23,6 +26,22 @@
             border: 1px solid #ffcb85;
         }
 
+            .tag-highlight .tag-control {
+                display: none;
+            }
+
+            .tag-highlight:hover .tag-control {
+                display: inherit;
+            }
+
+        .link-highlight .link-control {
+            display: none;
+        }
+
+        .link-highlight:hover .link-control {
+            display: inherit;
+        }
+
         .select2-container {
             width: 100% !important;
         }
@@ -38,6 +57,25 @@
             color: #b9b9b9;
             outline: none;
         }
+
+        /*.deletesection::before {
+            content: '\f057' !important;
+        }
+
+        .deletesection:hover {
+            color: #e93e3e;
+        }
+
+        .deletesection:focus {
+            outline: none !important;
+        }
+
+        .deletesection {
+            margin: 0px !important;
+            float: right !important;
+            font-size: 11px !important;
+            color: #d43737;
+        }*/
     </style>
 }
 
@@ -72,63 +110,79 @@
                             <div style="float: right;margin-top: -60px !important;">
                                 <button type="button" class="btnclass"><a data-toggle="modal" href="#MetaData" style="color:#b9b9b9"><i class="fa fa-plus-circle"></i></a><span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div></button>
                                 <button class="btn btnclass" id="btn-new-section" title="Add New Section"><i class="fa fa-paragraph"></i></button>
-                                <button class="btn btnclass" id="btn-publish" title="Publish" onclick="publish()"><i class="fa fa-send-o"></i></button>
+                                @*<button class="btn btnclass" id="btn-publish" title="Publish" onclick="publish()"><i class="fa fa-send-o"></i></button>*@
                                 <button class="btn btnclass" id="btn-draft" title="Draft"><i class="fa fa-save"></i></button>
-
+                                <div class="btn-group">
+                                    <a class="btn green-haze btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
+                                        <i class="fa fa-send-o"></i>
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>
+                                            <a href="javascript:;" id="btn-publish">Publish</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;" id="btn-publish-version">Publish with versioning</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                         <div class="dd" id="nestable_list_1">
                             <ol class="dd-list">
                                 @foreach (var item in Model.Where(x => x.ParentId == null && x.SectionId != null).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence))
                                 {
-                                    <li class="dd-item dd3-item" data-item-section="@item.SectionId">
-                                        <div class="dd-handle dd3-handle"></div>
-                                        <div class="dd3-content">
-                                            <div class="editable" style="outline: none">
-                                                <h2 class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@Html.Raw(item.SectionTitle)</h2>
-                                                @{
-                                                    var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
-                                                }
-                                                @if (descs.Count() > 0)
+                                <li class="dd-item dd3-item" data-item-section="@item.SectionId">
+                                    <div class="dd-handle dd3-handle">
+                                    </div>
+                                    <span title="Remove Section" sid="@item.SectionId" class="fa fa-trash deletesection" style="cursor: pointer; position: absolute; top: 30px; margin-left: 7px;"></span>
+                                    <div class="dd3-content">
+                                        <div class="editable" style="outline: none">
+                                            <h2 class="bold" style="color: #404040;font-size: 14px;padding: 0px 15px 0px;">@Html.Raw(item.SectionTitle)</h2>
+                                            @{
+                                                var descs = Model.Where(x => x.SectionId.Equals(item.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
+                                            }
+                                            @if (descs.Count() > 0)
+                                            {
+                                                foreach (var desc in descs)
                                                 {
-                                                    foreach (var desc in descs)
-                                                    {
-                                                        <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
-                                                    }
+                                                    <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
                                                 }
-                                            </div>
+                                            }
                                         </div>
-                                        @{
-                                            var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
-                                        }
-                                        @if (filterData.Count() > 0)
-                                        {
-                                            <ol class="dd-list">
-                                                @foreach (var itemChild in filterData)
-                                                {
-                                                    <li class="dd-item dd3-item" data-item-section="@itemChild.SectionId">
-                                                        <div class="dd-handle dd3-handle"></div>
-                                                        <div class="dd3-content">
-                                                            <div class="editable" style="outline: none">
-                                                                <h3 class="bold" style="color: #404040;font-size: 13px;padding: 0px 15px 0px;">@Html.Raw(itemChild.SectionTitle)</h3>
-                                                                @{
-                                                                    var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
-                                                                }
-                                                                @if (childDescs.Count() > 0)
+                                    </div>
+                                    @{
+                                        var filterData = Model.Where(x => x.ParentId.Equals(item.SectionId)).Select(x => new { x.SectionId, x.SectionTitle, x.Sequence }).Distinct().OrderBy(x => x.Sequence);
+                                    }
+                                    @if (filterData.Count() > 0)
+                                    {
+                                        <ol class="dd-list">
+                                            @foreach (var itemChild in filterData)
+                                            {
+                                                <li class="dd-item dd3-item" data-item-section="@itemChild.SectionId">
+                                                    <div class="dd-handle dd3-handle"></div>
+                                                    <button class="deletesection" type="button" sid="@itemChild.SectionId" title="Remove Section"></button>
+                                                    <div class="dd3-content">
+                                                        <div class="editable" style="outline: none">
+                                                            <h3 class="bold" style="color: #404040;font-size: 13px;padding: 0px 15px 0px;">@Html.Raw(itemChild.SectionTitle)</h3>
+                                                            @{
+                                                                var childDescs = Model.Where(x => x.SectionId.Equals(itemChild.SectionId)).OrderBy(x => x.DescSequence).Select(x => new { x.RegDescription, x.RegDescId });
+                                                            }
+                                                            @if (childDescs.Count() > 0)
+                                                            {
+                                                                foreach (var desc in childDescs)
                                                                 {
-                                                                    foreach (var desc in childDescs)
-                                                                    {
-                                                                        <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
-                                                                    }
+                                                                    <p data-item-desc="@desc.RegDescId" style="padding-left: 15px;">@Html.Raw(desc.RegDescription)</p>
                                                                 }
-                                                            </div>
+                                                            }
                                                         </div>
-                                                    </li>
-                                                }
-                                            </ol>
-                                        }
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ol>
+                                    }
 
-                                    </li>
+                                </li>
                                 }
                             </ol>
                         </div>
@@ -152,6 +206,15 @@
             <div class="modal-body">
                 <p id="tag-statement"></p>
                 <input type="text" id="tag-mapper" class="form-control input-large" value="" data-role="tagsinput">
+                <span class="select2-container select2-container--bootstrap select2-container--open" data-item-tag-container style="display: none">
+                    <span class="select2-dropdown select2-dropdown--below" dir="ltr" style="width: 368px;">
+                        <span class="select2-results">
+                            <ul class="select2-results__options" data-item-suggestion-list role="tree" aria-multiselectable="true" id="select2-seletedtag-results" aria-expanded="true" aria-hidden="false">
+                                <li role="treeitem" aria-live="assertive" class="select2-results__option select2-results__message">You can only select 1 item</li>
+                            </ul>
+                        </span>
+                    </span>
+                </span>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>
@@ -218,6 +281,9 @@
                         <div class="form-group">
                             <textarea class="form-control autosizeme" rows="4" placeholder="Meta Description" data-autosize-on="true" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 90px;border-radius: 4px !important;" id="input-metadescription">@defaultModel.MetaDescription</textarea>
                         </div>
+                        <div class="form-group">
+                            <textarea class="form-control autosizeme" rows="4" placeholder="Summary" data-autosize-on="true" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 90px;border-radius: 4px !important;" id="input-summary">@defaultModel.Summary</textarea>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -254,13 +320,103 @@
 
     <script>
 
+        var regId = @regId;
+        var selectedStatement;
+        var existingTagGroupIds = [];
+        var tagMapper;
+        var allTagsString = '@allTags';
+        var allLinkedRegsString = '@allLinkedRegs';
+        var allTagsJSON = JSON.parse(allTagsString.replace(/&quot;/g, '"'));
+        var allLinkedRegsJSON = JSON.parse(allLinkedRegsString.replace(/&quot;/g, '"'));
+        var operationType = {
+            None: 0,
+            New: 1,
+            Deleted: 2
+        };
+
         window.onload = function () {
             initMediumEditor();
             initSelect2DD();
+            initTagInput();
+            setTagControl();
+            setLinkControl();
         };
 
-        var regId = @ViewBag.RegId;
-        var selectedStatement;
+        function setTagControl() {
+            
+            //$(".tag-highlight").prepend(controlButton);
+
+
+            $(".tag-highlight").each(function (x, obj) {
+                let existingControl = $(this).find('.tag-control');
+                if (existingControl.length === 0) {
+                    let controlButton = `<span class="tag-control">
+                                    <span tooltip="Remove Tag" data-item-tag-remove class="fa fa-trash" style="cursor: pointer;"></span>
+                                    <span tooltip = "Edit Tag" data-item-tag-edit class="fa fa-pencil-square-o" style="cursor: pointer;"></span>
+                                </span>`;
+                    $(this).prepend(controlButton);
+                }
+            });
+
+
+            $("[data-item-tag-remove]").click(function () {
+                let tagGroupId = $(this).closest('[data-item-tag]').attr('data-item-tag');
+                removeTags(tagGroupId);
+            });
+
+            $("[data-item-tag-edit]").click(function () {
+
+                let secId, descId;
+                let tagGroupId = $(this).closest('[data-item-tag]').attr('data-item-tag');
+                descId = $(this).closest('[data-item-desc]').attr('data-item-desc');
+                secId = $(this).closest('[data-item-section]').attr('data-item-section');
+
+                let tagSaveButton = $('[data-link-tag-group]');
+                tagSaveButton.attr('data-reg', regId);
+                tagSaveButton.attr('data-sec', secId);
+                tagSaveButton.attr('data-desc', descId);
+                tagSaveButton.attr('data-link-tag-group', tagGroupId);
+
+                getTags(tagGroupId);
+            });
+        }
+
+        function setLinkControl() {
+
+
+            $(".link-highlight").each(function (x, obj) {
+                let existingControl = $(this).find('.link-control');
+                if (existingControl.length === 0) {
+                    let linkedUID = new Date().getTime();
+                    let controlButton = `<span class="link-control">
+                                        <span tooltip="Remove Link" data-item-link-remove class="fa fa-trash" style="cursor: pointer;"></span>
+                                        <span tooltip = "Edit Link" data-item-link-edit link-uid="${linkedUID}" class="fa fa-pencil-square-o" style="cursor: pointer;"></span>
+                                    </span>`;
+
+                    $(this).attr('link-uid', linkedUID)
+                    $(this).find('a').attr('link-uid', linkedUID);
+                    $(this).prepend(controlButton);
+                }
+
+            });
+
+
+
+            $("[data-item-link-remove]").click(function () {
+                let linkedRegId = $(this).closest('[data-item-link]').attr('data-item-link');
+                removeLink(linkedRegId);
+            });
+
+            $("[data-item-link-edit]").click(function () {
+
+                let linkedRegId = $(this).closest('[data-item-link]').attr('data-item-link');
+                let linkedUID = $(this).closest('[link-uid]').attr('link-uid');
+
+                getLinkedReg(linkedRegId, linkedUID);
+            });
+        }
+
+
 
         function initSelect2DD() {
             $('#seletedregulation').select2({
@@ -282,8 +438,25 @@
             });
         }
 
+        function select2DDSearchTerms(searchTerm) {
+            let $seletedregulation = $("#seletedregulation");
+            $seletedregulation.select2('open');
+            let $search = $seletedregulation.data('select2').dropdown.$search || $seletedregulation.data('select2').selection.$search;
+            $search.val(searchTerm);
+            $search.trigger('keyup');
+        }
+
+        function initTagInput() {
+            tagMapper = $('#tag-mapper');
+            $('[data-item-reg-tag-input]').on('input', function (event) {
+                //console.log("The text has been changed.", event.target.value);
+                let tagInput = event.target.value;
+                suggestTags(tagInput);
+            });
+        }
+
         function initMediumEditor() {
-            var myEditor = new MediumEditor(".editable", {
+            let myEditor = new MediumEditor(".editable", {
                 buttons: [
                     "bold"
                     , "italic"
@@ -308,25 +481,33 @@
                         label: '<i class="fa fa-tags" title="Add Tags"></i>',
                         action: function (html, mark, parent, sel) {
                             console.log(html, mark, parent, sel);
-                            var secId, descId;
-                            var tagGroupId = $(parent).attr('data-item-tag');
-                            tagGroupId = tagGroupId ?? new Date().getTime();
-                            descId = $(parent).closest('[data-item-desc]').attr('data-item-desc');
-                            secId = $(parent).closest('[data-item-section]').attr('data-item-section');
+                            let secId, descId;
+                            let tagGroupId = $(parent).closest('[data-item-tag]').attr('data-item-tag');
 
-                            var tagSaveButton = $('[data-link-tag-group]');
-                            tagSaveButton.attr('data-reg', regId);
-                            tagSaveButton.attr('data-sec', secId);
-                            tagSaveButton.attr('data-desc', descId);
-                            tagSaveButton.attr('data-link-tag-group', tagGroupId);
+                            if (!tagGroupId) {
+                                tagGroupId = tagGroupId ?? new Date().getTime();
+                                descId = $(parent).closest('[data-item-desc]').attr('data-item-desc');
+                                secId = $(parent).closest('[data-item-section]').attr('data-item-section');
 
-                            selectedStatement = '<span class="tag-highlight" data-item-tag="' + tagGroupId + '">' + html + '</span>';
+                                let tagSaveButton = $('[data-link-tag-group]');
+                                tagSaveButton.attr('data-reg', regId);
+                                tagSaveButton.attr('data-sec', secId);
+                                tagSaveButton.attr('data-desc', descId);
+                                tagSaveButton.attr('data-link-tag-group', tagGroupId);
 
-                            $('#tag-statement').html(html);
+                                selectedStatement = '<span class="tag-highlight" data-item-tag="' + tagGroupId + '">' + html + '</span>';
 
-                            getTags(tagGroupId);
+                                $('#tag-statement').html(html);
 
-                            return '<span selected-medium >' + html + '</span>';
+                                getTags(tagGroupId);
+
+                                return '<span selected-medium >' + html + '</span>';
+                            }
+                            else {
+
+                                toastr.error('Tags cannot be nested or overlap with each other.');
+                                return html;
+                            }
                         }
                     }),
                     'linkReg': new MediumButton({
@@ -338,6 +519,11 @@
                             $('#link-statement').html(html);
                             selectedStatement = html;
 
+                            console.log('html', html);
+
+                            setTimeout(function () { select2DDSearchTerms(html); }, 1000);
+
+
                             return '<span selected-medium >' + html + '</span>';
                         }
                     }),
@@ -347,10 +533,10 @@
 
 
         $('#btn-new-section').click(function () {
-            var sectionList = $('.dd-list:nth(0)');
-            var sectionListItems = sectionList.find('.dd-item');
-            var itemCount = sectionListItems.length;
-            var newItem = '<li class="dd-item dd3-item"> \
+            let sectionList = $('.dd-list:nth(0)');
+            let sectionListItems = sectionList.find('.dd-item');
+            let itemCount = sectionListItems.length;
+            let newItem = '<li class="dd-item dd3-item"> \
                                         </button > \
                                         <div class="dd-handle dd3-handle"></div > \
                                             <div class="dd3-content"> \
@@ -367,16 +553,36 @@
             if (!child) {
                 let detailObj = {};
                 detailObj.regId = regId;
+                detailObj.existingTagGroups = allTagsJSON.filter(x => x.RegId === regId && (x.OperationType === operationType.New || x.OperationType === operationType.Deleted));
+                detailObj.existingRelatedLinks = allLinkedRegsJSON.filter(x => x.OperationType === operationType.New || x.OperationType === operationType.Deleted);
                 detailObj.sections = [];
                 $('#nestable_list_1 > ol.dd-list > li.dd-item.dd3-item').each(function (a) {
-                    let secId = $(this).attr('data-item-section');
-                    let title = $(this).find('.editable > h2, .editable > h3').html();
-                    let seq = a;
                     let parentId = pId ?? undefined;
+                    let title = $(this).find('.editable > h2, .editable > h3').html();
+                    title = title ?? "";
+                    if (!title.replaceAll('<br>', '')) {
+                        toastr.error('Section must have atleast one main heading.');
+                        return;
+                    }
+
+                    let secId = $(this).attr('data-item-section');
+                    let seq = a;
                     let descriptions = Array.from($(this).find('.editable:nth(0) > p').map(function (a, b) {
+
+                        let descObj = $(b).clone();
+                        let descId = descObj.attr('data-item-desc');
+                        let description = '';
+
+                        descObj.find('.tag-control').remove();
+                        descObj.find('.link-control').remove();
+
+                        description = descObj.html();
+
+                        console.log('Parent descObj', descObj.html());
+
                         return {
-                            descId: $(b).attr('data-item-desc'),
-                            description: $(b).html(),
+                            descId: descId,
+                            description: description,
                             seq: a
                         };
                     }));
@@ -389,14 +595,32 @@
             else {
                 var childSectionObj = [];
                 $(child).each(function (a) {
-                    let secId = $(this).attr('data-item-section');
-                    let title = $(this).find('.editable > h2, .editable > h3').html();
-                    let seq = a;
                     let parentId = pId ?? undefined;
+                    let title = $(this).find('.editable > h2, .editable > h3').html();
+                    title = title ?? "";
+                    if (!title.replaceAll('<br>', '')) {
+                        toastr.error('Section must have atleast one main heading.');
+                        return;
+                    }
+
+                    let secId = $(this).attr('data-item-section');
+                    let seq = a;
                     let descriptions = Array.from($(this).find('.editable:nth(0) > p').map(function (a, b) {
+
+                        let descObj = $(b).clone();
+                        let descId = descObj.attr('data-item-desc');
+                        let description = '';
+
+                        descObj.find('.tag-control').remove();
+                        descObj.find('.link-control').remove();
+
+                        description = descObj.html();
+
+                        console.log('Parent descObj', descObj.html());
+
                         return {
-                            descId: $(b).attr('data-item-desc'),
-                            description: $(b).html(),
+                            descId: descId,
+                            description: description,
                             seq: a
                         };
                     }));
@@ -408,13 +632,21 @@
             }
         }
 
-        function publish()
+        function publish(isVersion)
         {
-            var detailObj = getDetailObject();
+            verifyTagsBeforePublish();
+            verifyLinksBeforePublish();
+
+            let detailObj = getDetailObject();
+            detailObj.isVersion = isVersion;
+            console.log('Save Detail Obj', detailObj);
             $.post("/Library/SaveRegulationDetail",
                 detailObj,
                 function (response) {
+                    console.log('publish response', response);
                     if (response.status === 200) {
+                        allLinkedRegsJSON = JSON.parse(response.data.allLinkedRegs);
+                        allTagsJSON = JSON.parse(response.data.allTags);
                         toastr.success(response.message);
                     }
                     else {
@@ -426,116 +658,252 @@
 
 
         function getTags(tagGroupId) {
-            $.get("/Library/GetTagsGroup/" + tagGroupId,
-                function (response) {
-                    var tagMapper = $('#tag-mapper');
-                    tagMapper.tagsinput({
-                        itemValue: 'id',
-                        itemText: 'text',
-                    });
-                    var tags = response.data;
-                    for (var i = 0; i < tags.length; i++) {
-                        tagMapper.tagsinput("add", {
-                            id: tags[i],
-                            text: tags[i]
-                        })
-                    }
-                    $('#tagModal').modal('show');
 
-                }, "json")
-                .always(function () {
+            let tags = allTagsJSON.filter(x => x.TagGroupKey == tagGroupId && x.OperationType !== operationType.Deleted);
 
-                });
+            tagMapper.tagsinput('removeAll');
+
+            tags.forEach(function (x) {
+                tagMapper.tagsinput("add", x.Tag);
+            });
+
+            $('#tagModal').modal('show');
+        }
+
+        function getLinkedReg(linkedRegId, linkedUID) {
+
+            let tagSaveButton = $('[data-link-regulation]');
+            if (linkedRegId) {
+
+                tagSaveButton.attr('data-link-regulation', linkedRegId);
+                tagSaveButton.attr('link-uid', linkedUID);
+
+                let link = allLinkedRegsJSON.find(x => x.LinkedRegId == linkedRegId && x.OperationType !== operationType.Deleted);
+                let dd = $('#seletedregulation');
+
+
+                dd.find('option').remove();
+                dd.val(null).trigger('change');
+
+                let newOption = new Option(link.RegTitle, link.LinkedRegId, false, false);
+                dd.append(newOption);
+
+                dd.val(linkedRegId).trigger('change');
+            }
+            else {
+                tagSaveButton.attr('data-link-regulation', '');
+                tagSaveButton.attr('link-uid', '');
+            }
+
+            $('#linkRegModal').modal('show');
         }
 
         function setTags(tags, tagGroupId, regId, secId, descId) {
-            $.post("/Library/SetTagsGroup",
-                {
-                    tags,
-                    tagGroupId,
-                    regId,
-                    secId,
-                    descId
-                },
-                function (response) {
 
-                    $('#tagModal').modal('hide');
-                    $(selectedStatement).insertAfter($('[selected-medium]'));
-                    $('[selected-medium]').remove();
-                    $('[data-item-tag="' + tagGroupId + '"]').attr('title', 'Tags: ' + tags.join());
+            if (tags.length > 0) {
+                $('#tagModal').modal('hide');
+                $(selectedStatement).insertAfter($('[selected-medium]'));
+                $('[selected-medium]').remove();
+                $('[data-item-tag="' + tagGroupId + '"]').attr('title', 'Tags: ' + tags.join());
 
-                }, "json")
-                .always(function () {
+                let filteredTagByTagGroupKey = allTagsJSON.filter(xx => xx.TagGroupKey === tagGroupId);
+
+                filteredTagByTagGroupKey.forEach(function (tag) {
+                    let exists = false;
+                    for (let i = 0; i < tags.length; i++) {
+                        if (tag.Tag === tags[i]) {
+                            exists = true;
+                            delete tags[i];
+                            break;
+                        }
+                    }
+
+                    if (!exists) {
+                        tag.OperationType = operationType.Deleted;
+                    }
 
                 });
-                   }
+
+                tags.forEach(function (x) {
+                    allTagsJSON.push({
+                        'DescId': descId,
+                        'RegId': regId,
+                        'SecId': secId,
+                        'Tag': x,
+                        'TagGroupKey': tagGroupId,
+                        'TagType': 1,
+                        'OperationType': operationType.New
+                    });
+                });
+            }
+            else {
+                toastr.error('Tags cannot be empty');
+            }
+
+        }
+
+        function suggestTags(value) {
+            if (value) {
+                let list = $('[data-item-suggestion-list]');
+                list.find('li').remove();
+
+                allTagsJSON.forEach(function (x) {
+                    if (x.Tag.includes(value)) {
+                        let html = '<li role="treeitem" aria-live="assertive" class="select2-results__option select2-results__message" onclick="tagMapper.tagsinput(\'add\', \'' + x.Tag + '\')">' + x.Tag + '</li>';
+                        list.append(html);
+                    }
+                });
+
+                $('[data-item-tag-container]').show();
+            }
+            else {
+                $('[data-item-tag-container]').hide();
+            }
+        }
 
         $('[data-link-tag-group]').click(function () {
-            var tagGroupId = $(this).attr('data-link-tag-group');
-            var regId = $(this).attr('data-reg');
-            var secId = $(this).attr('data-sec');
-            var descId = $(this).attr('data-desc');
-            var tags = $('#tag-mapper').val();
+            let tagGroupId = $(this).attr('data-link-tag-group');
+            let regId = $(this).attr('data-reg');
+            let secId = $(this).attr('data-sec');
+            let descId = $(this).attr('data-desc');
+            let tags = $('#tag-mapper').val();
 
-            setTags(tags.split(','), tagGroupId, regId, secId, descId);
+            setTags(tags.split(','), tagGroupId, parseInt(regId), parseInt(secId), parseInt(descId));
+            setTagControl();
         });
 
         $('[data-link-regulation]').click(function () {
-            var selectedRegulation = $('#seletedregulation').val();
-            if (selectedRegulation) {
-                $.post("/Library/SetLinkedRelatedRegulation",
-                    {
-                        regId: regId,
-                        relatedRegId: selectedRegulation[0]
-                    },
-                    function (response) {
+            let selectedRegulation = $('#seletedregulation').select2('data');
+            selectedRegulation = selectedRegulation[0];
+            let linkedRegId = $(this).attr('data-link-regulation');
+            let linkedUID = $(this).attr('link-uid') ?? new Date().getTime();
 
-                        selectedRegulation = selectedRegulation[0];
-                        var linkHTML = '<span title="' + response.data + '"><a href="/Library/Regulation/' + selectedRegulation + '" data-item-regulation="' + selectedRegulation + '">' + selectedStatement + '</a></span>';
-                        $(linkHTML).insertAfter($('[selected-medium]'));
-                        $('[selected-medium]').remove();
-                        $('#linkRegModal').modal('hide');
+            console.log('data-link-regulation', linkedRegId);
 
-                    }, "json")
-                    .always(function () {
-
-                    });   
+            if (!(allLinkedRegsJSON.filter(x => x.LinkedRegId == selectedRegulation.id).length > 0)) {
+                allLinkedRegsJSON.push({
+                    RegTitle: selectedRegulation.text,
+                    LinkedRegId: parseInt(selectedRegulation.id),
+                    OperationType: operationType.New
+                });
             }
-        })              ;
+
+            if (selectedRegulation && !linkedRegId) {
+
+                let linkHTML = `<span class="link-highlight" link-uid="${linkedUID}" title="${selectedRegulation.text}">
+                                    <span class="link-control">
+                                        <span tooltip="Remove Link" data-item-link-remove class="fa fa-trash" style="cursor: pointer;"></span>
+                                        <span tooltip = "Edit Link" data-item-link-edit link-uid="${linkedUID}" class="fa fa-pencil-square-o" style="cursor: pointer;"></span>
+                                    </span>
+                                <a href="/Library/Regulation/${selectedRegulation.id}" link-uid="${linkedUID}" data-item-regulation="${selectedRegulation.id}">${selectedStatement}</a>
+                                </span>`;
+                $(linkHTML).insertAfter($('[selected-medium]'));
+                $('[selected-medium]').remove();
+                $('#linkRegModal').modal('hide');
+
+            }
+            else if (selectedRegulation && linkedRegId) {
+                let linkTag = $('.link-highlight[link-uid="' + linkedUID + '"]');
+
+                $(linkTag).attr('data-item-link', selectedRegulation.id);
+                $(linkTag).find('[data-item-regulation]').attr('data-item-regulation', selectedRegulation.id);
+                $(linkTag).find('[data-item-regulation]').attr('href', '/Library/Regulation/' + selectedRegulation.id);
+
+                $('#linkRegModal').modal('hide');
+            }
+        });
+
+        function removeTags(tagGroupId) {
+
+            let innerContent = $('[data-item-tag="' + tagGroupId + '"]');
+            innerContent.find(".tag-control").remove();
+            innerContent.after(innerContent.html());
+            innerContent.remove();
+            allTagsJSON.forEach(function (x) {
+                if (x.TagGroupKey == tagGroupId) {
+                    x.OperationType = operationType.Deleted
+                }
+            });
+        }
+
+        function removeLink(linkedRegId) {
+            let innerContent = $('[data-item-link="' + linkedRegId + '"]');
+            innerContent.find(".link-control").remove();
+            innerContent.after(innerContent.find('a').html());
+            innerContent.remove();
+            //allLinkedRegsJSON.forEach(function (x) {
+            //    if (x.LinkedRegId == linkedRegId) {
+            //        x.OperationType = operationType.Deleted
+            //    }
+            //});
+        }
+
+    function verifyTagsBeforePublish() {
+        allTagsJSON.forEach(function (x) {
+            let obj = $(`[data-item-tag="${x.TagGroupKey}"]`);
+            if (obj.length === 0) {
+                x.OperationType = operationType.Deleted;
+            }
+        });
+    }
+
+    function verifyLinksBeforePublish() {
+        allLinkedRegsJSON.forEach(function (x) {
+            let obj = $(`[data-item-regulation="${x.LinkedRegId}"]`);
+            if (obj.length === 0) {
+                x.OperationType = operationType.Deleted;
+            }
+        });
+    }
+
+
     </script>
     <script>
 
-    var meta = {
-    regid: '',
-    customurl: '',
-    metatag: '',
-    metadescription: ''
-    };
 
+    $('#btn-publish').click(function () {
+        publish(false);
+        return false;
+    });
+
+    $('#btn-publish-version').click(function () {
+        publish(true);
+        return false;
+    });
 
     $('[data-update-tags]').click(function () {
-    var metatag = $('#input-metatag');
-    var metadescription = $('#input-metadescription');
-    var customurl = $('#input-customurl');
 
-    meta.regid = @defaultModel.RegId;
-    meta.customurl = customurl.val();
-    meta.metatag = metatag.val();
-    meta.metadescription = metadescription.val();
+        var meta = {};
+
+        let metatag = $('#input-metatag');
+        let metadescription = $('#input-metadescription');
+        let customurl = $('#input-customurl');
+        let summary = $('#input-summary');
+
+        meta.regid = @defaultModel.RegId;
+        meta.customurl = customurl.val();
+        meta.metatag = metatag.val();
+        meta.metadescription = metadescription.val();
+        meta.summary = summary.val();
 
     $.post("/Library/UpdateMetaDetails", meta,
-    function (response) {
-    if (response.status === 200) {
-    $('#MetaData').modal('hide');
-    toastr.success(response.message);
-    }
-    else {
-    toastr.error(response.message);
-    }
-    }, "json");
-    })        ;
+        function (response) {
+            if (response.status === 200) {
+                $('#MetaData').modal('hide');
+                toastr.success(response.message);
+            }
+            else {
+                toastr.error(response.message);
+            }
+        }, "json");
+    });
 
-
+        $('.deletesection').click(function () {
+            if (confirm('Are you sure you want to delete this section?')) {
+                let obj = $(this);
+                $(obj).parent().remove();
+            }
+        });
 
     </script>
 
