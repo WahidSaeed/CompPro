@@ -358,7 +358,11 @@
                 }
             });
 
+            setTagControlEditDelete();
+            
+        }
 
+        function setTagControlEditDelete() {
             $("[data-item-tag-remove]").click(function () {
                 let tagGroupId = $(this).closest('[data-item-tag]').attr('data-item-tag');
                 removeTags(tagGroupId);
@@ -383,25 +387,28 @@
 
         function setLinkControl() {
 
-
             $(".link-highlight").each(function (x, obj) {
                 let existingControl = $(this).find('.link-control');
                 if (existingControl.length === 0) {
                     let linkedUID = new Date().getTime();
+                    let linkedRegulationId = $(this).find('[data-item-regulation]').attr('data-item-regulation');
                     let controlButton = `<span class="link-control">
                                         <span tooltip="Remove Link" data-item-link-remove class="fa fa-trash" style="cursor: pointer;"></span>
                                         <span tooltip = "Edit Link" data-item-link-edit link-uid="${linkedUID}" class="fa fa-pencil-square-o" style="cursor: pointer;"></span>
                                     </span>`;
 
-                    $(this).attr('link-uid', linkedUID)
+                    $(this).attr('link-uid', linkedUID);
+                    $(this).attr('data-item-link', linkedRegulationId);
                     $(this).find('a').attr('link-uid', linkedUID);
                     $(this).prepend(controlButton);
                 }
 
             });
 
+            setLinkControlEditDelete();
+        }
 
-
+        function setLinkControlEditDelete() {
             $("[data-item-link-remove]").click(function () {
                 let linkedRegId = $(this).closest('[data-item-link]').attr('data-item-link');
                 removeLink(linkedRegId);
@@ -415,7 +422,6 @@
                 getLinkedReg(linkedRegId, linkedUID);
             });
         }
-
 
 
         function initSelect2DD() {
@@ -514,6 +520,7 @@
                         label: '<i class="fa fa-link" title="Link Related Regulation"></i>',
                         action: function (html, mark, parent) {
 
+                            $("#seletedregulation").empty();
                             $('#linkRegModal').modal('show');
 
                             $('#link-statement').html(html);
@@ -790,7 +797,7 @@
 
             if (selectedRegulation && !linkedRegId) {
 
-                let linkHTML = `<span class="link-highlight" link-uid="${linkedUID}" title="${selectedRegulation.text}">
+                let linkHTML = `<span class="link-highlight" link-uid="${linkedUID}" data-item-link="${selectedRegulation.id}" title="${selectedRegulation.text}">
                                     <span class="link-control">
                                         <span tooltip="Remove Link" data-item-link-remove class="fa fa-trash" style="cursor: pointer;"></span>
                                         <span tooltip = "Edit Link" data-item-link-edit link-uid="${linkedUID}" class="fa fa-pencil-square-o" style="cursor: pointer;"></span>
@@ -811,6 +818,12 @@
 
                 $('#linkRegModal').modal('hide');
             }
+
+            setLinkControlEditDelete();
+
+            $(this).removeAttr('data-link-regulation');
+            $(this).removeAttr('link-uid');
+
         });
 
         function removeTags(tagGroupId) {

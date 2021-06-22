@@ -20,7 +20,9 @@ namespace CRMData.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        { }
+        {
+            Database.Migrate();
+        }
 
         #region Identity
 

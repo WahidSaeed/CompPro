@@ -558,7 +558,7 @@ namespace CompData.Dao.Regulation.Impl
 
                 List<ExistingTagGroupViewModel> existingTagGroups = viewModel.ExistingTagGroups;
                 List<ExistingRelatedLink> existingRelatedLinks = viewModel.ExistingRelatedLinks?.Distinct().ToList();
-                List<RegulationSection> existingRegulationSections = await dbContext.RegulationSections.AsNoTracking().Where(x => x.RegulationId.Equals(viewModel.RegId)).Include(x => x.RegulationDetails).ToListAsync();
+                List<RegulationSection> existingRegulationSections = await dbContext.RegulationSections.AsNoTracking().Where(x => x.RegulationId.Equals(viewModel.RegId)).Include(x => x.RegulationDetails).Include(x => x.Children).ToListAsync();
                 List<RegulationDetail> existingRegulationDetails = await dbContext.RegulationDetails.AsNoTracking().Where(x => x.RegulationId.Equals(viewModel.RegId)).ToListAsync();
                 List<TagMap> existingRegulationTagMaps = await dbContext.TagMaps.AsNoTracking().Where(x => x.RegId.Equals(viewModel.RegId)).ToListAsync();
                 List<LinkedRelatedRegulation> existingRegulationLinks = await dbContext.LinkedRelatedRegulations.AsNoTracking().Where(x => x.RegId.Equals(viewModel.RegId)).ToListAsync();
@@ -1271,7 +1271,7 @@ namespace CompData.Dao.Regulation.Impl
                     existingSectionIds.Add(regSection.SecId ?? 0);
 
                     var existingSection = regulationSections.Where(x => x.SectionId.Equals(regSection.SecId)).FirstOrDefault();
-
+                    var existingChildSection = regulationSections.Where(x => x.ParentId.Equals(existingSection.SectionId)).ToList();
                     existingSection.SectionTitle = sectionTitle;
                     existingSection.Sequence = sectionSeq;
                     existingSection.ParentId = parentId;
@@ -1301,7 +1301,7 @@ namespace CompData.Dao.Regulation.Impl
                     #endregion
                     if (children.Count > 0)
                     {
-                        List<RegulationSection> childrenSections = existingSection.Children;
+                        List<RegulationSection> childrenSections = existingChildSection;
                         SetUpdateRegulationSectionsModel(children, regId, ref childrenSections, ref existingSectionIds);
                         existingSection.Children = childrenSections;
                     }
